@@ -9,7 +9,7 @@ const StartPage = () => {
             <div className="container">
                 <div>
                     <h1>Meditation Any Where</h1>
-                    <Link to={"/main"} className={classes.link}>start</Link>
+                    <Link to={"/"} className={classes.link}>start</Link>
                 </div>
             </div>
         </div>
