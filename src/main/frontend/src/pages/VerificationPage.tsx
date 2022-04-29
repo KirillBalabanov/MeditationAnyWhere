@@ -4,7 +4,6 @@ import classes from "../styles/VerificationPage.module.css";
 
 const VerificationPage = () => {
     let activationCode: string = useParams()["activationCode"]!;
-    console.log(activationCode);
     return (
         <div className={classes.verification}>
             <div className="container">

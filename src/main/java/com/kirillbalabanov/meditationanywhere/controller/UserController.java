@@ -9,6 +9,11 @@ import com.kirillbalabanov.meditationanywhere.service.StatsService;
 import com.kirillbalabanov.meditationanywhere.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +31,6 @@ public class UserController {
         this.statsService = statsService;
     }
 
-    // change ro rest controller, exchange with js json.
     @PostMapping("/registration")
     public ResponseEntity<?> addUser(@RequestBody UserEntity userEntity) {
         String uuid = UUID.randomUUID().toString();
@@ -48,6 +52,37 @@ public class UserController {
         userService.sendVerificationEmailTo(uuid, userEntity.getUsername(), userEntity.getEmail());
 
         return ResponseEntity.ok().body(UserModel.toModel(userEntity));
+    }
+
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody HashMap<String, String> hashMap) {
+        if(hashMap.size() != 2) return ResponseEntity.badRequest().body("Invalid request params");
+        String username = hashMap.get("username");
+        String password = hashMap.get("password");
+        HashMap<Object, Object> hm = new HashMap<>();
+
+        // finding user in db
+        UserEntity userEntity;
+        try {
+            userEntity = userService.findByUsername(username);
+        } catch (NoUserFoundException e) {
+            hm.put("error", e.getMessage());
+            return ResponseEntity.ok().body(hm);
+        }
+
+        // verify password
+        if (!userService.verifyPassword(password, userEntity)) {
+            hm.put("error", "Incorrect password");
+            return ResponseEntity.ok().body(hm);
+        }
+
+        hm.put("authenticated", true);
+        hm.put("username", username);
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(username,
+                password);
+        SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+        return ResponseEntity.ok().body(hm);
     }
 
     @GetMapping("/profile/{username}")

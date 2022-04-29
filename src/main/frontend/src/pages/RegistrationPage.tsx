@@ -8,7 +8,7 @@ const RegistrationPage = () => {
     const token = useToken().csrfToken;
 
     function postRegister(e: FormEvent) {
-        // validation
+        e.preventDefault();
         let children = (e.target as Element).children;
         let username = (children[1] as HTMLInputElement).value;
         let email = (children[2] as HTMLInputElement).value;

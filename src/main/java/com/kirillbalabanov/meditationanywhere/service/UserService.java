@@ -68,4 +68,8 @@ public class UserService {
         userEntity.setActivationCode(null);
         userRepository.save(userEntity);
     }
+
+    public boolean verifyPassword(String password, UserEntity userEntity) {
+        return passwordEncoder.matches(password, userEntity.getPassword());
+    }
 }

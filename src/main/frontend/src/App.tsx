@@ -1,4 +1,4 @@
-import React, {FC} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import './styles/App.css';
 import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
 import {AuthContext} from "./context/AuthContext";
@@ -11,9 +11,14 @@ import {privateRoutes, publicRoutes} from "./routes/Routes";
 const App:FC = () => {
 
     // getting auth info, setting it to global context
-    const CsrfContextImp = useToken();
-    const AuthContextImp = useAuth();
-    const auth = AuthContextImp.auth;
+    const [loading, setLoading] = useState(true);
+
+    let CsrfContextImp = useToken();
+    let AuthContextImp = useAuth(setLoading);
+
+    if(loading) return (<div>Loading</div>);
+
+    console.log(AuthContextImp.username);
 
     return (
         <CsrfContext.Provider value={CsrfContextImp}>
@@ -21,10 +26,10 @@ const App:FC = () => {
                 <BrowserRouter>
                     <Routes>
                         {privateRoutes.map(route =>
-                            <Route path={route.path} element={auth ? route.component() : <Navigate to={"/login"}/>}></Route>
+                            <Route key={Date.now()} path={route.path} element={AuthContextImp.auth ? route.component() : <Navigate to={"/login"}/>}></Route>
                         )}
                         {publicRoutes.map(route =>
-                            <Route path={route.path} element={route.component()}></Route>
+                            <Route key={Date.now()} path={route.path} element={route.component()}></Route>
                         )}
                     </Routes>
                 </BrowserRouter>
