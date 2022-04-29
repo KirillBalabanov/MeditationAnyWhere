@@ -1,0 +1,33 @@
+.timer {
+    margin-top: 50px;
+}
+
+.timer__timer {
+    font-size: 36px;
+    text-align: center;
+}
+
+.timer__select {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 40px 0;
+}
+
+.timer__select_item {
+    background-color: black;
+    padding: 5px 10px;
+    margin: 0 10px;
+    cursor: pointer;
+}
+
+.timer__btn {
+    background-color: black;
+    width: 100px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    cursor: pointer;
+}

@@ -1,0 +1,14 @@
+.bg {
+    background: url("../images/main-background.jpg");
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    position: absolute;
+
+}
+
+.link {
+    padding: 10px 20px;
+    background-color: white;
+    color: black;
+}

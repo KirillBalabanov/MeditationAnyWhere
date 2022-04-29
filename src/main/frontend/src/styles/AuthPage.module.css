@@ -1,0 +1,45 @@
+.auth {
+    display: flex;
+    justify-content: center;
+    width: 400px;
+    flex-wrap: wrap;
+    position: relative;
+}
+
+.auth__outer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 100px;
+}
+
+.auth__input {
+    width: 100%;
+    margin: 10px 0;
+    height: 20px;
+}
+
+.auth__btn {
+    margin-top: 10px;
+}
+
+.auth__title {
+    margin-top: 0;
+}
+
+.auth__link {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    font-size: 18px;
+}
+
+.auth__error {
+    width: 100%;
+    text-align: center;
+    color: red;
+    bottom: 40px;
+    margin: 0;
+    padding: 0;
+    font-size: 18px;
+}

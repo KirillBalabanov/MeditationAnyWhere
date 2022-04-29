@@ -1,0 +1,39 @@
+.popup {
+    display: none;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: black;
+}
+
+.popup.active {
+    display: block;
+}
+
+.popup__box {
+    background-color: white;
+    width: 500px;
+    height: 400px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.popup__info {
+    font-size: 24px;
+}
+
+.popup__confirm {
+    position: absolute;;
+    text-align: center;
+    bottom: 20px;
+    font-size: 22px;
+    cursor: pointer;
+}
