@@ -21,7 +21,7 @@ public class UserEntity {
     @Column(nullable = false)
     private boolean isActivated;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String activationCode;
     @Column(nullable = false, unique = true)
     private String email;
@@ -34,10 +34,10 @@ public class UserEntity {
     public UserEntity() {
     }
 
-    public UserEntity(String username, String password, String email) {
+    public UserEntity(String username, String email, String password) {
         this.username = username;
-        this.password = password;
         this.email = email;
+        this.password = password;
     }
 
     public UserEntity(String username, String password, String email, String role, boolean isActivated, String activationCode) {

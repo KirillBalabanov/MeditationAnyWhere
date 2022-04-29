@@ -37,9 +37,10 @@ public class UserController {
         try {
             userId = userService.register(userEntity).getId();
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.put("error", e.getMessage());
+            return ResponseEntity.ok().body(hashMap);
         }
-
         // init stats with user.
         statsService.initializeWithUser(StatsEntity.initStatsEntity(), userId);
 
@@ -48,19 +49,32 @@ public class UserController {
 
         return ResponseEntity.ok().body(UserModel.toModel(userEntity));
     }
+
     @GetMapping("/profile/{username}")
     public ResponseEntity<?> showUsersProfile(@PathVariable String username, Model model) {
-
-        // throws 404 if user not found.
         UserEntity userEntity;
         try {
             userEntity = userService.findByUsername(username);
         } catch (NoUserFoundException e) {
-            return ResponseEntity.accepted().body(e.getMessage());
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.put("error", e.getMessage());
+            return ResponseEntity.ok().body(hashMap);
         }
         StatsEntity statsEntity = userEntity.getStatsEntity();
 
         return ResponseEntity.ok().body(UserProfileModel.toModel(statsEntity, userEntity));
     }
 
+    @GetMapping("/verification/{activationCode}")
+    public ResponseEntity<?> verification(@PathVariable String activationCode) {
+        HashMap<String, String> hashMap = new HashMap<>();
+        try {
+            userService.verify(activationCode);
+        } catch (NoUserFoundException e) {
+            hashMap.put("error", "Invalid activation code");
+            return ResponseEntity.ok().body(hashMap);
+        }
+        hashMap.put("message", "Account is successfully activated!");
+        return ResponseEntity.ok().body(hashMap);
+    }
 }

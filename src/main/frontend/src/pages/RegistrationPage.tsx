@@ -2,10 +2,10 @@ import React, {FormEvent} from 'react';
 import classes from "../styles/AuthPage.module.css";
 import {Link} from "react-router-dom";
 import {isValidEmail, isValidPassword, isValidUsername} from "../util/Validator";
+import {useToken} from "../hooks/useToken";
 
 const RegistrationPage = () => {
-
-
+    const token = useToken().csrfToken;
 
     function postRegister(e: FormEvent) {
         // validation
@@ -25,6 +25,24 @@ const RegistrationPage = () => {
             }
             return;
         }
+
+        fetch("/registration", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'X-XSRF-TOKEN': token
+            },
+            body: JSON.stringify({
+                "username": username,
+                "email": email,
+                "password": password
+            })
+        }).then((response) => response.json()).then((data) => {
+            // if server send map "error" -> errorMessage, then show it into the error field
+            if("error" in data) errorText.textContent = data["error"];
+            // else notify user that registration email was sent
+            else errorText.textContent = "Verification email has been sent.";
+        });
     }
 
     return (

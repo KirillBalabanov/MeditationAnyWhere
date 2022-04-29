@@ -3,7 +3,6 @@ package com.kirillbalabanov.meditationanywhere.service;
 import com.kirillbalabanov.meditationanywhere.entity.UserEntity;
 import com.kirillbalabanov.meditationanywhere.exception.user.NoUserFoundException;
 import com.kirillbalabanov.meditationanywhere.exception.user.RegistrationException;
-import com.kirillbalabanov.meditationanywhere.model.UserModel;
 import com.kirillbalabanov.meditationanywhere.repository.UserRepository;
 import com.kirillbalabanov.meditationanywhere.validator.util.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,6 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
     private final EmailSenderService emailSenderService;
     @Autowired
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, EmailSenderService emailSenderService) {
@@ -56,5 +54,18 @@ public class UserService {
 
     public boolean sendVerificationEmailTo(String uuid, String username, String email) {
         return emailSenderService.sendVerificationEmailUuidTo(uuid, username, email);
+    }
+
+    /**
+     * Method is used to verify a user with given uuid.
+     * Throws {@link NoUserFoundException} if no user with given uuid is found.
+     */
+    public void verify(String activationCode) throws NoUserFoundException{
+        Optional<UserEntity> optional = userRepository.findByActivationCode(activationCode);
+        if(optional.isEmpty()) throw new NoUserFoundException("No user with such activation code.");
+        UserEntity userEntity = optional.get();
+        userEntity.setActivated(true);
+        userEntity.setActivationCode(null);
+        userRepository.save(userEntity);
     }
 }
