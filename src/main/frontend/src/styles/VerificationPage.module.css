@@ -1,8 +1,12 @@
 
 .verification {
     background-color: #000000;
-    padding: 30px 0;
+    padding: 0;
     margin-top: 100px;
+    display: flex;
+    align-items: center;
+    height: 120px;
+    position: relative;
 }
 
 .verification__text {
