@@ -1,11 +1,11 @@
-import React, {FormEvent} from 'react';
+import React, {FormEvent, useContext} from 'react';
 import classes from "../styles/AuthPage.module.css";
 import {Link} from "react-router-dom";
 import {isValidEmail, isValidPassword, isValidUsername} from "../util/Validator";
-import {useToken} from "../hooks/useToken";
+import {CsrfContext} from "../context/CsrfContext";
 
 const RegistrationPage = () => {
-    const token = useToken().csrfToken;
+    const token = useContext(CsrfContext)?.csrfToken;
 
     function postRegister(e: FormEvent) {
         e.preventDefault();
@@ -30,7 +30,7 @@ const RegistrationPage = () => {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
-                'X-XSRF-TOKEN': token
+                'X-XSRF-TOKEN': token!
             },
             body: JSON.stringify({
                 "username": username,

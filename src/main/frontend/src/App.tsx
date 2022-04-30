@@ -1,36 +1,48 @@
 import React, {FC, useEffect, useState} from 'react';
 import './styles/App.css';
-import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
-import {AuthContext} from "./context/AuthContext";
-import {CsrfContext} from "./context/CsrfContext";
-import {useToken} from "./hooks/useToken";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import {AuthContext, AuthContextI} from "./context/AuthContext";
+import {CsrfContext, CsrfContextI} from "./context/CsrfContext";
+import {AppRoutes} from "./routes/Routes";
 import {useAuth} from "./hooks/useAuth";
-import {privateRoutes, publicRoutes} from "./routes/Routes";
+import {useToken} from "./hooks/useToken";
 
 
 const App:FC = () => {
+    const [isLoading, setIsLoading] = useState(true);
 
-    // getting auth info, setting it to global context
-    const [loading, setLoading] = useState(true);
+    const [auth, setAuth] = useState(false);
+    const [username, setUsername] = useState("$anonymous");
+    let AuthContextImp: AuthContextI = {
+        auth,
+        setAuth,
+        username,
+        setUsername
+    }
+    const [token, setToken] = useState("$token");
+    const CsrfContextImp: CsrfContextI = {
+        "csrfToken": token,
+        setToken: setToken
+    }
+    useToken(CsrfContextImp);
+    useAuth(AuthContextImp, setIsLoading);
 
-    let CsrfContextImp = useToken();
-    let AuthContextImp = useAuth(setLoading);
+    if (isLoading) {
+        return (
+            <div></div>
+        )
+    }
 
-    if(loading) return (<div>Loading</div>);
-
-    console.log(AuthContextImp.username);
+    console.log(AuthContextImp);
 
     return (
         <CsrfContext.Provider value={CsrfContextImp}>
             <AuthContext.Provider value={AuthContextImp}>
                 <BrowserRouter>
                     <Routes>
-                        {privateRoutes.map(route =>
-                            <Route key={Date.now()} path={route.path} element={AuthContextImp.auth ? route.component() : <Navigate to={"/login"}/>}></Route>
-                        )}
-                        {publicRoutes.map(route =>
-                            <Route key={Date.now()} path={route.path} element={route.component()}></Route>
-                        )}
+                        {AppRoutes(AuthContextImp.auth).map(route =>
+                            <Route path={route.path} element={route.component} key={route.path}></Route>)
+                        }
                     </Routes>
                 </BrowserRouter>
             </AuthContext.Provider>

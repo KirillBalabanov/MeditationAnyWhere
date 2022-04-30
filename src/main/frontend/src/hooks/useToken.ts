@@ -1,14 +1,9 @@
-import {CsrfContextI} from "../context/CsrfContext";
 import {useEffect, useState} from "react";
+import {CsrfContextI} from "../context/CsrfContext";
 
-export const useToken = () => {
-    const [token, setToken] = useState("");
-    const CsrfContextImp: CsrfContextI = {
-        "csrfToken": token
-    }
+export const useToken = (CsrfContextImp: CsrfContextI) => {
     useEffect(() => {
         let s = document.cookie.replace("^XSRF-TOKEN", '');
-        setToken( s.replace("XSRF-TOKEN=", ""));
+        CsrfContextImp.setToken( s.replace("XSRF-TOKEN=", ""));
     }, []);
-    return CsrfContextImp;
-}
+};

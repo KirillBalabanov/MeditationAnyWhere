@@ -1,14 +1,12 @@
 import React, {FormEvent, useContext} from 'react';
 import classes from "../styles/AuthPage.module.css";
-import {Link, Navigate} from "react-router-dom";
+import {Link} from "react-router-dom";
 import {isValidPassword, isValidUsername} from "../util/Validator";
-import {useToken} from "../hooks/useToken";
-import {useAuth} from "../hooks/useAuth";
 import {AuthContext} from "../context/AuthContext";
 import {CsrfContext} from "../context/CsrfContext";
 
 const LoginPage = () => {
-    const token = useContext(CsrfContext)!.csrfToken;
+    const token = useContext(CsrfContext)!;
     let authContextI = useContext(AuthContext)!;
 
     function postLogin(e: FormEvent) {
@@ -27,12 +25,12 @@ const LoginPage = () => {
             }
             return;
         }
-
+        console.log(token.csrfToken);
         fetch("/login", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
-                'X-XSRF-TOKEN': token
+                'X-XSRF-TOKEN': token.csrfToken
             },
             body: JSON.stringify({
                 "username": username,
