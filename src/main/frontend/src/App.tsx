@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useState} from 'react';
+import React, {FC, useState} from 'react';
 import './styles/App.css';
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {AuthContext, AuthContextI} from "./context/AuthContext";
@@ -6,6 +6,7 @@ import {CsrfContext, CsrfContextI} from "./context/CsrfContext";
 import {AppRoutes} from "./routes/Routes";
 import {useAuth} from "./hooks/useAuth";
 import {useToken} from "./hooks/useToken";
+import Loader from "./components/loading/Loader";
 
 
 const App:FC = () => {
@@ -27,14 +28,8 @@ const App:FC = () => {
     useToken(CsrfContextImp);
     useAuth(AuthContextImp, setIsLoading);
 
-    if (isLoading) {
-        return (
-            <div></div>
-        )
-    }
-
-    console.log(AuthContextImp);
-
+    if (isLoading) return (<Loader></Loader>)
+    console.log("loaded");
     return (
         <CsrfContext.Provider value={CsrfContextImp}>
             <AuthContext.Provider value={AuthContextImp}>

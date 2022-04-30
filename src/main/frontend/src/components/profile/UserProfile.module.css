@@ -1,0 +1,38 @@
+.profile {
+}
+
+.profile__username {
+    font-size: 20px;
+    margin-bottom: 30px;
+}
+.profile__username span {
+    font-size: 26px;
+}
+
+.profile__data {
+    width: 700px;
+    background-color: #39434b;
+    border-radius: 20px;
+    display: flex;
+}
+
+.data {
+    display: flex;
+    padding: 20px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 150px;
+}
+
+.data__title {
+    width: 100%;
+    margin: 0 0 10px;
+    font-size: 18px;
+    text-align: center;
+}
+
+.data__data {
+    font-size: 24px;
+    margin: 0;
+}

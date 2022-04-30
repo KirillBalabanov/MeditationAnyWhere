@@ -11,16 +11,16 @@ public class UserProfileModel {
 
     private final String username;
 
-    public UserProfileModel(long minListened, long sessionsListened, long currentStreak, long longestStreak, String username) {
+    public UserProfileModel(String username, long minListened, long sessionsListened, long currentStreak, long longestStreak) {
+        this.username = username;
         this.minListened = minListened;
         this.sessionsListened = sessionsListened;
         this.currentStreak = currentStreak;
         this.longestStreak = longestStreak;
-        this.username = username;
     }
 
     public static UserProfileModel toModel(StatsEntity se, UserEntity ue) {
-        return new UserProfileModel(se.getMinListened(), se.getSessionsListened(), se.getCurrentStreak(), se.getLongestStreak(), ue.getUsername());
+        return new UserProfileModel(ue.getUsername(), se.getMinListened(), se.getSessionsListened(), se.getCurrentStreak(), se.getLongestStreak());
     }
 
     public long getMinListened() {

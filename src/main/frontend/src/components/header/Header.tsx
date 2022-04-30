@@ -1,23 +1,22 @@
 import React, {useContext} from 'react';
 import {Link} from "react-router-dom";
 import logo from "../../images/logo.svg";
-import classes from "./Header.module.css";
 import {AuthContext} from "../../context/AuthContext";
 
 const Header = () => {
 
-    const authenticated = useContext(AuthContext)?.auth;
+    const authContext = useContext(AuthContext);
     return (
-        <header className={classes.header}>
-            <Link to={"/main"} className={classes.logo}>
+        <header className="header">
+            <Link to={"/"} className="logo">
                 <img src={logo} alt="logo"/>
             </Link>
 
-            <div className={classes.header__box}>
-                {authenticated
+            <div className="header__box">
+                {authContext?.auth
                     ?
-                    <Link to={"/profile/"}>
-                        username
+                    <Link to={"/profile/" + authContext.username}>
+                        {authContext.username}
                     </Link>
                     :
                     <Link to={"/login"}>

@@ -26,9 +26,52 @@ a {
 .container {
     max-width: 1200px;
     margin: 0 auto;
+    padding: 0 70px;
 }
 
 input {
     border: none;
     padding: 5px 15px;
+}
+
+.error404 {
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    transform: translate(-50%, 0);
+    font-size: 48px;
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.error404__text {
+    margin-bottom: 50px;
+    width: 100%;
+    text-align: center;
+}
+
+.error404__image {
+    width: 300px;
+}
+
+.logo {
+    background: none;
+    padding: 0;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 80px;
+    background-color: black;
+    padding: 0 200px;
+}
+
+.header__box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
