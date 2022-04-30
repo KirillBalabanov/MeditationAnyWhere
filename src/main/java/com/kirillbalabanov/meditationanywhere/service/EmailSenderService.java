@@ -14,16 +14,20 @@ public class EmailSenderService {
     private final String serverIp;
     private final String email;
 
+    private final int serverPort;
+
     @Autowired
     public EmailSenderService(JavaMailSender javaMailSender, @Value("${server.address}") String serverIp,
-                              @Value("${spring.mail.username}") String email) {
+                              @Value("${spring.mail.username}") String email,
+                              @Value("${spring.devtools.remote.proxy.port}") int serverPort) {
         this.javaMailSender = javaMailSender;
         this.serverIp = serverIp;
         this.email = email;
+        this.serverPort = serverPort;
     }
 
     /**
-     * Send verification email with http://serverip/activate/uuid link.
+     * Send verification email with http://serverip:port/activate/uuid link.
      * @param userUsername username of registered user.
      * @param userEmail email of registered user.
      * @return true if email has been sent
@@ -33,7 +37,7 @@ public class EmailSenderService {
         StringBuilder builder = new StringBuilder();
         builder.append("Hello ").append(userUsername).append("!");
         builder.append("\nWelcome to MeditationAnyWhere.");
-        builder.append("\nPlease go to ").append(serverIp).append("/activate/").append(userUuid).append(" to verify your account.");
+        builder.append("\nPlease go to ").append(serverIp).append(":").append(serverPort).append("/verification/").append(userUuid).append(" to verify your account.");
         simpleMailMessage.setTo(userEmail);
         simpleMailMessage.setText(builder.toString());
         simpleMailMessage.setSubject("MeditationAnyWhere verification.");

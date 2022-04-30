@@ -72,4 +72,8 @@ public class UserService {
     public boolean verifyPassword(String password, UserEntity userEntity) {
         return passwordEncoder.matches(password, userEntity.getPassword());
     }
+
+    public boolean isVerified(UserEntity userEntity) {
+        return userEntity.isActivated();
+    }
 }

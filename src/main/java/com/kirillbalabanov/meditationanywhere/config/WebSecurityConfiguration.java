@@ -31,9 +31,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             .formLogin().disable()
             .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 .and()
-            .logout()
-            .permitAll()
-                .and()
+            .logout().disable()
            .httpBasic();
     }
 

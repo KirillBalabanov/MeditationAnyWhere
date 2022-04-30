@@ -4,13 +4,15 @@ import {Link, useNavigate} from "react-router-dom";
 import {isValidPassword, isValidUsername} from "../util/Validator";
 import {AuthContext} from "../context/AuthContext";
 import {CsrfContext} from "../context/CsrfContext";
-import {useAuthRedirect} from "../hooks/useAuthRedirect";
 
 const LoginPage = () => {
-    const token = useContext(CsrfContext)!;
+    const csrfContext = useContext(CsrfContext)!;
     let authContext = useContext(AuthContext)!;
 
-    useAuthRedirect(authContext.auth);
+    let navigateFunction = useNavigate();
+    useEffect(() => {
+        if(authContext.auth) navigateFunction("/");
+    }, [authContext.auth]);
 
     function postLogin(e: FormEvent) {
         e.preventDefault();
@@ -28,24 +30,24 @@ const LoginPage = () => {
             }
             return;
         }
-        console.log(token.csrfToken);
+
         fetch("/login", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
-                'X-XSRF-TOKEN': token.csrfToken
+                'X-XSRF-TOKEN': csrfContext.csrfToken
             },
             body: JSON.stringify({
                 "username": username,
                 "password": password
             })
         }).then((response) => response.json()).then((data) => {
-            console.log("{here");
             // if server send map "error" -> errorMessage, then show it into the error field
             if("error" in data) errorText.textContent = data["error"];
             else {
                 authContext.setAuth(true);
                 authContext.setUsername(data["username"]);
+                csrfContext.setToken(data["csrf"]);
             }
         });
     }

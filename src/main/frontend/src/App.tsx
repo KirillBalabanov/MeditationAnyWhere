@@ -25,6 +25,7 @@ const App:FC = () => {
         "csrfToken": token,
         setToken: setToken
     }
+
     useToken(CsrfContextImp);
     useAuth(AuthContextImp, setIsLoading);
 

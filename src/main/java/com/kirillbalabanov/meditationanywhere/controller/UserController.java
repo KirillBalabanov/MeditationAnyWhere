@@ -9,14 +9,18 @@ import com.kirillbalabanov.meditationanywhere.service.StatsService;
 import com.kirillbalabanov.meditationanywhere.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfToken;
+import org.springframework.security.web.csrf.DefaultCsrfToken;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -56,7 +60,8 @@ public class UserController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody HashMap<String, String> hashMap) {
+    public ResponseEntity<?> login(@RequestBody HashMap<String, String> hashMap,
+                                   HttpServletRequest request, HttpServletResponse response) {
         if(hashMap.size() != 2) return ResponseEntity.badRequest().body("Invalid request params");
         String username = hashMap.get("username");
         String password = hashMap.get("password");
@@ -77,17 +82,32 @@ public class UserController {
             return ResponseEntity.ok().body(hm);
         }
 
+        // check is account verified
+        if (!userService.isVerified(userEntity)) {
+            hm.put("error", "Account is not verified");
+            return ResponseEntity.ok().body(hm);
+        }
+        userEntity.setActivated(true);
+        userEntity.setActivationCode(null);
+
         hm.put("authenticated", true);
         hm.put("username", username);
+        // generate new csrf token
+        hm.put("csrf", generateAndSaveToken(request, response));
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(username,
                 password);
         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
         return ResponseEntity.ok().body(hm);
     }
+
     @PostMapping("/logout")
-    public ResponseEntity<?> logout() {
-        SecurityContextHolder.getContext().setAuthentication(null);
-        return ResponseEntity.ok().body(null);
+    public ResponseEntity<?> logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        new SecurityContextLogoutHandler().logout(httpServletRequest, httpServletResponse, authentication);
+
+        // generate new csrf token
+        String newToken = generateAndSaveToken(httpServletRequest, httpServletResponse);
+        return ResponseEntity.ok().body(newToken);
     }
 
     @GetMapping("/profile/{username}")
@@ -116,5 +136,13 @@ public class UserController {
         }
         hashMap.put("message", "Account is successfully activated!");
         return ResponseEntity.ok().body(hashMap);
+    }
+
+    private String generateAndSaveToken(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        CookieCsrfTokenRepository cookieCsrfTokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();
+        CsrfToken newToken = cookieCsrfTokenRepository.generateToken(httpServletRequest);
+        cookieCsrfTokenRepository.saveToken(newToken,
+                httpServletRequest, httpServletResponse);
+        return newToken.getToken();
     }
 }
