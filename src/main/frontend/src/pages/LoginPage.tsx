@@ -1,13 +1,16 @@
-import React, {FormEvent, useContext} from 'react';
+import React, {FormEvent, useContext, useEffect} from 'react';
 import classes from "../styles/AuthPage.module.css";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {isValidPassword, isValidUsername} from "../util/Validator";
 import {AuthContext} from "../context/AuthContext";
 import {CsrfContext} from "../context/CsrfContext";
+import {useAuthRedirect} from "../hooks/useAuthRedirect";
 
 const LoginPage = () => {
     const token = useContext(CsrfContext)!;
-    let authContextI = useContext(AuthContext)!;
+    let authContext = useContext(AuthContext)!;
+
+    useAuthRedirect(authContext.auth);
 
     function postLogin(e: FormEvent) {
         e.preventDefault();
@@ -41,8 +44,8 @@ const LoginPage = () => {
             // if server send map "error" -> errorMessage, then show it into the error field
             if("error" in data) errorText.textContent = data["error"];
             else {
-                authContextI.setAuth(true);
-                authContextI.setUsername(data["username"]);
+                authContext.setAuth(true);
+                authContext.setUsername(data["username"]);
             }
         });
     }

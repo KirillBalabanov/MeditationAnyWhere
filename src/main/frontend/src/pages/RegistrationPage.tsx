@@ -3,9 +3,14 @@ import classes from "../styles/AuthPage.module.css";
 import {Link} from "react-router-dom";
 import {isValidEmail, isValidPassword, isValidUsername} from "../util/Validator";
 import {CsrfContext} from "../context/CsrfContext";
+import {AuthContext} from "../context/AuthContext";
+import {useAuthRedirect} from "../hooks/useAuthRedirect";
 
 const RegistrationPage = () => {
     const token = useContext(CsrfContext)?.csrfToken;
+    const authContext = useContext(AuthContext);
+
+    useAuthRedirect(authContext!.auth);
 
     function postRegister(e: FormEvent) {
         e.preventDefault();

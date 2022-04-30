@@ -29,7 +29,7 @@ const App:FC = () => {
     useAuth(AuthContextImp, setIsLoading);
 
     if (isLoading) return (<Loader></Loader>)
-    console.log("loaded");
+
     return (
         <CsrfContext.Provider value={CsrfContextImp}>
             <AuthContext.Provider value={AuthContextImp}>
