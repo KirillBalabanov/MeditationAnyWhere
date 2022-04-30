@@ -1,6 +1,14 @@
 .main {
     margin-top: 50px;
     position: relative;
-    height: 171px;
+    height: 242px;
     width: 700px;
+}
+
+.logout {
+    background-color: black;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+
 }

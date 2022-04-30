@@ -84,6 +84,11 @@ public class UserController {
         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
         return ResponseEntity.ok().body(hm);
     }
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout() {
+        SecurityContextHolder.getContext().setAuthentication(null);
+        return ResponseEntity.ok().body(null);
+    }
 
     @GetMapping("/profile/{username}")
     public ResponseEntity<?> showUsersProfile(@PathVariable String username, Model model) {

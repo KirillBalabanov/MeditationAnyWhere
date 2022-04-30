@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {useParams} from "react-router-dom";
 import Header from "../components/header/Header";
 import {useFetching} from "../hooks/useFetching";
@@ -6,10 +6,13 @@ import Error from "./Error";
 import Loader from "../components/loading/Loader";
 import UserProfile from "../components/profile/UserProfile";
 import classes from "../styles/ProfilePage.module.css";
+import {AuthContext} from "../context/AuthContext";
+import {CsrfContext} from "../context/CsrfContext";
 
 const ProfilePage = () => {
-
+    let token = useContext(CsrfContext)?.csrfToken;
     const [isLoading, setIsLoading] = useState(true);
+    let authContext = useContext(AuthContext);
 
     let username = useParams()["username"];
     let profileModel = {
@@ -26,6 +29,18 @@ const ProfilePage = () => {
 
     if(!fetched) return (<Error errorMsg={errorMsg}/>);
 
+    function logout() {
+        authContext?.setAuth(false);
+        authContext?.setUsername("$anonymous");
+        fetch("/logout", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'X-XSRF-TOKEN': token!
+            }
+        })
+    }
+
     return (
         <div>
             <Header></Header>
@@ -36,7 +51,15 @@ const ProfilePage = () => {
                             ?
                             <Loader></Loader>
                             :
-                            <UserProfile profile={profile}></UserProfile>
+                            <div>
+                                <UserProfile profile={profile}></UserProfile>
+                                {
+                                    authContext?.username === username &&
+                                    <button className={classes.logout} onClick={logout}>
+                                        logout
+                                    </button>
+                                }
+                            </div>
                     }
                 </div>
             </div>
