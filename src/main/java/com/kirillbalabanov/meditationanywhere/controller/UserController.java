@@ -19,6 +19,7 @@ import org.springframework.security.web.csrf.DefaultCsrfToken;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.internet.AddressException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
@@ -131,7 +132,7 @@ public class UserController {
         try {
             userService.verify(activationCode);
         } catch (NoUserFoundException e) {
-            hashMap.put("message", "Invalid activation code");
+            hashMap.put("message", e.getMessage());
             return ResponseEntity.ok().body(hashMap);
         }
         hashMap.put("message", "Account is successfully activated!");

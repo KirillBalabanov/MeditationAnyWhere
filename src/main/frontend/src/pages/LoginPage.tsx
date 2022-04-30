@@ -1,14 +1,15 @@
-import React, {FormEvent, useContext, useEffect} from 'react';
+import React, {FormEvent, useContext, useEffect, useState} from 'react';
 import classes from "../styles/AuthPage.module.css";
 import {Link, useNavigate} from "react-router-dom";
 import {isValidPassword, isValidUsername} from "../util/Validator";
 import {AuthContext} from "../context/AuthContext";
 import {CsrfContext} from "../context/CsrfContext";
+import Loader from "../components/loading/Loader";
 
 const LoginPage = () => {
     const csrfContext = useContext(CsrfContext)!;
     let authContext = useContext(AuthContext)!;
-
+    const [isLoading, setIsLoading] = useState(false);
     let navigateFunction = useNavigate();
     useEffect(() => {
         if(authContext.auth) navigateFunction("/");
@@ -30,7 +31,7 @@ const LoginPage = () => {
             }
             return;
         }
-
+        setIsLoading(true);
         fetch("/login", {
             method: "POST",
             headers: {
@@ -49,6 +50,7 @@ const LoginPage = () => {
                 authContext.setUsername(data["username"]);
                 csrfContext.setToken(data["csrf"]);
             }
+            setIsLoading(false);
         });
     }
 
@@ -60,7 +62,15 @@ const LoginPage = () => {
                     <input type="text" className={classes.auth__input} placeholder="Input username"/>
                     <input type="password" className={classes.auth__input} placeholder="Input password"/>
                     <p className={classes.auth__error}></p>
-                    <button type="submit" className={classes.auth__btn}>Log in</button>
+                    <div className={classes.auth__btnOuter}>
+                        {
+                            isLoading
+                                ?
+                                <Loader/>
+                                :
+                                <button type="submit" className={classes.auth__btn}>Log in</button>
+                        }
+                    </div>
                     <Link to={"/registration"} className={classes.auth__link}>register</Link>
                 </form>
             </div>

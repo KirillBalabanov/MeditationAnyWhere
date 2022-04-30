@@ -1,15 +1,16 @@
-import React, {FormEvent, useContext} from 'react';
+import React, {FormEvent, useContext, useState} from 'react';
 import classes from "../styles/AuthPage.module.css";
 import {Link} from "react-router-dom";
 import {isValidEmail, isValidPassword, isValidUsername} from "../util/Validator";
 import {CsrfContext} from "../context/CsrfContext";
 import {AuthContext} from "../context/AuthContext";
 import {useAuthRedirect} from "../hooks/useAuthRedirect";
+import Loader from "../components/loading/Loader";
 
 const RegistrationPage = () => {
     const token = useContext(CsrfContext)?.csrfToken;
     const authContext = useContext(AuthContext);
-
+    const[isLoading, setIsLoading] = useState(false);
     useAuthRedirect(authContext!.auth);
 
     function postRegister(e: FormEvent) {
@@ -30,7 +31,7 @@ const RegistrationPage = () => {
             }
             return;
         }
-
+        setIsLoading(true);
         fetch("/registration", {
             method: "POST",
             headers: {
@@ -46,7 +47,14 @@ const RegistrationPage = () => {
             // if server send map "error" -> errorMessage, then show it into the error field
             if("error" in data) errorText.textContent = data["error"];
             // else notify user that registration email was sent
-            else errorText.textContent = "Verification email has been sent.";
+            else {
+                errorText.textContent = "Verification email has been sent.";
+                // clear inputs
+                (children[1] as HTMLInputElement).value = "";
+                (children[2] as HTMLInputElement).value = "";
+                (children[3] as HTMLInputElement).value = "";
+            }
+            setIsLoading(false);
         });
     }
 
@@ -59,7 +67,15 @@ const RegistrationPage = () => {
                     <input type="text" className={classes.auth__input} placeholder="Input email"/>
                     <input type="password" className={classes.auth__input} placeholder="Input password"/>
                     <p className={classes.auth__error}></p>
-                    <button type="submit" className={classes.auth__btn}>Register</button>
+                    <div className={classes.auth__btnOuter}>
+                        {
+                            isLoading
+                                ?
+                                <Loader/>
+                                :
+                                <button type="submit" className={classes.auth__btn}>Register</button>
+                        }
+                    </div>
                     <Link to={"/login"} className={classes.auth__link}>log in</Link>
                 </form>
             </div>

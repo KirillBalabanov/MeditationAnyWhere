@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.mail.internet.AddressException;
 import java.util.Optional;
 
 @Service
@@ -62,7 +63,7 @@ public class UserService {
      */
     public void verify(String activationCode) throws NoUserFoundException{
         Optional<UserEntity> optional = userRepository.findByActivationCode(activationCode);
-        if(optional.isEmpty()) throw new NoUserFoundException("No user with such activation code.");
+        if(optional.isEmpty()) throw new NoUserFoundException("Invalid activation code.");
         UserEntity userEntity = optional.get();
         userEntity.setActivated(true);
         userEntity.setActivationCode(null);

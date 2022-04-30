@@ -15,12 +15,19 @@
 
 .auth__input {
     width: 100%;
-    margin: 10px 0;
+    margin: 13px 0;
     height: 20px;
 }
 
 .auth__btn {
-    margin-top: 10px;
+
+}
+
+.auth__btnOuter {
+    position: relative;
+    margin-top: 20px;
+    width: 77px;
+    height: 37px;
 }
 
 .auth__title {
@@ -39,7 +46,7 @@
     text-align: center;
     color: red;
     bottom: 40px;
-    margin: 0;
     padding: 0;
     font-size: 18px;
+    margin: 10px 0 0;
 }

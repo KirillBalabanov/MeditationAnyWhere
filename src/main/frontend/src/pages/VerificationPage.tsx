@@ -8,6 +8,7 @@ const VerificationPage = () => {
     let activationCode: string = useParams()["activationCode"]!;
     const [isLoading, setIsLoading] = useState(true);
     const [data, setData] = useState({message: ""});
+
     useFetching("/verification/" + activationCode, setData, setIsLoading);
 
     return (
