@@ -6,9 +6,16 @@
 }
 
 .logout {
-    background-color: black;
+
     color: white;
     font-size: 18px;
     cursor: pointer;
-
+    width: 100px;
+    transition: all 0.7s ease;
+    border: 1px transparent;
+    padding: 0;
+    height: 50px;
+}
+.logout:hover {
+    width: 140px;
 }

@@ -5,6 +5,7 @@ import {isValidPassword, isValidUsername} from "../util/Validator";
 import {AuthContext} from "../context/AuthContext";
 import {CsrfContext} from "../context/CsrfContext";
 import Loader from "../components/loading/Loader";
+import {useAuthRedirect} from "../hooks/useAuthRedirect";
 
 const LoginPage = () => {
     const csrfContext = useContext(CsrfContext)!;
@@ -17,10 +18,16 @@ const LoginPage = () => {
 
     const [errorMsg, setErrorMsg] = useState("");
 
+    useAuthRedirect(authContext.auth);
+
     // navigate on successful log in
     let navigateFunction = useNavigate();
     useEffect(() => {
-        if(redirect) navigateFunction("/");
+        if(redirect) {
+            setTimeout(() => {
+                navigateFunction("/");
+            }, 1200);
+        }
     }, [redirect]);
 
     function postLogin(e: FormEvent) {
@@ -59,6 +66,7 @@ const LoginPage = () => {
                 authContext.setAuth(true);
                 authContext.setUsername(data["username"]);
                 csrfContext.setToken(data["csrf"]);
+                setRedirect(true);
             }
             // animation
             setTimeout(() => {
@@ -71,9 +79,6 @@ const LoginPage = () => {
                 }
                 setTimeout(() => {
                     setAuthClasses(authClasses.filter((c) => c !== classes.failed || c !== classes.succeed));
-                    setTimeout(() => {
-                        setRedirect(true);
-                    }, 500);
                 }, 500); // timeout for animation
             }, 300); // set timeout in case fetch request is very fast.
 

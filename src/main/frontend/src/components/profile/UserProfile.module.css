@@ -11,7 +11,7 @@
 
 .profile__data {
     width: 700px;
-    background-color: #39434b;
+    background-color: #2196f3;
     border-radius: 20px;
     display: flex;
     margin-bottom: 30px;
@@ -19,7 +19,7 @@
 
 .data {
     display: flex;
-    padding: 20px;
+    padding: 15px;
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
