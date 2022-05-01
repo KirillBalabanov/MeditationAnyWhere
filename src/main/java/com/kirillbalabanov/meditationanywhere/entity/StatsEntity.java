@@ -18,8 +18,8 @@ public class StatsEntity {
     @Column(nullable = true)
     private Date lastSessionsDate;
 
-    @OneToOne
-    @JoinColumn(name = "user_id")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", nullable = false)
     private UserEntity userEntity;
 
     public StatsEntity() {
@@ -145,7 +145,7 @@ public class StatsEntity {
         if(this.getLongestStreak() != se.getLongestStreak()) return false;
         if(this.getCurrentStreak() != se.getCurrentStreak()) return false;
         if(this.getId() != se.getId()) return false;
-        // sql.Date not override equals.
+        // sql.Date doesn't override equals.
         if(!this.lastSessionsDate.toString().equals(se.getLastSessionsDate().toString())) return false;
 
         return true;

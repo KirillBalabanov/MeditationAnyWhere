@@ -5,10 +5,10 @@ import com.kirillbalabanov.meditationanywhere.entity.UserEntity;
 import com.kirillbalabanov.meditationanywhere.exception.user.LoginException;
 import com.kirillbalabanov.meditationanywhere.exception.user.NoUserFoundException;
 import com.kirillbalabanov.meditationanywhere.exception.user.RegistrationException;
+import com.kirillbalabanov.meditationanywhere.repository.StatsRepository;
 import com.kirillbalabanov.meditationanywhere.repository.UserRepository;
 import com.kirillbalabanov.meditationanywhere.util.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +43,7 @@ public class UserService {
         userEntity.fillRegisteredUserFields(passwordEncoder.encode(userEntity.getPassword()), "ROLE_USER", uuid, StatsEntity.initStatsEntity());
         emailSenderService.sendVerificationEmailUuidTo(uuid, userEntity.getUsername(), userEntity.getEmail());
 
+        userEntity.getStatsEntity().setUserEntity(userEntity);
         return userRepository.save(userEntity);
     }
 
