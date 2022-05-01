@@ -7,6 +7,7 @@ import {AppRoutes} from "./routes/Routes";
 import {useAuth} from "./hooks/useAuth";
 import {useToken} from "./hooks/useToken";
 import Loader from "./components/loading/Loader";
+import {isValidUsername} from "./util/Validator";
 
 
 const App:FC = () => {

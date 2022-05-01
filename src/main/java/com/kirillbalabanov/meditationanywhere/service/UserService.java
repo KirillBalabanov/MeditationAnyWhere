@@ -4,12 +4,11 @@ import com.kirillbalabanov.meditationanywhere.entity.UserEntity;
 import com.kirillbalabanov.meditationanywhere.exception.user.NoUserFoundException;
 import com.kirillbalabanov.meditationanywhere.exception.user.RegistrationException;
 import com.kirillbalabanov.meditationanywhere.repository.UserRepository;
-import com.kirillbalabanov.meditationanywhere.validator.util.UserValidator;
+import com.kirillbalabanov.meditationanywhere.util.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.mail.internet.AddressException;
 import java.util.Optional;
 
 @Service

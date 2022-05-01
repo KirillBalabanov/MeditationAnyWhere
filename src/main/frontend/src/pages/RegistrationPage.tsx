@@ -54,7 +54,10 @@ const RegistrationPage = () => {
                 (children[2] as HTMLInputElement).value = "";
                 (children[3] as HTMLInputElement).value = "";
             }
-            setIsLoading(false);
+            // for animation
+            setTimeout(() => {
+                setIsLoading(false);
+            }, 300);
         });
     }
 
