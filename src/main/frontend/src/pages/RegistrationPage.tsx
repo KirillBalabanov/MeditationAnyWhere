@@ -62,7 +62,7 @@ const RegistrationPage = () => {
         <div>
             <div className={classes.auth__outer}>
                 <form className={classes.auth} onSubmit={postRegister}>
-                    <h3 className={classes.auth__title}>Join</h3>
+                    <h2 className={classes.auth__title}>Create Account</h2>
                     <input type="text" className={classes.auth__input} placeholder="Input username"/>
                     <input type="text" className={classes.auth__input} placeholder="Input email"/>
                     <input type="password" className={classes.auth__input} placeholder="Input password"/>

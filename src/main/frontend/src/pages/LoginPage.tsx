@@ -58,7 +58,7 @@ const LoginPage = () => {
         <div>
             <div className={classes.auth__outer}>
                 <form className={classes.auth} onSubmit={postLogin}>
-                    <h3 className={classes.auth__title}>Log in</h3>
+                    <h2 className={classes.auth__title}>Login</h2>
                     <input type="text" className={classes.auth__input} placeholder="Input username"/>
                     <input type="password" className={classes.auth__input} placeholder="Input password"/>
                     <p className={classes.auth__error}></p>
@@ -68,7 +68,7 @@ const LoginPage = () => {
                                 ?
                                 <Loader/>
                                 :
-                                <button type="submit" className={classes.auth__btn}>Log in</button>
+                                <button type="submit" className={classes.auth__btn}>Login</button>
                         }
                     </div>
                     <Link to={"/registration"} className={classes.auth__link}>register</Link>

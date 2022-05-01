@@ -1,7 +1,7 @@
 .auth {
     display: flex;
     justify-content: center;
-    width: 400px;
+    width: 500px;
     flex-wrap: wrap;
     position: relative;
 }
@@ -14,9 +14,11 @@
 }
 
 .auth__input {
-    width: 100%;
-    margin: 13px 0;
-    height: 20px;
+
+}
+
+.auth__input:focus {
+
 }
 
 .auth__btn {
@@ -26,8 +28,8 @@
 .auth__btnOuter {
     position: relative;
     margin-top: 20px;
-    width: 77px;
-    height: 37px;
+    width: 114px;
+    height: 53px;
 }
 
 .auth__title {
@@ -36,8 +38,8 @@
 
 .auth__link {
     position: absolute;
-    right: 0;
-    bottom: 0;
+    bottom: 10px;
+    right: 10px;
     font-size: 18px;
 }
 
