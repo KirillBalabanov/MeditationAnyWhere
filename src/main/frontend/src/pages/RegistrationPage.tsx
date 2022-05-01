@@ -61,7 +61,7 @@ const RegistrationPage = () => {
     return (
         <div>
             <div className={classes.auth__outer}>
-                <form className={classes.auth} onSubmit={postRegister}>
+                <form className={isLoading ? classes.auth + " " + classes.loading : classes.auth} onSubmit={postRegister}>
                     <h2 className={classes.auth__title}>Create Account</h2>
                     <input type="text" className={classes.auth__input} placeholder="Input username"/>
                     <input type="text" className={classes.auth__input} placeholder="Input email"/>
@@ -70,11 +70,10 @@ const RegistrationPage = () => {
                     <div className={classes.auth__btnOuter}>
                         {
                             isLoading
-                                ?
+                                &&
                                 <Loader/>
-                                :
-                                <button type="submit" className={classes.auth__btn}>Register</button>
                         }
+                        <button type="submit" className={classes.auth__btn}>Register</button>
                     </div>
                     <Link to={"/login"} className={classes.auth__link}>log in</Link>
                 </form>

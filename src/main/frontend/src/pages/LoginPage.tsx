@@ -44,33 +44,35 @@ const LoginPage = () => {
             })
         }).then((response) => response.json()).then((data) => {
             // if server send map "error" -> errorMessage, then show it into the error field
-            if("error" in data) errorText.textContent = data["error"];
+            if("error" in data) {
+                errorText.textContent = data["error"];
+            }
             else {
                 authContext.setAuth(true);
                 authContext.setUsername(data["username"]);
                 csrfContext.setToken(data["csrf"]);
             }
-            setIsLoading(false);
+            // for animation
+            setTimeout(() => {
+                setIsLoading(false);
+            }, 300);
         });
     }
 
     return (
         <div>
-            <div className={classes.auth__outer}>
-                <form className={classes.auth} onSubmit={postLogin}>
-                    <h2 className={classes.auth__title}>Login</h2>
+            <div className={classes.auth__outer} >
+                <form className={isLoading ? classes.auth + " " + classes.loading : classes.auth} onSubmit={postLogin}>
+                    <h2 className={classes.auth__title}>Log in</h2>
                     <input type="text" className={classes.auth__input} placeholder="Input username"/>
                     <input type="password" className={classes.auth__input} placeholder="Input password"/>
                     <p className={classes.auth__error}></p>
-                    <div className={classes.auth__btnOuter}>
                         {
                             isLoading
-                                ?
+                                &&
                                 <Loader/>
-                                :
-                                <button type="submit" className={classes.auth__btn}>Login</button>
                         }
-                    </div>
+                    <button type="submit" className={classes.auth__btn}>Log in</button>
                     <Link to={"/registration"} className={classes.auth__link}>register</Link>
                 </form>
             </div>

@@ -1,9 +1,17 @@
 .auth {
     display: flex;
     justify-content: center;
-    width: 500px;
+    width: 400px;
     flex-wrap: wrap;
     position: relative;
+    background-color: white;
+    color: black;
+    padding: 0 0 55px;
+}
+
+.auth.loading button {
+    height: 100%;
+    color: #2196f3;
 }
 
 .auth__outer {
@@ -14,41 +22,36 @@
 }
 
 .auth__input {
-
+    margin: 10px;
 }
 
-.auth__input:focus {
-
-}
 
 .auth__btn {
-
-}
-
-.auth__btnOuter {
-    position: relative;
-    margin-top: 20px;
-    width: 114px;
-    height: 53px;
+    position: absolute;
+    width: 100%;
+    height: 55px;
+    transition: height 0.1s cubic-bezier(0.5, 0.4, 0.2, -0.1);
+    bottom: 0;
+    left: 0;
 }
 
 .auth__title {
-    margin-top: 0;
+    margin: 20px 0 40px;
 }
 
 .auth__link {
     position: absolute;
-    bottom: 10px;
-    right: 10px;
+    bottom: -50px;
     font-size: 18px;
 }
 
 .auth__error {
+    height: 20px;
+    font-size: 16px;
     width: 100%;
     text-align: center;
     color: red;
     bottom: 40px;
-    padding: 0;
-    font-size: 18px;
-    margin: 10px 0 0;
+    padding: 0 15px;
+    margin: 10px 0 15px;
 }
