@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import javax.persistence.*;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 @Entity
@@ -49,6 +50,13 @@ public class UserEntity {
         this.activationCode = activationCode;
     }
 
+    public void fillRegisteredUserFields(String encodedPassword, String role, String activationCode, StatsEntity statsEntity) {
+        this.password = encodedPassword;
+        this.role = role;
+        this.activationCode = activationCode;
+        this.statsEntity = statsEntity;
+        this.isActivated = false;
+    }
     public String getActivationCode() {
         return activationCode;
     }

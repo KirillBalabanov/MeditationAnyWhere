@@ -1,15 +1,19 @@
 package com.kirillbalabanov.meditationanywhere.service;
 
+import com.kirillbalabanov.meditationanywhere.entity.StatsEntity;
 import com.kirillbalabanov.meditationanywhere.entity.UserEntity;
+import com.kirillbalabanov.meditationanywhere.exception.user.LoginException;
 import com.kirillbalabanov.meditationanywhere.exception.user.NoUserFoundException;
 import com.kirillbalabanov.meditationanywhere.exception.user.RegistrationException;
 import com.kirillbalabanov.meditationanywhere.repository.UserRepository;
 import com.kirillbalabanov.meditationanywhere.util.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserService {
@@ -26,19 +30,35 @@ public class UserService {
     /**
      * Registers current {@link UserEntity} in database.
      * Encrypts password with provided {@link PasswordEncoder}.
-     * @param userEntity encapsulates raw password!
      * @return registered UserEntity.
      * @throws RegistrationException if username or email is taken.
      */
 
     public UserEntity register(UserEntity userEntity) throws RegistrationException {
-        // validate UserEntity.
-        UserValidator.isValidUsername(userEntity.getUsername());
-        UserValidator.isValidPassword(userEntity.getPassword());
+        validateInput(userEntity.getUsername(), userEntity.getPassword());
         if(userRepository.findByUsername(userEntity.getUsername()).isPresent()) throw new RegistrationException("Username is taken.");
         if(userRepository.findByEmail(userEntity.getEmail()).isPresent()) throw new RegistrationException("Email is already registered.");
-        userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
+
+        String uuid = UUID.randomUUID().toString();
+        userEntity.fillRegisteredUserFields(passwordEncoder.encode(userEntity.getPassword()), "ROLE_USER", uuid, StatsEntity.initStatsEntity());
+        emailSenderService.sendVerificationEmailUuidTo(uuid, userEntity.getUsername(), userEntity.getEmail());
+
         return userRepository.save(userEntity);
+    }
+
+    /**
+     * Defines if user is able to log in. Throws exception if not.
+     * @param username username
+     * @param rawPassword input password
+     * @throws NoUserFoundException - if there is no user in db.
+     * @throws LoginException - if password doesn't match or account is not verified.
+     */
+    public void isAbleToLogIn(String username, String rawPassword) throws NoUserFoundException, LoginException {
+        Optional<UserEntity> optional = userRepository.findByUsername(username);
+        if(optional.isEmpty()) throw new NoUserFoundException("User not found.");
+        UserEntity userEntity = optional.get();
+        if (!isValidPassword(rawPassword, userEntity.getPassword())) throw new LoginException("Invalid password");
+        if (!userEntity.isActivated()) throw new LoginException("Account is not verified");
     }
 
     /**
@@ -69,11 +89,17 @@ public class UserService {
         userRepository.save(userEntity);
     }
 
-    public boolean verifyPassword(String password, UserEntity userEntity) {
-        return passwordEncoder.matches(password, userEntity.getPassword());
+    private boolean isValidPassword(String inputPassword, String userPassword) {
+        return passwordEncoder.matches(inputPassword, userPassword);
+    }
+    private void validateInput(String username, String password) throws RegistrationException {
+        UserValidator.isValidUsername(username);
+        UserValidator.isValidPassword(password);
     }
 
-    public boolean isVerified(UserEntity userEntity) {
-        return userEntity.isActivated();
+    private void validateInput(String username, String email, String password) throws RegistrationException {
+        UserValidator.isValidUsername(username);
+        UserValidator.isValidEmail(email);
+        UserValidator.isValidPassword(password);
     }
 }

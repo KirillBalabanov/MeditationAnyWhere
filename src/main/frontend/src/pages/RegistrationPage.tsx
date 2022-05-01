@@ -10,7 +10,14 @@ import Loader from "../components/loading/Loader";
 const RegistrationPage = () => {
     const token = useContext(CsrfContext)?.csrfToken;
     const authContext = useContext(AuthContext);
-    const[isLoading, setIsLoading] = useState(false);
+
+    // animation states
+    const [isLoading, setIsLoading] = useState(false);
+    const [authClasses, setAuthClasses] = useState([classes.auth]);
+
+    const [errorMsg, setErrorMsg] = useState("");
+
+    // redirect in case user is logged in and trying to reach this page
     useAuthRedirect(authContext!.auth);
 
     function postRegister(e: FormEvent) {
@@ -19,18 +26,18 @@ const RegistrationPage = () => {
         let username = (children[1] as HTMLInputElement).value;
         let email = (children[2] as HTMLInputElement).value;
         let password = (children[3] as HTMLInputElement).value;
-        let errorText = children[4] as HTMLParagraphElement;
-        errorText.textContent = "";
         try {
             isValidUsername(username);
             isValidEmail(email)
             isValidPassword(password);
+            setErrorMsg("");
         } catch (e) {
             if(e instanceof Error){
-                errorText.textContent = e.message;
+                setErrorMsg(e.message);
             }
             return;
         }
+        setAuthClasses([...authClasses, classes.loading]);
         setIsLoading(true);
         fetch("/registration", {
             method: "POST",
@@ -44,37 +51,72 @@ const RegistrationPage = () => {
                 "password": password
             })
         }).then((response) => response.json()).then((data) => {
-            // if server send map "error" -> errorMessage, then show it into the error field
-            if("error" in data) errorText.textContent = data["error"];
-            // else notify user that registration email was sent
+            let failed:boolean = false;
+            if("error" in data) {
+                setErrorMsg(data["error"]);
+                failed = true;
+            }
             else {
-                errorText.textContent = "Verification email has been sent.";
+                setErrorMsg("Verification email has been sent.");
                 // clear inputs
                 (children[1] as HTMLInputElement).value = "";
                 (children[2] as HTMLInputElement).value = "";
                 (children[3] as HTMLInputElement).value = "";
             }
-            // for animation
+            // animation
             setTimeout(() => {
+                setAuthClasses(authClasses.filter((c) => c != classes.loading));
                 setIsLoading(false);
-            }, 300);
+                if (failed) {
+                    setAuthClasses([...authClasses, classes.failed]);
+                } else {
+                    setAuthClasses([...authClasses, classes.succeed]);
+                }
+                setTimeout(() => {
+                    setAuthClasses(authClasses.filter((c) => c != classes.failed || c != classes.succeed));
+                }, 500); // timeout for animation
+            }, 300); // set timeout in case fetch request is very fast.
         });
     }
 
     return (
         <div>
             <div className={classes.auth__outer}>
-                <form className={isLoading ? classes.auth + " " + classes.loading : classes.auth} onSubmit={postRegister}>
+                <form className={authClasses.join(" ").trim()} onSubmit={postRegister}>
                     <h2 className={classes.auth__title}>Create Account</h2>
-                    <input type="text" className={classes.auth__input} placeholder="Input username"/>
-                    <input type="text" className={classes.auth__input} placeholder="Input email"/>
-                    <input type="password" className={classes.auth__input} placeholder="Input password"/>
-                    <p className={classes.auth__error}></p>
+                    <input type="text" className={classes.auth__input} placeholder="Input username"
+                           onInput={(e) => { // validation on input
+                                try {
+                                    isValidUsername((e.target as HTMLInputElement).value);
+                                    setErrorMsg("");
+                                } catch (e) {
+                                    if (e instanceof Error) setErrorMsg(e.message);
+                                }
+                    }}/>
+                    <input type="email" className={classes.auth__input} placeholder="Input email"
+                           onInput={(e) => { // validation on input
+                                try {
+                                    isValidEmail((e.target as HTMLInputElement).value);
+                                    setErrorMsg("");
+                                } catch (e) {
+                                    if (e instanceof Error) setErrorMsg(e.message);
+                                }
+                    }}/>
+                    <input type="password" className={classes.auth__input} placeholder="Input password"
+                           onInput={(e) => { // validation on input
+                                try {
+                                    isValidPassword((e.target as HTMLInputElement).value);
+                                    setErrorMsg("");
+                                } catch (e) {
+                                    if (e instanceof Error) setErrorMsg(e.message);
+                                }
+                    }}/>
+                    <p className={classes.auth__error}>{errorMsg}</p>
                     <div className={classes.auth__btnOuter}>
                         {
                             isLoading
-                                &&
-                                <Loader/>
+                            &&
+                            <Loader/>
                         }
                         <button type="submit" className={classes.auth__btn}>Register</button>
                     </div>

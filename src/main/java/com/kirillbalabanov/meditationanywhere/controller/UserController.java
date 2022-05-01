@@ -2,6 +2,7 @@ package com.kirillbalabanov.meditationanywhere.controller;
 
 import com.kirillbalabanov.meditationanywhere.entity.StatsEntity;
 import com.kirillbalabanov.meditationanywhere.entity.UserEntity;
+import com.kirillbalabanov.meditationanywhere.exception.user.LoginException;
 import com.kirillbalabanov.meditationanywhere.exception.user.NoUserFoundException;
 import com.kirillbalabanov.meditationanywhere.model.UserModel;
 import com.kirillbalabanov.meditationanywhere.model.UserProfileModel;
@@ -28,37 +29,23 @@ import java.util.UUID;
 @RestController
 public class UserController {
     private final UserService userService;
-    private final StatsService statsService;
 
     @Autowired
-    public UserController(UserService userService, StatsService statsService) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.statsService = statsService;
     }
 
     @PostMapping("/registration")
-    public ResponseEntity<?> addUser(@RequestBody UserEntity userEntity) {
-        String uuid = UUID.randomUUID().toString();
-        userEntity.setActivated(false);
-        userEntity.setActivationCode(uuid);
-        userEntity.setRole("USER_ROLE");
-        long userId;
+    public ResponseEntity<?> registration(@RequestBody UserEntity userEntity) {
         try {
-            userId = userService.register(userEntity).getId();
+            userEntity = userService.register(userEntity);
         } catch (Exception e) {
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.put("error", e.getMessage());
             return ResponseEntity.ok().body(hashMap);
         }
-        // init stats with user.
-        statsService.initializeWithUser(StatsEntity.initStatsEntity(), userId);
-
-        // send verification email
-        userService.sendVerificationEmailTo(uuid, userEntity.getUsername(), userEntity.getEmail());
-
         return ResponseEntity.ok().body(UserModel.toModel(userEntity));
     }
-
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody HashMap<String, String> hashMap,
@@ -68,33 +55,19 @@ public class UserController {
         String password = hashMap.get("password");
         HashMap<Object, Object> hm = new HashMap<>();
 
-        // finding user in db
-        UserEntity userEntity;
         try {
-            userEntity = userService.findByUsername(username);
-        } catch (NoUserFoundException e) {
+            if(username == null || password == null) throw new LoginException("Invalid input.");
+            userService.isAbleToLogIn(username, password);
+        } catch (Exception e) {
             hm.put("error", e.getMessage());
             return ResponseEntity.ok().body(hm);
         }
-
-        // verify password
-        if (!userService.verifyPassword(password, userEntity)) {
-            hm.put("error", "Incorrect password");
-            return ResponseEntity.ok().body(hm);
-        }
-
-        // check is account verified
-        if (!userService.isVerified(userEntity)) {
-            hm.put("error", "Account is not verified");
-            return ResponseEntity.ok().body(hm);
-        }
-        userEntity.setActivated(true);
-        userEntity.setActivationCode(null);
 
         hm.put("authenticated", true);
         hm.put("username", username);
         // generate new csrf token
         hm.put("csrf", generateAndSaveToken(request, response));
+        // set auth.
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(username,
                 password);
         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);

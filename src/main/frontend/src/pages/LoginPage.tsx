@@ -9,7 +9,14 @@ import Loader from "../components/loading/Loader";
 const LoginPage = () => {
     const csrfContext = useContext(CsrfContext)!;
     let authContext = useContext(AuthContext)!;
+
+    // animation states
     const [isLoading, setIsLoading] = useState(false);
+    const [authClasses, setAuthClasses] = useState([classes.auth]);
+
+    const [errorMsg, setErrorMsg] = useState("");
+
+    // navigate on successful log in
     let navigateFunction = useNavigate();
     useEffect(() => {
         if(authContext.auth) navigateFunction("/");
@@ -21,20 +28,19 @@ const LoginPage = () => {
         let username = (children[1] as HTMLInputElement).value;
         let password = (children[2] as HTMLInputElement).value;
         let errorText = children[3] as HTMLParagraphElement;
-        errorText.textContent = "";
         try {
             isValidUsername(username);
             isValidPassword(password);
+            errorText.textContent = "";
         } catch (e) {
             if(e instanceof Error){
                 errorText.textContent = e.message;
             }
             return;
         }
+        setAuthClasses([...authClasses, classes.loading]);
         setIsLoading(true);
-        fetch("/login", {
-            method: "POST",
-            headers: {
+        fetch("/login", { method: "POST", headers: {
                 'Content-Type': 'application/json',
                 'X-XSRF-TOKEN': csrfContext.csrfToken
             },
@@ -43,35 +49,64 @@ const LoginPage = () => {
                 "password": password
             })
         }).then((response) => response.json()).then((data) => {
-            // if server send map "error" -> errorMessage, then show it into the error field
+            let failed: boolean = false;
             if("error" in data) {
                 errorText.textContent = data["error"];
+                failed = true;
             }
             else {
                 authContext.setAuth(true);
                 authContext.setUsername(data["username"]);
                 csrfContext.setToken(data["csrf"]);
             }
-            // for animation
+            // animation
             setTimeout(() => {
+                setAuthClasses(authClasses.filter((c) => c != classes.loading));
                 setIsLoading(false);
-            }, 300);
+                if (failed) {
+                    setAuthClasses([...authClasses, classes.failed]);
+                } else {
+                    setAuthClasses([...authClasses, classes.succeed]);
+                }
+                setTimeout(() => {
+                    setAuthClasses(authClasses.filter((c) => c != classes.failed || c != classes.succeed));
+                }, 500); // timeout for animation
+            }, 300); // set timeout in case fetch request is very fast.
+
         });
     }
 
     return (
         <div>
-            <div className={classes.auth__outer} >
-                <form className={isLoading ? classes.auth + " " + classes.loading : classes.auth} onSubmit={postLogin}>
+            <div className={classes.auth__outer}>
+                <form className={authClasses.join(" ").trim()} onSubmit={postLogin}>
                     <h2 className={classes.auth__title}>Log in</h2>
-                    <input type="text" className={classes.auth__input} placeholder="Input username"/>
-                    <input type="password" className={classes.auth__input} placeholder="Input password"/>
-                    <p className={classes.auth__error}></p>
-                        {
-                            isLoading
-                                &&
-                                <Loader/>
-                        }
+
+                    <input type="text" className={classes.auth__input} placeholder="Input username"
+                           onInput={(e) => { // validation on input
+                               try{
+                                   isValidUsername((e.target as HTMLInputElement).value);
+                                   setErrorMsg("");
+                               } catch (e) {
+                                   if(e instanceof Error) setErrorMsg(e.message);
+                               }
+                           }}/>
+
+                    <input type="password" className={classes.auth__input} placeholder="Input password"
+                           onInput={(e) => { // validation on input
+                               try{
+                                   isValidPassword((e.target as HTMLInputElement).value);
+                                   setErrorMsg("");
+                               } catch (e) {
+                                   if(e instanceof Error) setErrorMsg(e.message);
+                               }
+                           }}/>
+                    <p className={classes.auth__error}>{errorMsg}</p>
+                    {
+                        isLoading
+                        &&
+                        <Loader/>
+                    }
                     <button type="submit" className={classes.auth__btn}>Log in</button>
                     <Link to={"/registration"} className={classes.auth__link}>register</Link>
                 </form>

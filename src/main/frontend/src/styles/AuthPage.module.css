@@ -7,11 +7,24 @@
     background-color: white;
     color: black;
     padding: 0 0 55px;
+    box-shadow: black 0 0 5px 10px;
+    transition: all .5s cubic-bezier(0, 0.2, 0.7, 1);
 }
 
 .auth.loading button {
     height: 100%;
     color: #2196f3;
+}
+.auth.loading {
+    box-shadow: none;
+}
+
+.auth.succeed {
+    box-shadow: green 0 0 5px 10px;
+}
+
+.auth.failed {
+    box-shadow: red 0 0 5px 10px;
 }
 
 .auth__outer {
@@ -46,8 +59,8 @@
 }
 
 .auth__error {
-    height: 20px;
-    font-size: 16px;
+    min-height: 20px;
+    font-size: 14px;
     width: 100%;
     text-align: center;
     color: red;

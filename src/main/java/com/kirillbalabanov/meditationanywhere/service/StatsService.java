@@ -24,17 +24,6 @@ public class StatsService {
     }
 
     /**
-     * Initialize current {@link StatsEntity} with user. Uses in registration user controller.
-     * @param statsEntity statsEntity.
-     * @param userId id of user, to which this StatsEntity would be linked to.
-     */
-    public void initializeWithUser(StatsEntity statsEntity, Long userId) {
-        UserEntity userEntity = userRepository.findById(userId).get();
-        statsEntity.setUserEntity(userEntity);
-        statsRepository.save(statsEntity);
-    }
-
-    /**
      * Updates current user's {@link StatsEntity}.
      * <p>Updates last session_date, and streaks.</p>
      * <p>Adds minutesListened to current min_listened in db</p>
