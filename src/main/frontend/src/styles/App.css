@@ -21,8 +21,13 @@ button {
 }
 
 a {
-    text-decoration: none;
-    color: #c4e5ff;
+    text-decoration: transparent;
+    color: #2196f3;
+    transition: color .3s ease;
+}
+
+a:hover {
+    color: white;
 }
 
 .container {
@@ -58,6 +63,14 @@ input:focus {
     justify-content: center;
     flex-wrap: wrap;
 }
+
+.error404 .link {
+    font-size: 24px;
+    width: 100%;
+    text-align: center;
+    margin-top: 50px;
+}
+
 .error404__text {
     margin-bottom: 50px;
     width: 100%;
@@ -70,7 +83,15 @@ input:focus {
 
 .logo {
     background: none;
-    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 0;
+}
+
+.logo img {
+    width: 350px;
+    object-fit: contain;
 }
 
 .header {

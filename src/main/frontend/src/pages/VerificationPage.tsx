@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {useParams} from "react-router-dom";
+import React, {useState} from 'react';
+import {Link, useParams} from "react-router-dom";
 import classes from "../styles/VerificationPage.module.css";
 import {useFetching} from "../hooks/useFetching";
 import Loader from "../components/loading/Loader";
@@ -14,13 +14,17 @@ const VerificationPage = () => {
     return (
         <div className={classes.verification}>
             <div className="container">
-                <div className={classes.verification__text}>
+                <div>
                     {
                         isLoading
                             ?
                             <Loader></Loader>
                             :
-                            data["message"].toString()
+                            <div className={classes.verification__box}>
+                                <p>{data["message"].toString()}</p>
+                                <Link to={"/"} className={classes.verification__link}>Go to main page</Link>
+                            </div>
+
                     }
                 </div>
             </div>

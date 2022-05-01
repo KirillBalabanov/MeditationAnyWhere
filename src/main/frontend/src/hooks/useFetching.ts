@@ -10,7 +10,6 @@ export const useFetching = (fetchRequest: string, setData: (obj: any) => void, s
                 setErrorMsg(data["error"]);
             }
             else {
-                console.log(data);
                 setData(data);
             }
             setIsLoading(false);

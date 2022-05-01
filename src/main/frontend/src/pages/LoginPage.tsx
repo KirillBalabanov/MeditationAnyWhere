@@ -13,14 +13,15 @@ const LoginPage = () => {
     // animation states
     const [isLoading, setIsLoading] = useState(false);
     const [authClasses, setAuthClasses] = useState([classes.auth]);
+    const [redirect, setRedirect] = useState(false);
 
     const [errorMsg, setErrorMsg] = useState("");
 
     // navigate on successful log in
     let navigateFunction = useNavigate();
     useEffect(() => {
-        if(authContext.auth) navigateFunction("/");
-    }, [authContext.auth]);
+        if(redirect) navigateFunction("/");
+    }, [redirect]);
 
     function postLogin(e: FormEvent) {
         e.preventDefault();
@@ -61,7 +62,7 @@ const LoginPage = () => {
             }
             // animation
             setTimeout(() => {
-                setAuthClasses(authClasses.filter((c) => c != classes.loading));
+                setAuthClasses(authClasses.filter((c) => c !== classes.loading));
                 setIsLoading(false);
                 if (failed) {
                     setAuthClasses([...authClasses, classes.failed]);
@@ -69,7 +70,10 @@ const LoginPage = () => {
                     setAuthClasses([...authClasses, classes.succeed]);
                 }
                 setTimeout(() => {
-                    setAuthClasses(authClasses.filter((c) => c != classes.failed || c != classes.succeed));
+                    setAuthClasses(authClasses.filter((c) => c !== classes.failed || c !== classes.succeed));
+                    setTimeout(() => {
+                        setRedirect(true);
+                    }, 500);
                 }, 500); // timeout for animation
             }, 300); // set timeout in case fetch request is very fast.
 

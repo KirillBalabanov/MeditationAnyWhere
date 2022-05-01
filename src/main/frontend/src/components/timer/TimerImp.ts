@@ -2,10 +2,18 @@
 class TimerImp {
     private _min: number;
     private _seconds: number;
+    private readonly _len: number;
+    private _currentLen: number;
+    private _lenDecrement: number;
+    public isRunning: boolean;
 
-    constructor(min: number, seconds: number) {
+    constructor(min: number, seconds: number, radius: number) {
         this._min = min;
         this._seconds = seconds
+        this._len = Math.floor(radius * 2 * 3.14);
+        this._lenDecrement = this._len / ((this.min * 60) + this._seconds);
+        this._currentLen = this._len;
+        this.isRunning = false;
     }
 
     buildString(): string {
@@ -13,25 +21,26 @@ class TimerImp {
     }
 
     decrement(): void {
-        if(!this.canRun()) return;
+        if (this._min == 0 && this._seconds == 0) {
+            this.isRunning = false;
+            return;
+        }
 
         if (this._seconds == 0) {
             this._min--;
-            this._seconds = 60;
+            this._seconds = 59;
         }
         else this._seconds--;
+        this._currentLen = this._currentLen - this._lenDecrement;
     }
 
     setTimer(min: number, sec: number): void {
         if(min < 0 || sec < 0) throw new Error("Illegal argument");
         this._min = min;
         this._seconds = sec;
+        this._lenDecrement = this._len / ((this.min * 60) + this._seconds);
+        this._currentLen = this._len;
     }
-
-    canRun(): boolean {
-        return this._min > 0 || this._seconds > 0;
-    }
-
 
     get min(): number {
         return this._min;
@@ -39,6 +48,14 @@ class TimerImp {
 
     get seconds(): number {
         return this._seconds;
+    }
+
+    get currentLen(): number {
+        return this._currentLen;
+    }
+
+    set currentLen(value: number) {
+        this._currentLen = value;
     }
 }
 

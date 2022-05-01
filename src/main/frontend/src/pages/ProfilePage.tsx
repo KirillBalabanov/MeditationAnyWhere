@@ -26,7 +26,6 @@ const ProfilePage = () => {
 
     const [fetched, errorMsg] = useFetching("/profile/" + username, setProfile, setIsLoading);
 
-
     if(!fetched) return (<Error errorMsg={errorMsg}/>);
 
     function logout() {

@@ -65,7 +65,7 @@ const RegistrationPage = () => {
             }
             // animation
             setTimeout(() => {
-                setAuthClasses(authClasses.filter((c) => c != classes.loading));
+                setAuthClasses(authClasses.filter((c) => c !== classes.loading));
                 setIsLoading(false);
                 if (failed) {
                     setAuthClasses([...authClasses, classes.failed]);
@@ -73,7 +73,7 @@ const RegistrationPage = () => {
                     setAuthClasses([...authClasses, classes.succeed]);
                 }
                 setTimeout(() => {
-                    setAuthClasses(authClasses.filter((c) => c != classes.failed || c != classes.succeed));
+                    setAuthClasses(authClasses.filter((c) => c !== classes.failed || c !== classes.succeed));
                 }, 500); // timeout for animation
             }, 300); // set timeout in case fetch request is very fast.
         });
