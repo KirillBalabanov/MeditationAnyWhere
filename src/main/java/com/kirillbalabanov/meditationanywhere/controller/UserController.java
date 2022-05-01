@@ -6,7 +6,6 @@ import com.kirillbalabanov.meditationanywhere.exception.user.LoginException;
 import com.kirillbalabanov.meditationanywhere.exception.user.NoUserFoundException;
 import com.kirillbalabanov.meditationanywhere.model.UserModel;
 import com.kirillbalabanov.meditationanywhere.model.UserProfileModel;
-import com.kirillbalabanov.meditationanywhere.service.StatsService;
 import com.kirillbalabanov.meditationanywhere.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,15 +15,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfToken;
-import org.springframework.security.web.csrf.DefaultCsrfToken;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.mail.internet.AddressException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
-import java.util.UUID;
 
 @RestController
 public class UserController {
@@ -85,7 +81,7 @@ public class UserController {
     }
 
     @GetMapping("/profile/{username}")
-    public ResponseEntity<?> showUsersProfile(@PathVariable String username, Model model) {
+    public ResponseEntity<?> showUsersProfile(@PathVariable String username) {
         UserEntity userEntity;
         try {
             userEntity = userService.findByUsername(username);
@@ -103,7 +99,7 @@ public class UserController {
     public ResponseEntity<?> verification(@PathVariable String activationCode) {
         HashMap<String, String> hashMap = new HashMap<>();
         try {
-            userService.verify(activationCode);
+            userService.verifyUserByActivationCode(activationCode);
         } catch (NoUserFoundException e) {
             hashMap.put("message", e.getMessage());
             return ResponseEntity.ok().body(hashMap);

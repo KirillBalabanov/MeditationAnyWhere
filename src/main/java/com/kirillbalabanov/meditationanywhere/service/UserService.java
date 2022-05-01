@@ -35,7 +35,7 @@ public class UserService {
      */
 
     public UserEntity register(UserEntity userEntity) throws RegistrationException {
-        validateInput(userEntity.getUsername(), userEntity.getPassword());
+        validateInput(userEntity.getUsername(), userEntity.getEmail(), userEntity.getPassword());
         if(userRepository.findByUsername(userEntity.getUsername()).isPresent()) throw new RegistrationException("Username is taken.");
         if(userRepository.findByEmail(userEntity.getEmail()).isPresent()) throw new RegistrationException("Email is already registered.");
 
@@ -53,11 +53,12 @@ public class UserService {
      * @throws NoUserFoundException - if there is no user in db.
      * @throws LoginException - if password doesn't match or account is not verified.
      */
-    public void isAbleToLogIn(String username, String rawPassword) throws NoUserFoundException, LoginException {
+    public void isAbleToLogIn(String username, String rawPassword) throws NoUserFoundException, LoginException, RegistrationException {
+        validateInput(username, rawPassword);
         Optional<UserEntity> optional = userRepository.findByUsername(username);
         if(optional.isEmpty()) throw new NoUserFoundException("User not found.");
         UserEntity userEntity = optional.get();
-        if (!isValidPassword(rawPassword, userEntity.getPassword())) throw new LoginException("Invalid password");
+        if (!passwordEncoder.matches(rawPassword, userEntity.getPassword())) throw new LoginException("Invalid password");
         if (!userEntity.isActivated()) throw new LoginException("Account is not verified");
     }
 
@@ -72,25 +73,17 @@ public class UserService {
         return optional.get();
     }
 
-    public boolean sendVerificationEmailTo(String uuid, String username, String email) {
-        return emailSenderService.sendVerificationEmailUuidTo(uuid, username, email);
-    }
-
     /**
      * Method is used to verify a user with given uuid.
      * Throws {@link NoUserFoundException} if no user with given uuid is found.
      */
-    public void verify(String activationCode) throws NoUserFoundException{
+    public void verifyUserByActivationCode(String activationCode) throws NoUserFoundException{
         Optional<UserEntity> optional = userRepository.findByActivationCode(activationCode);
         if(optional.isEmpty()) throw new NoUserFoundException("Invalid activation code.");
         UserEntity userEntity = optional.get();
         userEntity.setActivated(true);
         userEntity.setActivationCode(null);
         userRepository.save(userEntity);
-    }
-
-    private boolean isValidPassword(String inputPassword, String userPassword) {
-        return passwordEncoder.matches(inputPassword, userPassword);
     }
     private void validateInput(String username, String password) throws RegistrationException {
         UserValidator.isValidUsername(username);
