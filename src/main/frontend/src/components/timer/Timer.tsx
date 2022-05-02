@@ -5,42 +5,52 @@ import TimerImp from "./TimerImp";
 import Popup from "../popup/Popup";
 import btnStart from "../../images/startIcon.svg";
 import btnStop from "../../images/stopIcon.svg";
+import TimerService from "./TimerService";
 
 const Timer = () => {
-    const [timerImp, setTimerImp] = useState(new TimerImp(0, 0, 45));
     const [timer, setTimer] = useState("00:00");
-    const [popup, setPopup] = useState(false);
+    const [showPopup, setShowPopup] = useState(false);
     const [popupContent, setPopupContent] = useState("Listened");
+    const [timerRunning, setTimerRunning] = useState(false);
+
+    function callbackAfterTimerFinish() {
+        setShowPopup(true);
 
 
-    function btnListener(event: React.MouseEvent<HTMLDivElement>) {
-        if(timerImp.isDecrementing) {
-            timerImp.isDecrementing = false;
+    }
+
+    const [timerService, setTimerService] = useState(new TimerService(new TimerImp(0, 0, 45), setPopupContent, setTimer, setTimerRunning, callbackAfterTimerFinish));
+
+    useEffect(() => {
+        const keyListener = (e: KeyboardEvent) => {
+            if (e.code === "Space") toggleTimer();
+            if(e.code == "Escape") setShowPopup(false);
+        }
+        window.addEventListener("keyup", keyListener);
+        return () => {
+            window.removeEventListener("keyup", keyListener);
+        };
+    }, []);
+
+    function toggleTimer() {
+        if (timerService.isRunning()) {
+            timerService.stop();
             return;
         }
-        timerImp.isDecrementing = true;
-        setPopupContent("Listened " + timerImp.min.toString() + "min");
-        let interval = setInterval(() => {
-            timerImp.decrement();
-            setTimer(timerImp.buildString());
-
-            if(!timerImp.isDecrementing) clearInterval(interval); // timer stopped by user
-
-            if(!timerImp.canDecrement) {
-                clearInterval(interval);
-                timerImp.currentLen = 0;
-                setPopup(true);
-            }
-        }, 100);
+        try {
+            timerService.run();
+        } catch (e) {
+            return;
+        }
     }
 
     function selectListener(event: React.MouseEvent<HTMLDivElement>) {
-        if(timerImp.isDecrementing) return;
-        // change timer
+        if(timerService.isRunning()) return;
+
         const target: Element = event.target as Element;
         if (target.className === classes.timer__select_item) {
-            timerImp.setTimer(Number.parseInt(target.getAttribute("timer-value")!), 0);
-            setTimer(timerImp.buildString());
+            timerService.setTimerValues(Number.parseInt(target.getAttribute("timer-value")!), 0);
+            setTimer(timerService.getTimerValues());
         }
     }
 
@@ -51,7 +61,7 @@ const Timer = () => {
                     <g>
                         <circle className={classes.timer__circle} cx="50" cy="50" r="45"/>
                         <path
-                            strokeDasharray={timerImp.currentLen + " 283"} style={timerImp.currentLen==0 ? {opacity: "0"} : {opacity: "100"}}
+                            strokeDasharray={timerService.getTimerLen() + " 283"} style={timerService.getTimerLen()==0 ? {opacity: "0"} : {opacity: "100"}}
                             d="M 50, 50
                              m -45, 0
                              a 45,45 0 1,0 90,0
@@ -75,9 +85,9 @@ const Timer = () => {
                 <TimerSelect timerValue={50} className={classes.timer__select_item}/>
                 <TimerSelect timerValue={60} className={classes.timer__select_item}/>
             </div>
-            <div className={classes.timer__btn} onClick={btnListener}>
+            <div className={classes.timer__btn} onClick={() => toggleTimer()}>
                 {
-                    timerImp.isDecrementing
+                    timerRunning
                         ?
                         <img src={btnStop} alt="stop"/>
                         :
@@ -85,7 +95,7 @@ const Timer = () => {
                 }
 
             </div>
-            <Popup popupInfo={popupContent} popupConfirm={"Ok"} active={popup} setStatus={setPopup}></Popup>
+            <Popup popupInfo={popupContent} popupConfirm={"Ok"} active={showPopup} setStatus={setShowPopup}></Popup>
         </div>
     );
 };

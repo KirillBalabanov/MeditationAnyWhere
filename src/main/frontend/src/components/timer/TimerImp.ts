@@ -6,7 +6,6 @@ class TimerImp {
     private _currentLen: number;
     private _lenDecrement: number;
     private _canDecrement: boolean;
-    public isDecrementing: boolean;
 
     constructor(min: number, seconds: number, radius: number) {
         this._min = min;
@@ -15,7 +14,6 @@ class TimerImp {
         this._lenDecrement = this._len / ((this.min * 60) + this._seconds);
         this._currentLen = this._len;
         this._canDecrement = (min * 60 + seconds) > 0;
-        this.isDecrementing = false;
     }
 
     buildString(): string {

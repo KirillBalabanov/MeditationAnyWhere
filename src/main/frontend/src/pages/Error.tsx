@@ -8,7 +8,7 @@ interface Error404Props {
 
 const Error = ({errorMsg} : Error404Props) => {
     return (
-        <div className={"error404"}>
+        <div className="error404">
             <div className="error404__text">
                 {errorMsg
                 ?
@@ -17,7 +17,7 @@ const Error = ({errorMsg} : Error404Props) => {
                 "404 page not found."}
             </div>
             <img src={sadSmile} alt="sad smile" className="error404__image"/>
-            <Link to={"/"} className={"link"}>Go to main page</Link>
+            <Link to={"/"} className="error404__link">Go to main page</Link>
         </div>
     );
 };

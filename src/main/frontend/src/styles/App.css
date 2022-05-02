@@ -172,13 +172,7 @@ input:focus {
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
-}
-
-.error404 .link {
-    font-size: 24px;
-    width: 100%;
-    text-align: center;
-    margin-top: 50px;
+    width: 500px;
 }
 
 .error404__text {
@@ -189,6 +183,13 @@ input:focus {
 
 .error404__image {
     width: 300px;
+    padding: 0 100px;
+}
+
+.error404__link {
+    font-size: 18px;
+    text-decoration: underline white;
+    margin-top: 50px;
 }
 
 .logo {
