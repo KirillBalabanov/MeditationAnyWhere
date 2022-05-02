@@ -1,26 +1,62 @@
-import React from 'react';
+import React, {useState} from 'react';
 import classes from "./UserProfile.module.css";
+import defaultAvatar from "../../images/defaultAvatar.svg";
+import timeIcon from "../../images/timeIcon.svg";
+import polygon from "../../images/polygonOnRectangleGray.svg";
+import {useNavigate} from "react-router-dom";
 
 const UserProfile = ({profile}: any) => {
+
+    const [popupShown, setPopupShown] = useState(false);
+    let navigateFunction = useNavigate();
+
+
     return (
         <div className={classes.profile}>
-            <div className={classes.profile__username}>username: <span>{profile.username}</span></div>
-            <div className={classes.profile__data}>
-                <div className={classes.data}>
-                    <p className={classes.data__title}>min listened</p>
-                    <h4 className={classes.data__data}>{profile.minListened}</h4>
+            <div className={classes.profile__info}>
+                <img src={defaultAvatar} alt="avatar"
+                     className={classes.profile__infoAvatar} onMouseOver={() => setPopupShown(true)}
+                     onMouseLeave={() => setPopupShown(false)}
+                     onClick={() => navigateFunction("/settings")}
+                />
+                <div className={popupShown ? classes.profile__popup + " " + classes.shown : classes.profile__popup}>
+                    <div className={classes.profile__popupText}>change your avatar</div>
+                    <img src={polygon} alt="avatar" className={classes.profile__popupIcon}/>
                 </div>
-                <div className={classes.data}>
-                    <p className={classes.data__title}>sessions listened</p>
-                    <h4 className={classes.data__data}>{profile.sessionsListened}</h4>
+                <div className={classes.profile__username}>{profile.username}</div>
+                <div className={classes.profile__status}>
+                    status status status status status status status status status status status status
+                    status status status status status status status status.
                 </div>
-                <div className={classes.data}>
-                    <p className={classes.data__title}>current streak</p>
-                    <h4 className={classes.data__data}>{profile.currentStreak}</h4>
+                <div className={classes.profile__time}>
+                    <img src={timeIcon} alt="timeIcon" className={classes.profile__timeIcon}/>
+                    <div className={classes.profile__timeData}>
+                        <div>
+                            Joined
+                        </div>
+                        <div>
+                            May 6, 2022
+                        </div>
+                    </div>
                 </div>
-                <div className={classes.data}>
-                    <p className={classes.data__title}>longest streak</p>
-                    <h4 className={classes.data__data}>{profile.longestStreak}</h4>
+            </div>
+
+            <div className={classes.stats}>
+                <div className={classes.stats__box}>
+                    <p className={classes.stats__boxTitle}>Minutes Listened</p>
+                    <p className={classes.stats__boxData}>{profile.minListened}</p>
+                </div>
+                <div className={classes.stats__box}>
+                    <p className={classes.stats__boxTitle}>Sessions Listened</p>
+                    <p className={classes.stats__boxData}>{profile.sessionsListened}</p>
+                </div>
+                <div className={classes.stats__box}>
+                    <p className={classes.stats__boxTitle}>Current Streak</p>
+                    <p className={classes.stats__boxData}>{profile.currentStreak}</p>
+                </div>
+                <div className={classes.stats__box}>
+                    <p className={classes.stats__boxTitle}>Longest Streak</p>
+                    <p className={classes.stats__boxData}>{profile.longestStreak}</p>
                 </div>
             </div>
         </div>

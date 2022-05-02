@@ -33,19 +33,17 @@ const ProfilePage = () => {
     return (
         <div>
             <Header></Header>
-            <div className="container">
-                <div className={classes.main}>
-                    {
-                        isLoading
-                            ?
-                            <Loader></Loader>
-                            :
-                            <div>
-                                <UserProfile profile={profile}></UserProfile>
-                            </div>
-                    }
-                </div>
-            </div>
+            {
+                isLoading
+                    ?
+                    <Loader></Loader>
+                    :
+                    <div className="container">
+                        <div className={classes.main}>
+                            <UserProfile profile={profile}></UserProfile>
+                        </div>
+                    </div>
+            }
         </div>
     );
 };

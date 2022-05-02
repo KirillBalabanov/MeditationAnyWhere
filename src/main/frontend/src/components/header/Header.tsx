@@ -3,9 +3,9 @@ import {Link, useNavigate} from "react-router-dom";
 import logo from "../../images/logo.svg";
 import {AuthContext} from "../../context/AuthContext";
 
-// @ts-ignore
 import avatar from "../../images/defaultAvatar.svg";
 import polygon from "../../images/polygon.svg";
+import polygonOnRectangle from "../../images/polygonOnRectangle.svg"
 import {CsrfContext} from "../../context/CsrfContext";
 
 const Header = () => {
@@ -47,6 +47,7 @@ const Header = () => {
                             <img src={polygon} alt="polygon"/>
                         </div>
                         <ul className={showMenu ? "user__menu active" : "user__menu"}>
+                            <img src={polygonOnRectangle} alt="polygon" className="user__menu-polygon"/>
                             <li className="user__menu-item">
                                 {authContext.username}
                             </li>
