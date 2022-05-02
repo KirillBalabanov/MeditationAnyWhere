@@ -3,14 +3,15 @@ import classes from "./Timer.module.css";
 import TimerSelect from "./TimerSelect";
 import TimerImp from "./TimerImp";
 import Popup from "../popup/Popup";
-import btnStart from "../../images/btnStart.svg";
+import btnStart from "../../images/startIcon.svg";
+import btnStop from "../../images/stopIcon.svg.svg";
 
 const Timer = () => {
     const [timerImp, setTimerImp] = useState(new TimerImp(0, 0, 45));
     const [timer, setTimer] = useState("00:00");
     const [popup, setPopup] = useState(false);
     const [popupContent, setPopupContent] = useState("Listened");
-    const [btnContent, setBtnContent] = useState("Start");
+    const [isRunning, setIsRunning] = useState(false);
 
     function btnListener(event: React.MouseEvent<HTMLDivElement>) {
         if(timerImp.isRunning) {
@@ -20,12 +21,11 @@ const Timer = () => {
         timerImp.isRunning = true;
         setPopupContent("Listened " + timerImp.min.toString() + "min");
         let interval = setInterval(() => {
-            setBtnContent("Stop");
             timerImp.decrement();
             setTimer(timerImp.buildString());
             if(!timerImp.isRunning) {
                 clearInterval(interval);
-                setBtnContent("Start");
+
                 if (timerImp.buildString() == "00:00") {
                     timerImp.currentLen = 0;
                     setPopup(true);
@@ -76,6 +76,9 @@ const Timer = () => {
                 <TimerSelect timerValue={60} className={classes.timer__select_item}/>
             </div>
             <div className={classes.timer__btn} onClick={btnListener}>
+                {
+
+                }
                 <img src={btnStart} alt="start"/>
             </div>
             <Popup popupInfo={popupContent} popupConfirm={"Ok"} active={popup} setStatus={setPopup}></Popup>

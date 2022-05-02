@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import sadSmile from "../images/sad_smile.svg";
+import sadSmile from "../images/sadSmile.svg";
 import {Link} from "react-router-dom";
 
 interface Error404Props {

@@ -48,7 +48,7 @@ const Header = () => {
                         </div>
                         <ul className={showMenu ? "user__menu active" : "user__menu"}>
                             <li className="user__menu-item">
-                                aaaaaaaaaaaaaaaaaaaa
+                                {authContext.username}
                             </li>
                             <li className="user__menu-item"
                                 onClick={() => redirectTo("/profile/" + authContext?.username)}>
