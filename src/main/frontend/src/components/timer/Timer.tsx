@@ -3,6 +3,7 @@ import classes from "./Timer.module.css";
 import TimerSelect from "./TimerSelect";
 import TimerImp from "./TimerImp";
 import Popup from "../popup/Popup";
+import btnStart from "../../images/btnStart.svg";
 
 const Timer = () => {
     const [timerImp, setTimerImp] = useState(new TimerImp(0, 0, 45));
@@ -74,7 +75,9 @@ const Timer = () => {
                 <TimerSelect timerValue={50} className={classes.timer__select_item}/>
                 <TimerSelect timerValue={60} className={classes.timer__select_item}/>
             </div>
-            <div className={classes.timer__btn} onClick={btnListener}>{btnContent}</div>
+            <div className={classes.timer__btn} onClick={btnListener}>
+                <img src={btnStart} alt="start"/>
+            </div>
             <Popup popupInfo={popupContent} popupConfirm={"Ok"} active={popup} setStatus={setPopup}></Popup>
         </div>
     );
