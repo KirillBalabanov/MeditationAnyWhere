@@ -70,7 +70,6 @@ const Header = () => {
                     :
                     <Link to={"/login"}>log in</Link>
             }
-
         </header>
     );
 };

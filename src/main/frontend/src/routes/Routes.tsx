@@ -14,11 +14,12 @@ const publicRoutes = [
     {path: "/login", component: <LoginPage></LoginPage>},
     {path: "/verification/:activationCode", component: <VerificationPage></VerificationPage>},
     {path: "/profile/:username", component: <ProfilePage></ProfilePage>},
+    {path: "/", component: <MainPage></MainPage>},
     {path: "/*", component: <Error></Error>}
 ]
 
 const privateRoutes = (auth: boolean) => [
-    {path: "/", component: auth ? <MainPage></MainPage> : <Navigate to={"/login"}/>},
+    {path: "/settings", component: auth ? <MainPage></MainPage> : <Navigate to={"/login"}/>},
 ]
 
 export const AppRoutes = (auth: boolean) =>  [

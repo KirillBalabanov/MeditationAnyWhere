@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import classes from "./Timer.module.css";
 import TimerSelect from "./TimerSelect";
 import TimerImp from "./TimerImp";
@@ -6,20 +6,44 @@ import Popup from "../popup/Popup";
 import btnStart from "../../images/startIcon.svg";
 import btnStop from "../../images/stopIcon.svg";
 import TimerService from "./TimerService";
+import {AuthContext} from "../../context/AuthContext";
+import {CsrfContext} from "../../context/CsrfContext";
 
 const Timer = () => {
     const [timer, setTimer] = useState("00:00");
     const [showPopup, setShowPopup] = useState(false);
     const [popupContent, setPopupContent] = useState("Listened");
+    const [minListened, setMinListened] = useState(0);
     const [timerRunning, setTimerRunning] = useState(false);
+    const [sessionEnded, setSessionEnded] = useState(false);
+    const authContext = useContext(AuthContext)!;
+    const csrfContext = useContext(CsrfContext)!;
 
-    function callbackAfterTimerFinish() {
+    useEffect(() => {
+        if(!sessionEnded) return;
+        if(minListened === 0) return;
+
+        setPopupContent("Listened " + minListened + " min.");
         setShowPopup(true);
+        if(!authContext.auth) {
+            return;
+        }
+        fetch("/updateStats", { method: "PUT", headers: {
+                'Content-Type': 'application/json',
+                'X-XSRF-TOKEN': csrfContext.csrfToken
+            },
+            body: JSON.stringify({
+                minListened: minListened
+            })
+        }).then((response) => response.json()).then((data) => {
+            console.log(data);
+        });
+        setSessionEnded(false);
+
+    }, [sessionEnded]);
 
 
-    }
-
-    const [timerService, setTimerService] = useState(new TimerService(new TimerImp(0, 0, 45), setPopupContent, setTimer, setTimerRunning, callbackAfterTimerFinish));
+    const [timerService, setTimerService] = useState(new TimerService(new TimerImp(0, 0, 45), setMinListened, setTimer, setTimerRunning, setSessionEnded));
 
     useEffect(() => {
         const keyListener = (e: KeyboardEvent) => {

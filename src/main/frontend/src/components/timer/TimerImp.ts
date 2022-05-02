@@ -1,5 +1,6 @@
 
 class TimerImp {
+    private _initMin: number;
     private _min: number;
     private _seconds: number;
     private readonly _len: number;
@@ -14,6 +15,7 @@ class TimerImp {
         this._lenDecrement = this._len / ((this.min * 60) + this._seconds);
         this._currentLen = this._len;
         this._canDecrement = (min * 60 + seconds) > 0;
+        this._initMin = this._min;
     }
 
     buildString(): string {
@@ -41,6 +43,7 @@ class TimerImp {
         this._lenDecrement = this._len / ((this.min * 60) + this._seconds);
         this._currentLen = this._len;
         this._canDecrement = true;
+        this._initMin = this._min;
     }
 
     get canDecrement(): boolean {
@@ -53,6 +56,10 @@ class TimerImp {
 
     get seconds(): number {
         return this._seconds;
+    }
+
+    getInitMinutes() {
+        return this._initMin;
     }
 
     get currentLen(): number {

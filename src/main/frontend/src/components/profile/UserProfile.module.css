@@ -1,5 +1,6 @@
 .profile {
     display: flex;
+
 }
 
 
@@ -41,17 +42,30 @@
     left: 57px;
 }
 .profile__username {
-    font-size: 36px;
+    font-size: 32px;
     font-weight: bold;
     margin: 10px 0 0;
 }
 .profile__status {
-    font-size: 24px;
+    font-size: 20px;
     margin: 20px 0 30px;
 }
+.profile__button {
+    padding: 10px 40px;
+    font-size: 18px;
+    background-color: #2196f3;
+    cursor: pointer;
+}
+
+
 .profile__time {
+    width: 100%;
+    margin: 30px 0 30px;
+}
+.profile__timeInner {
     display: flex;
     align-items: center;
+    width: 160px;
 }
 .profile__timeIcon {
     width: 30px;
@@ -62,11 +76,10 @@
     display: flex;
     margin-left: 12px;
     color: #666666;
-    font-size: 16px;
+    font-size: 14px;
     flex-wrap: wrap;
     width: 120px;
 }
-
 
 .stats {
     width: 800px;
@@ -97,7 +110,7 @@
     margin: 0;
 }
 .stats__boxData {
-    font-size: 48px;
+    font-size: 36px;
     color: white;
     margin: 0;
     padding: 0;

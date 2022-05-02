@@ -28,14 +28,19 @@ const UserProfile = ({profile}: any) => {
                     status status status status status status status status status status status status
                     status status status status status status status status.
                 </div>
+                <div className={classes.profile__button} onClick={() => navigateFunction("/settings/profile")}>
+                    Edit Profile
+                </div>
                 <div className={classes.profile__time}>
-                    <img src={timeIcon} alt="timeIcon" className={classes.profile__timeIcon}/>
-                    <div className={classes.profile__timeData}>
-                        <div>
-                            Joined
-                        </div>
-                        <div>
-                            May 6, 2022
+                    <div className={classes.profile__timeInner}>
+                        <img src={timeIcon} alt="timeIcon" className={classes.profile__timeIcon}/>
+                        <div className={classes.profile__timeData}>
+                            <div>
+                                Joined
+                            </div>
+                            <div>
+                                May 6, 2022
+                            </div>
                         </div>
                     </div>
                 </div>

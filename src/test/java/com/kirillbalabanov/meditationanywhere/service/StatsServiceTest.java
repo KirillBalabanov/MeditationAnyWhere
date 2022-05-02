@@ -46,18 +46,18 @@ class StatsServiceTest {
     @Test
     void updateStats_FirstSession() throws NoUserFoundException {
         UserEntity userEntity = new UserEntity
-                ("username", "password", "email", "ROLE_USER", true, null);
-        StatsEntity entityBeforeUpdate = new StatsEntity(1, 0, 0, 0, 0, null, userEntity);
+                ("username", "password", "email@gmail.ua\"", "ROLE_USER", true, null);
+        StatsEntity statsBeforeUpdate = new StatsEntity(1, 0, 0, 0, 0, null, userEntity);
         Date sessionsDate = new Date(new java.util.Date().getTime()); // service init current date and sets it as lastSessionsDate.
-        StatsEntity entityAfterUpdate = new StatsEntity(1, 5, 1, 1, 1, sessionsDate, userEntity);
+        StatsEntity statsAfterUpdate = new StatsEntity(1, 5, 1, 1, 1, sessionsDate, userEntity);
 
         userEntity.setId(1);
-        userEntity.setStatsEntity(entityBeforeUpdate);
+        userEntity.setStatsEntity(statsBeforeUpdate);
 
         Mockito.doReturn(Optional.of(userEntity)).when(userRepository).findById(userEntity.getId());
-        Mockito.doReturn(entityAfterUpdate).when(statsRepository).save(ArgumentMatchers.any(StatsEntity.class));
+        Mockito.doReturn(statsAfterUpdate).when(statsRepository).save(ArgumentMatchers.any(StatsEntity.class));
 
-        Assertions.assertEquals(entityAfterUpdate, statsService.updateStats(5, 1));
+        Assertions.assertEquals(statsAfterUpdate, statsService.updateStats(5, 1));
 
         Mockito.verify(userRepository, Mockito.times(1)).findById(ArgumentMatchers.anyLong());
         Mockito.verify(statsRepository, Mockito.times(1)).save(ArgumentMatchers.any(StatsEntity.class));
@@ -65,20 +65,20 @@ class StatsServiceTest {
     @Test
     void updateStats_UpdateCurrentAndLongestStreaks() throws NoUserFoundException {
         UserEntity userEntity = new UserEntity
-                ("username", "password", "email", "ROLE_USER", true, null);
+                ("username", "password", "email@gmail.ua\"", "ROLE_USER", true, null);
         // get yesterday's date
         Date lastSessionsDate = Date.valueOf(LocalDate.now().minus(1, ChronoUnit.DAYS).toString());
-        StatsEntity entityBeforeUpdate = new StatsEntity(1, 10, 2, 1, 1, lastSessionsDate, userEntity);
+        StatsEntity statsBeforeUpdate = new StatsEntity(1, 10, 2, 1, 1, lastSessionsDate, userEntity);
         Date sessionsDate = new Date(new java.util.Date().getTime()); // service init current date and sets it as lastSessionsDate.
-        StatsEntity entityAfterUpdate = new StatsEntity(1, 20, 3, 2, 2, sessionsDate, userEntity);
+        StatsEntity statsAfterUpdate = new StatsEntity(1, 20, 3, 2, 2, sessionsDate, userEntity);
 
         userEntity.setId(1L);
-        userEntity.setStatsEntity(entityBeforeUpdate);
+        userEntity.setStatsEntity(statsBeforeUpdate);
 
         Mockito.doReturn(Optional.of(userEntity)).when(userRepository).findById(userEntity.getId());
-        Mockito.doReturn(entityAfterUpdate).when(statsRepository).save(ArgumentMatchers.any(StatsEntity.class));
+        Mockito.doReturn(statsAfterUpdate).when(statsRepository).save(ArgumentMatchers.any(StatsEntity.class));
 
-        Assertions.assertEquals(entityAfterUpdate, statsService.updateStats(10, 1));
+        Assertions.assertEquals(statsAfterUpdate, statsService.updateStats(10, 1));
 
         Mockito.verify(userRepository, Mockito.times(1)).findById(ArgumentMatchers.anyLong());
         Mockito.verify(statsRepository, Mockito.times(1)).save(ArgumentMatchers.any(StatsEntity.class));
@@ -87,20 +87,20 @@ class StatsServiceTest {
     @Test
     void updateStats_UpdateCurrentStreak_LongestStreakSame() throws NoUserFoundException {
         UserEntity userEntity = new UserEntity
-                ("username", "password", "email", "ROLE_USER", true, null);
+                ("username", "password", "email@gmail.ua\"", "ROLE_USER", true, null);
         // get yesterday's date
         Date lastSessionsDate = Date.valueOf(LocalDate.now().minus(1, ChronoUnit.DAYS).toString());
-        StatsEntity entityBeforeUpdate = new StatsEntity(1, 30, 5, 1, 3, lastSessionsDate, userEntity);
+        StatsEntity statsBeforeUpdate = new StatsEntity(1, 30, 5, 1, 3, lastSessionsDate, userEntity);
         Date sessionsDate = new Date(new java.util.Date().getTime()); // service init current date and sets it as lastSessionsDate.
-        StatsEntity entityAfterUpdate = new StatsEntity(1, 40, 6, 2, 3, sessionsDate, userEntity);
+        StatsEntity statsAfterUpdate = new StatsEntity(1, 40, 6, 2, 3, sessionsDate, userEntity);
 
         userEntity.setId(1L);
-        userEntity.setStatsEntity(entityBeforeUpdate);
+        userEntity.setStatsEntity(statsBeforeUpdate);
 
         Mockito.doReturn(Optional.of(userEntity)).when(userRepository).findById(userEntity.getId());
-        Mockito.doReturn(entityAfterUpdate).when(statsRepository).save(ArgumentMatchers.any(StatsEntity.class));
+        Mockito.doReturn(statsAfterUpdate).when(statsRepository).save(ArgumentMatchers.any(StatsEntity.class));
 
-        Assertions.assertEquals(entityAfterUpdate, statsService.updateStats(10, 1));
+        Assertions.assertEquals(statsAfterUpdate, statsService.updateStats(10, 1));
 
         Mockito.verify(userRepository, Mockito.times(1)).findById(ArgumentMatchers.anyLong());
         Mockito.verify(statsRepository, Mockito.times(1)).save(ArgumentMatchers.any(StatsEntity.class));
@@ -109,20 +109,42 @@ class StatsServiceTest {
     @Test
     void updateStats_ResetCurrentStreak_LongestStreakSame() throws NoUserFoundException {
         UserEntity userEntity = new UserEntity
-                ("username", "password", "email", "ROLE_USER", true, null);
-        // get current date - 2 days so that current steak would be reset.
+                ("username", "password", "email@gmail.ua\"", "ROLE_USER", true, null);
+        // get current date - 2 days so that current streak would be reset.
         Date lastSessionsDate = Date.valueOf(LocalDate.now().minus(2, ChronoUnit.DAYS).toString());
-        StatsEntity entityBeforeUpdate = new StatsEntity(1, 30, 5, 3, 7, lastSessionsDate, userEntity);
+        StatsEntity statsBeforeUpdate = new StatsEntity(1, 30, 5, 3, 7, lastSessionsDate, userEntity);
         Date sessionsDate = new Date(new java.util.Date().getTime()); // service init current date and sets it as lastSessionsDate.
-        StatsEntity entityAfterUpdate = new StatsEntity(1, 40, 6, 1, 7, sessionsDate, userEntity);
+        StatsEntity statsAfterUpdate = new StatsEntity(1, 40, 6, 1, 7, sessionsDate, userEntity);
 
         userEntity.setId(1L);
-        userEntity.setStatsEntity(entityBeforeUpdate);
+        userEntity.setStatsEntity(statsBeforeUpdate);
 
         Mockito.doReturn(Optional.of(userEntity)).when(userRepository).findById(userEntity.getId());
-        Mockito.doReturn(entityAfterUpdate).when(statsRepository).save(ArgumentMatchers.any(StatsEntity.class));
+        Mockito.doReturn(statsAfterUpdate).when(statsRepository).save(ArgumentMatchers.any(StatsEntity.class));
 
-        Assertions.assertEquals(entityAfterUpdate, statsService.updateStats(10, 1));
+        Assertions.assertEquals(statsAfterUpdate, statsService.updateStats(10, 1));
+
+        Mockito.verify(userRepository, Mockito.times(1)).findById(ArgumentMatchers.anyLong());
+        Mockito.verify(statsRepository, Mockito.times(1)).save(ArgumentMatchers.any(StatsEntity.class));
+    }
+
+    @Test
+    void updateStats_StreaksSame() throws NoUserFoundException {
+        UserEntity userEntity = new UserEntity
+                ("username", "password", "email@gmail.ua", "ROLE_USER", true, null);
+
+        Date lastSessionsDate = Date.valueOf(LocalDate.now().minus(0, ChronoUnit.DAYS).toString());
+        StatsEntity statsBeforeUpdate = new StatsEntity(1, 30, 5, 3, 7, lastSessionsDate, userEntity);
+        Date sessionsDate = new Date(new java.util.Date().getTime()); // service init current date and sets it as lastSessionsDate.
+        StatsEntity statsAfterUpdate = new StatsEntity(1, 40, 6, 3, 7, sessionsDate, userEntity);
+
+        userEntity.setId(1L);
+        userEntity.setStatsEntity(statsBeforeUpdate);
+
+        Mockito.doReturn(Optional.of(userEntity)).when(userRepository).findById(userEntity.getId());
+        Mockito.doReturn(statsAfterUpdate).when(statsRepository).save(ArgumentMatchers.any(StatsEntity.class));
+
+        Assertions.assertEquals(statsAfterUpdate, statsService.updateStats(10, 1));
 
         Mockito.verify(userRepository, Mockito.times(1)).findById(ArgumentMatchers.anyLong());
         Mockito.verify(statsRepository, Mockito.times(1)).save(ArgumentMatchers.any(StatsEntity.class));

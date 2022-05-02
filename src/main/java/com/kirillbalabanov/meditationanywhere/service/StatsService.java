@@ -31,7 +31,7 @@ public class StatsService {
      * @param userId id of user, to which update would be used.
      * @return updates StatsEntity.
      */
-    public StatsEntity updateStats(long minutesListened, long userId) throws NoUserFoundException {
+    public StatsEntity updateStats(int minutesListened, long userId) throws NoUserFoundException {
         Optional<UserEntity> optionalUserEntity = userRepository.findById(userId);
         if(optionalUserEntity.isEmpty()) throw new NoUserFoundException("User not found.");
 
@@ -45,24 +45,31 @@ public class StatsService {
         return statsEntity;
     }
 
-    private void update(StatsEntity statsEntity, long minutesListened) {
+    private void update(StatsEntity statsEntity, int minutesListened) {
         Date currentSessionDate = new Date(new java.util.Date().getTime());
-        Date lastSessionsDate = statsEntity.getLastSessionsDate() == null ? currentSessionDate : statsEntity.getLastSessionsDate();
+        boolean firstSession = statsEntity.getLastSessionsDate() == null;
+        Date lastSessionsDate = statsEntity.getLastSessionsDate();
 
         statsEntity.setSessionsListened(statsEntity.getSessionsListened() + 1);
         statsEntity.setMinListened(statsEntity.getMinListened() + minutesListened);
         statsEntity.setLastSessionsDate(currentSessionDate);
 
+        if (firstSession) {
+            statsEntity.setCurrentStreak(1);
+            statsEntity.setLongestStreak(1);
+            return;
+        }
+
         long daysBetween = ChronoUnit.DAYS.between(LocalDate.parse(currentSessionDate.toString()),
                 LocalDate.parse(lastSessionsDate.toString()));
 
-        // reset streak in case more than 1 day has passed.
         if (Math.abs(daysBetween) > 1) {
             statsEntity.setCurrentStreak(1);
             return;
         }
-        // otherwise increase current and longest streaks.
-        statsEntity.setCurrentStreak(statsEntity.getCurrentStreak() + 1);
+        if (Math.abs(daysBetween) == 1) {
+            statsEntity.setCurrentStreak(statsEntity.getCurrentStreak() + 1);
+        }
 
         if (statsEntity.getCurrentStreak() > statsEntity.getLongestStreak()) {
             statsEntity.setLongestStreak(statsEntity.getCurrentStreak());

@@ -10,10 +10,10 @@ public class StatsEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private long minListened;
-    private long sessionsListened;
-    private long currentStreak;
-    private long longestStreak;
+    private int minListened;
+    private int sessionsListened;
+    private int currentStreak;
+    private int longestStreak;
 
     @Column(nullable = true)
     private Date lastSessionsDate;
@@ -25,7 +25,7 @@ public class StatsEntity {
     public StatsEntity() {
     }
 
-    public StatsEntity(long id, long minListened, long sessionsListened, long currentStreak, long longestStreak, Date lastSessionsDate, UserEntity userEntity) {
+    public StatsEntity(int id, int minListened, int sessionsListened, int currentStreak, int longestStreak, Date lastSessionsDate, UserEntity userEntity) {
         this.id = id;
         this.minListened = minListened;
         this.sessionsListened = sessionsListened;
@@ -102,35 +102,35 @@ public class StatsEntity {
         this.id = id;
     }
 
-    public long getMinListened() {
+    public int getMinListened() {
         return minListened;
     }
 
-    public void setMinListened(long minListened) {
+    public void setMinListened(int minListened) {
         this.minListened = minListened;
     }
 
-    public long getSessionsListened() {
+    public int getSessionsListened() {
         return sessionsListened;
     }
 
-    public void setSessionsListened(long sessionsListened) {
+    public void setSessionsListened(int sessionsListened) {
         this.sessionsListened = sessionsListened;
     }
 
-    public long getCurrentStreak() {
+    public int getCurrentStreak() {
         return currentStreak;
     }
 
-    public void setCurrentStreak(long currentStreak) {
+    public void setCurrentStreak(int currentStreak) {
         this.currentStreak = currentStreak;
     }
 
-    public long getLongestStreak() {
+    public int getLongestStreak() {
         return longestStreak;
     }
 
-    public void setLongestStreak(long longestStreak) {
+    public void setLongestStreak(int longestStreak) {
         this.longestStreak = longestStreak;
     }
 
