@@ -40,6 +40,13 @@
 
 
 .auth__btn {
+    background-color: #2196f3;
+    border: none;
+    color: white;
+    padding: 17px 30px;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 18px;
     position: absolute;
     width: 100%;
     height: 55px;
@@ -56,6 +63,8 @@
     position: absolute;
     bottom: -50px;
     font-size: 18px;
+    color: white;
+
 }
 
 .auth__error {
