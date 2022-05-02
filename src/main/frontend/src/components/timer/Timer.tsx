@@ -4,38 +4,38 @@ import TimerSelect from "./TimerSelect";
 import TimerImp from "./TimerImp";
 import Popup from "../popup/Popup";
 import btnStart from "../../images/startIcon.svg";
-import btnStop from "../../images/stopIcon.svg.svg";
+import btnStop from "../../images/stopIcon.svg";
 
 const Timer = () => {
     const [timerImp, setTimerImp] = useState(new TimerImp(0, 0, 45));
     const [timer, setTimer] = useState("00:00");
     const [popup, setPopup] = useState(false);
     const [popupContent, setPopupContent] = useState("Listened");
-    const [isRunning, setIsRunning] = useState(false);
+
 
     function btnListener(event: React.MouseEvent<HTMLDivElement>) {
-        if(timerImp.isRunning) {
-            timerImp.isRunning = false;
+        if(timerImp.isDecrementing) {
+            timerImp.isDecrementing = false;
             return;
         }
-        timerImp.isRunning = true;
+        timerImp.isDecrementing = true;
         setPopupContent("Listened " + timerImp.min.toString() + "min");
         let interval = setInterval(() => {
             timerImp.decrement();
             setTimer(timerImp.buildString());
-            if(!timerImp.isRunning) {
-                clearInterval(interval);
 
-                if (timerImp.buildString() == "00:00") {
-                    timerImp.currentLen = 0;
-                    setPopup(true);
-                }
+            if(!timerImp.isDecrementing) clearInterval(interval); // timer stopped by user
+
+            if(!timerImp.canDecrement) {
+                clearInterval(interval);
+                timerImp.currentLen = 0;
+                setPopup(true);
             }
         }, 100);
     }
 
     function selectListener(event: React.MouseEvent<HTMLDivElement>) {
-        if(timerImp.isRunning) return;
+        if(timerImp.isDecrementing) return;
         // change timer
         const target: Element = event.target as Element;
         if (target.className === classes.timer__select_item) {
@@ -77,9 +77,13 @@ const Timer = () => {
             </div>
             <div className={classes.timer__btn} onClick={btnListener}>
                 {
-
+                    timerImp.isDecrementing
+                        ?
+                        <img src={btnStop} alt="stop"/>
+                        :
+                        <img src={btnStart} alt="start"/>
                 }
-                <img src={btnStart} alt="start"/>
+
             </div>
             <Popup popupInfo={popupContent} popupConfirm={"Ok"} active={popup} setStatus={setPopup}></Popup>
         </div>

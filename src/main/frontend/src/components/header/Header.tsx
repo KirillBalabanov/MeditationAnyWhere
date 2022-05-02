@@ -4,7 +4,7 @@ import logo from "../../images/logo.svg";
 import {AuthContext} from "../../context/AuthContext";
 
 // @ts-ignore
-import avatar from "../../images/devAvatar.png";
+import avatar from "../../images/defaultAvatar.svg";
 import polygon from "../../images/polygon.svg";
 import {CsrfContext} from "../../context/CsrfContext";
 

@@ -5,7 +5,8 @@ class TimerImp {
     private readonly _len: number;
     private _currentLen: number;
     private _lenDecrement: number;
-    public isRunning: boolean;
+    private _canDecrement: boolean;
+    public isDecrementing: boolean;
 
     constructor(min: number, seconds: number, radius: number) {
         this._min = min;
@@ -13,7 +14,8 @@ class TimerImp {
         this._len = Math.floor(radius * 2 * 3.14);
         this._lenDecrement = this._len / ((this.min * 60) + this._seconds);
         this._currentLen = this._len;
-        this.isRunning = false;
+        this._canDecrement = (min * 60 + seconds) > 0;
+        this.isDecrementing = false;
     }
 
     buildString(): string {
@@ -22,7 +24,7 @@ class TimerImp {
 
     decrement(): void {
         if (this._min == 0 && this._seconds == 0) {
-            this.isRunning = false;
+            this._canDecrement = false;
             return;
         }
 
@@ -40,6 +42,11 @@ class TimerImp {
         this._seconds = sec;
         this._lenDecrement = this._len / ((this.min * 60) + this._seconds);
         this._currentLen = this._len;
+        this._canDecrement = true;
+    }
+
+    get canDecrement(): boolean {
+        return this._canDecrement;
     }
 
     get min(): number {
