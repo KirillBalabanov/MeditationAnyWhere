@@ -1,5 +1,6 @@
 package com.kirillbalabanov.meditationanywhere.service;
 
+import com.kirillbalabanov.meditationanywhere.creator.UserEntityCreator;
 import com.kirillbalabanov.meditationanywhere.entity.StatsEntity;
 import com.kirillbalabanov.meditationanywhere.entity.UserEntity;
 import com.kirillbalabanov.meditationanywhere.exception.user.LoginException;
@@ -14,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.sql.Date;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,140 +25,139 @@ class UserServiceTest {
 
     @MockBean
     private PasswordEncoder passwordEncoder;
-
     @MockBean
     private UserRepository userRepository;
-
+    @MockBean
+    private EmailSenderService emailSenderService;
     @Autowired
     private UserService userService;
 
-
     @Test
     void register_UsernameTaken_ShouldThrowException() {
-        UserEntity givenUserEntity =
-                new UserEntity("validUsername", "validEmail@gmail.com", "validPassword");
+        String requestUsername = "username";
+        String requestEmail = "email@gmail.ua";
+        String requestPassword = "password";
 
         // userRepository returns already registered user
-        Mockito.doReturn(Optional.of(new UserEntity())).when(userRepository).findByUsername(givenUserEntity.getUsername());
+        Mockito.doReturn(Optional.of(new UserEntity())).when(userRepository).findByUsername(requestUsername);
 
-        assertThrows(RegistrationException.class, () -> userService.register(givenUserEntity));
+        assertThrows(RegistrationException.class, () -> userService.register(requestUsername, requestEmail, requestPassword));
 
         Mockito.verify(userRepository, Mockito.times(1)).findByUsername(ArgumentMatchers.anyString());
     }
-
     @Test
     void register_EmailRegistered_ShouldThrowException() {
-        UserEntity givenUserEntity =
-                new UserEntity("validUsername", "validEmail@gmail.com", "validPassword");
+        String requestUsername = "username";
+        String requestEmail = "email@gmail.ua";
+        String requestPassword = "password";
 
         // userRepository returns already registered user with email 'email'
-        Mockito.doReturn(Optional.of(new UserEntity())).when(userRepository).findByEmail(givenUserEntity.getEmail());
+        Mockito.doReturn(Optional.of(new UserEntity())).when(userRepository).findByEmail(requestEmail);
 
-        assertThrows(RegistrationException.class, () -> userService.register(givenUserEntity));
+        assertThrows(RegistrationException.class, () -> userService.register(requestUsername, requestEmail, requestPassword));
 
         Mockito.verify(userRepository, Mockito.times(1)).findByEmail(ArgumentMatchers.anyString());
     }
-
     @Test
     void register_SuccessRegistration() throws RegistrationException {
-        UserEntity givenUserEntity =
-                new UserEntity("validUsername", "validEmail@gmail.com", "validPassword");
-        UserEntity registeredUser = new UserEntity("validUsername", "validEmail@gmail.com",
-                "encodedPassword", "ROLE_USER", false, "SomeCode");
-        registeredUser.setStatsEntity(StatsEntity.initStatsEntity());
+        String requestUsername = "username";
+        String requestEmail = "email@gmail.ua";
+        String requestPassword = "password";
+        String encodedPassword = "encodedPassword";
 
+        UserEntity registeredUserEntity = UserEntity.initUserEntity(requestUsername, encodedPassword, requestEmail, "ROLE_USER");
+        registeredUserEntity.setId(1);
 
-        Mockito.doReturn(Optional.empty()).when(userRepository).findByUsername(givenUserEntity.getUsername());
-        Mockito.doReturn(Optional.empty()).when(userRepository).findByEmail(givenUserEntity.getEmail());
-        Mockito.doReturn(registeredUser).when(userRepository).save(givenUserEntity);
-        Mockito.doReturn("encodedPassword").when(passwordEncoder).encode("validPassword");
+        Mockito.doReturn(Optional.empty()).when(userRepository).findByUsername(requestUsername);
+        Mockito.doReturn(Optional.empty()).when(userRepository).findByEmail(requestEmail);
+        Mockito.doReturn(registeredUserEntity).when(userRepository).save(ArgumentMatchers.any(UserEntity.class));
+        Mockito.doReturn(encodedPassword).when(passwordEncoder).encode(requestPassword);
 
-        assertEquals(registeredUser, userService.register(givenUserEntity));
+        assertEquals(registeredUserEntity, userService.register(requestUsername, requestEmail, requestPassword));
 
         Mockito.verify(userRepository, Mockito.times(1)).findByUsername(ArgumentMatchers.any());
         Mockito.verify(userRepository, Mockito.times(1)).findByEmail(ArgumentMatchers.any());
         Mockito.verify(userRepository, Mockito.times(1)).save(ArgumentMatchers.any());
         Mockito.verify(passwordEncoder, Mockito.times(1)).encode(ArgumentMatchers.anyString());
+        Mockito.verify(emailSenderService, Mockito.times(1))
+                .sendVerificationEmail(ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.anyString());
     }
-
     @Test
     void findByUsername_UserNotFound() {
-        UserEntity givenUserEntity =
-                new UserEntity("Username", "Password", "Email", "ROLE_USER", false, "someCode");
+        String requestUsername = "username";
 
-        Mockito.doReturn(Optional.empty()).when(userRepository).findByUsername(givenUserEntity.getUsername());
+        Mockito.doReturn(Optional.empty()).when(userRepository).findByUsername(requestUsername);
 
-        assertThrows(NoUserFoundException.class, () -> userService.findByUsername(givenUserEntity.getUsername()));
+        assertThrows(NoUserFoundException.class, () -> userService.findByUsername(requestUsername));
 
         Mockito.verify(userRepository, Mockito.times(1)).findByUsername(ArgumentMatchers.anyString());
     }
-
     @Test
     void findByUsername_UserFound() throws NoUserFoundException {
-        UserEntity givenUserEntity =
-                new UserEntity("Username", "Password", "Email", "ROLE_USER", false, "someCode");
+        String requestUsername = "username";
 
-        Mockito.doReturn(Optional.of(givenUserEntity)).when(userRepository).findByUsername(givenUserEntity.getUsername());
+        UserEntity foundedUser = new UserEntity();
 
-        assertEquals(givenUserEntity, userService.findByUsername(givenUserEntity.getUsername()));
+        Mockito.doReturn(Optional.of(foundedUser)).when(userRepository).findByUsername(requestUsername);
+
+        assertEquals(foundedUser, userService.findByUsername(requestUsername));
 
         Mockito.verify(userRepository, Mockito.times(1)).findByUsername(ArgumentMatchers.anyString());
     }
-
     @Test
     void isAbleToLogIn_Able() {
-        String givenUsername = "someUsername";
-        String givenPassword = "somePassword";
+        String requestUsername = "username";
+        String requestEmail = "email@gmail.ua";
+        String requestPassword = "password";
+        String encodedPassword = "encodedPassword";
 
-        UserEntity verifiedUserEntity = new UserEntity(givenUsername, "someEmail@gmail.ua", "encodedPassword");
-        verifiedUserEntity.setActivated(true);
-        verifiedUserEntity.setActivationCode(null);
+        UserEntity verifiedUserEntity = UserEntityCreator.create(1L, requestUsername, encodedPassword, requestEmail,
+        true, null, StatsEntity.initStatsEntity(), "ROLE_USER", new Date(new java.util.Date().getTime()));
 
-        Mockito.doReturn(Optional.of(verifiedUserEntity)).when(userRepository).findByUsername(givenUsername);
-        Mockito.doReturn(true).when(passwordEncoder).matches(givenPassword, verifiedUserEntity.getPassword());
+        Mockito.doReturn(Optional.of(verifiedUserEntity)).when(userRepository).findByUsername(requestUsername);
+        Mockito.doReturn(true).when(passwordEncoder).matches(requestPassword, encodedPassword);
 
-        assertDoesNotThrow(() -> userService.isAbleToLogIn(givenUsername, givenPassword));
+        assertDoesNotThrow(() -> userService.isAbleToLogIn(requestUsername, requestPassword));
 
         Mockito.verify(userRepository, Mockito.times(1)).findByUsername(ArgumentMatchers.anyString());
         Mockito.verify(passwordEncoder, Mockito.times(1)).matches(ArgumentMatchers.anyString(), ArgumentMatchers.anyString());
     }
-
     @Test
     void isAbleToLogIn_IsNotAble_InvalidPassword() {
-        String givenUsername = "someUsername";
-        String givenPassword = "somePassword";
+        String requestUsername = "username";
+        String requestEmail = "email@gmail.ua";
+        String requestPassword = "password";
+        String encodedPassword = "encodedPassword";
 
-        UserEntity verifiedUserEntity = new UserEntity(givenUsername, "someEmail@gmail.ua", "encodedPassword");
-        verifiedUserEntity.setActivated(true);
-        verifiedUserEntity.setActivationCode(null);
+        UserEntity verifiedUserEntity = UserEntityCreator.create(1L, requestUsername, encodedPassword, requestEmail,
+                true, null, StatsEntity.initStatsEntity(), "ROLE_USER", new Date(new java.util.Date().getTime()));
 
-        Mockito.doReturn(Optional.of(verifiedUserEntity)).when(userRepository).findByUsername(givenUsername);
-        Mockito.doReturn(false).when(passwordEncoder).matches(givenPassword, verifiedUserEntity.getPassword());
+        Mockito.doReturn(Optional.of(verifiedUserEntity)).when(userRepository).findByUsername(requestUsername);
+        Mockito.doReturn(false).when(passwordEncoder).matches(requestPassword, encodedPassword);
 
-        assertThrows(LoginException.class, () -> userService.isAbleToLogIn(givenUsername, givenPassword));
+        assertThrows(LoginException.class, () -> userService.isAbleToLogIn(requestUsername, requestPassword));
 
         Mockito.verify(userRepository, Mockito.times(1)).findByUsername(ArgumentMatchers.anyString());
         Mockito.verify(passwordEncoder, Mockito.times(1)).matches(ArgumentMatchers.anyString(), ArgumentMatchers.anyString());
     }
-
     @Test
     void isAbleToLogIn_IsNotAble_AccountNotActivated() {
-        String givenUsername = "someUsername";
-        String givenPassword = "somePassword";
+        String requestUsername = "username";
+        String requestEmail = "email@gmail.ua";
+        String requestPassword = "password";
+        String encodedPassword = "encodedPassword";
 
-        UserEntity verifiedUserEntity = new UserEntity(givenUsername, "someEmail@gmail.ua", "encodedPassword");
-        verifiedUserEntity.setActivated(false);
-        verifiedUserEntity.setActivationCode(null);
+        UserEntity unVerifiedUserEntity = UserEntityCreator.create(1L, requestUsername, encodedPassword, requestEmail,
+                false, "Some Code", StatsEntity.initStatsEntity(), "ROLE_USER", new Date(new java.util.Date().getTime()));
 
-        Mockito.doReturn(Optional.of(verifiedUserEntity)).when(userRepository).findByUsername(givenUsername);
-        Mockito.doReturn(true).when(passwordEncoder).matches(givenPassword, verifiedUserEntity.getPassword());
+        Mockito.doReturn(Optional.of(unVerifiedUserEntity)).when(userRepository).findByUsername(requestUsername);
+        Mockito.doReturn(true).when(passwordEncoder).matches(requestPassword, encodedPassword);
 
-        assertThrows(LoginException.class, () -> userService.isAbleToLogIn(givenUsername, givenPassword));
+        assertThrows(LoginException.class, () -> userService.isAbleToLogIn(requestUsername, requestPassword));
 
         Mockito.verify(userRepository, Mockito.times(1)).findByUsername(ArgumentMatchers.anyString());
         Mockito.verify(passwordEncoder, Mockito.times(1)).matches(ArgumentMatchers.anyString(), ArgumentMatchers.anyString());
     }
-
     @Test
     void verifyUser_NoUserFoundException() {
         String givenActivationCode = "someCode";
@@ -167,19 +168,23 @@ class UserServiceTest {
 
         Mockito.verify(userRepository, Mockito.times(1)).findByActivationCode(ArgumentMatchers.anyString());
     }
-
     @Test
     void verifyUser_SuccessVerification() {
-        String givenActivationCode = "someCode";
-        UserEntity verifiedUserEntity = new UserEntity("someUsername", "somePassword", "someEmail@gmail.ua");
-        verifiedUserEntity.setActivationCode(givenActivationCode);
-        verifiedUserEntity.setActivated(true);
-        verifiedUserEntity.setRole("ROLE_USER");
+        String requestUsername = "username";
+        String requestEmail = "email@gmail.ua";
+        String encodedPassword = "encodedPassword";
 
-        Mockito.doReturn(Optional.of(verifiedUserEntity)).when(userRepository).findByActivationCode(givenActivationCode);
+        String verificationCode = "SomeCode";
 
-        assertDoesNotThrow(() -> userService.verifyUserByActivationCode(givenActivationCode));
+        UserEntity unVerifiedUserEntity = UserEntityCreator.create(1L, requestUsername, encodedPassword, requestEmail,
+                false, verificationCode, StatsEntity.initStatsEntity(), "ROLE_USER", new Date(new java.util.Date().getTime()));
+
+        Mockito.doReturn(Optional.of(unVerifiedUserEntity)).when(userRepository).findByActivationCode(verificationCode);
+
+        assertDoesNotThrow(() -> userService.verifyUserByActivationCode(verificationCode));
 
         Mockito.verify(userRepository, Mockito.times(1)).findByActivationCode(ArgumentMatchers.anyString());
     }
+
+
 }

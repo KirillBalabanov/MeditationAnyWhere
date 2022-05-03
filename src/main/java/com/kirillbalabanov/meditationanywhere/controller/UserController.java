@@ -12,9 +12,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfToken;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,15 +34,22 @@ public class UserController {
     }
 
     @PostMapping("/registration")
-    public ResponseEntity<?> registration(@RequestBody UserEntity userEntity) {
+    public ResponseEntity<?> registration(@RequestBody HashMap<String, String> hm) {
+        if(hm.size() != 3) return ResponseEntity.badRequest().body("Invalid request params");
+
+        String username = hm.get("username");
+        String email = hm.get("email");
+        String password = hm.get("password");
+
+        UserEntity registeredUser;
         try {
-            userEntity = userService.register(userEntity);
+            registeredUser = userService.register(username, email, password);
         } catch (Exception e) {
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.put("error", e.getMessage());
             return ResponseEntity.ok().body(hashMap);
         }
-        return ResponseEntity.ok().body(UserModel.toModel(userEntity));
+        return ResponseEntity.ok().body(UserModel.toModel(registeredUser));
     }
 
     @PostMapping("/login")
@@ -49,10 +58,9 @@ public class UserController {
         if(hashMap.size() != 2) return ResponseEntity.badRequest().body("Invalid request params");
         String username = hashMap.get("username");
         String password = hashMap.get("password");
-        HashMap<Object, Object> hm = new HashMap<>();
 
+        HashMap<Object, Object> hm = new HashMap<>();
         try {
-            if(username == null || password == null) throw new LoginException("Invalid input.");
             userService.isAbleToLogIn(username, password);
         } catch (Exception e) {
             hm.put("error", e.getMessage());
@@ -67,6 +75,7 @@ public class UserController {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(username,
                 password);
         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+
         return ResponseEntity.ok().body(hm);
     }
 
@@ -77,6 +86,7 @@ public class UserController {
 
         // generate new csrf token
         String newToken = generateAndSaveToken(httpServletRequest, httpServletResponse);
+
         return ResponseEntity.ok().body(newToken);
     }
 

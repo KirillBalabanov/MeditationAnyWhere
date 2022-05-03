@@ -2,6 +2,7 @@ package com.kirillbalabanov.meditationanywhere.entity;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.util.UUID;
 
 @Entity
 @Table(name = "users")
@@ -33,28 +34,20 @@ public class UserEntity {
     public UserEntity() {
     }
 
-    public UserEntity(String username, String email, String password) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
-    }
-
-    public UserEntity(String username, String password, String email, String role, boolean isActivated, String activationCode) {
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.role = role;
-        this.isActivated = isActivated;
-        this.activationCode = activationCode;
-    }
-
-    public void fillRegisteredUserFields(String encodedPassword, String role, String activationCode, StatsEntity statsEntity) {
-        this.password = encodedPassword;
-        this.role = role;
-        this.activationCode = activationCode;
-        this.statsEntity = statsEntity;
-        this.isActivated = false;
-        this.setRegistrationDate(new Date(new java.util.Date().getTime()));
+    /**
+     * Fabric method used to create an instance of brand new UserEntity, which then has to be saved in db.
+     */
+    public static UserEntity initUserEntity(String username, String email, String hashedPassword, String role) {
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUsername(username);
+        userEntity.setEmail(email);
+        userEntity.setPassword(hashedPassword);
+        userEntity.setRole(role);
+        userEntity.setStatsEntity(StatsEntity.initStatsEntity());
+        userEntity.setActivated(false);
+        userEntity.setActivationCode(UUID.randomUUID().toString());
+        userEntity.setRegistrationDate(new Date(new java.util.Date().getTime()));
+        return userEntity;
     }
 
     public Date getRegistrationDate() {

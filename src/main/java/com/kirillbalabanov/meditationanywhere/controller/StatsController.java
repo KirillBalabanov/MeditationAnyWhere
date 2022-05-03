@@ -34,7 +34,7 @@ public class StatsController {
 
         // getting session's minListened, fetched by js.
         int minListened = Integer.parseInt(map.get("minListened"));
-        System.out.println(minListened);
+
         UserDet principal = (UserDet) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         StatsEntity statsEntity = statsService.updateStats(minListened, principal.getUserId());
         return ResponseEntity.ok().body(StatsModel.toModel(statsEntity));

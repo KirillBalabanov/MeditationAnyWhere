@@ -25,48 +25,8 @@ public class StatsEntity {
     public StatsEntity() {
     }
 
-    public StatsEntity(int id, int minListened, int sessionsListened, int currentStreak, int longestStreak, Date lastSessionsDate, UserEntity userEntity) {
-        this.id = id;
-        this.minListened = minListened;
-        this.sessionsListened = sessionsListened;
-        this.currentStreak = currentStreak;
-        this.longestStreak = longestStreak;
-        this.lastSessionsDate = lastSessionsDate;
-        this.userEntity = userEntity;
-    }
-
     /**
-     * Fabric method creating an instance of StatsEntity, encapsulating:
-     *<table>
-     *<tr>
-     *<th>Field in db</th>
-     *<th>Value in entity</th>
-     *</tr>
-     * <tr>
-     *     <td>min_listened</td>
-     *     <td>0</td>
-     * </tr>
-     * <tr>
-     *     <td>sessions_listened</td>
-     *     <td>0</td>
-     * </tr>
-     * <tr>
-     *     <td>current_streak</td>
-     *     <td>0</td>
-     * </tr>
-     * <tr>
-     *     <td>longest_streak</td>
-     *     <td>0</td>
-     * </tr>
-     * <tr>
-     *     <td>sessions_listened</td>
-     *     <td>0</td>
-     * </tr>
-     * <tr>
-     *     <td>last_sessions_date</td>
-     *     <td>null</td>
-     * </tr>
-     *</table>
+     * Fabric method creating an instance of brand new StatsEntity, which then has to be saved in db.
      */
     public static StatsEntity initStatsEntity() {
         StatsEntity statsEntity = new StatsEntity();

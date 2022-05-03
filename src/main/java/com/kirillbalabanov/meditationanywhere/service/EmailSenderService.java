@@ -12,10 +12,8 @@ import javax.mail.internet.AddressException;
 public class EmailSenderService {
 
     private final JavaMailSender javaMailSender;
-
     private final String serverIp;
     private final String email;
-
     private final int serverPort;
 
     @Autowired
@@ -34,7 +32,7 @@ public class EmailSenderService {
      * @param userEmail email of registered user.
      * @return true if email has been sent
      */
-    public boolean sendVerificationEmailUuidTo(String userUuid, String userUsername, String userEmail) {
+    public boolean sendVerificationEmail(String userUuid, String userEmail, String userUsername) {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         StringBuilder builder = new StringBuilder();
         builder.append("Hello ").append(userUsername).append("!");

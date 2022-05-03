@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -34,17 +35,19 @@ public class UserService {
      * @throws RegistrationException if username or email is taken.
      */
 
-    public UserEntity register(UserEntity userEntity) throws RegistrationException {
-        validateInput(userEntity.getUsername(), userEntity.getEmail(), userEntity.getPassword());
-        if(userRepository.findByUsername(userEntity.getUsername()).isPresent()) throw new RegistrationException("Username is taken.");
-        if(userRepository.findByEmail(userEntity.getEmail()).isPresent()) throw new RegistrationException("Email is already registered.");
+    public UserEntity register(String username, String email, String password) throws RegistrationException {
 
-        String uuid = UUID.randomUUID().toString();
-        userEntity.fillRegisteredUserFields(passwordEncoder.encode(userEntity.getPassword()), "ROLE_USER", uuid, StatsEntity.initStatsEntity());
-        emailSenderService.sendVerificationEmailUuidTo(uuid, userEntity.getUsername(), userEntity.getEmail());
+        validateInput(username, email, password);
+        if(userRepository.findByUsername(username).isPresent()) throw new RegistrationException("Username is taken.");
+        if(userRepository.findByEmail(email).isPresent()) throw new RegistrationException("Email is already registered.");
 
-        userEntity.getStatsEntity().setUserEntity(userEntity);
-        return userRepository.save(userEntity);
+        UserEntity newUserEntity = UserEntity.initUserEntity(username, email, passwordEncoder.encode(password), "ROLE_USER");
+
+        emailSenderService.sendVerificationEmail(newUserEntity.getActivationCode(), email, username);
+
+        newUserEntity.getStatsEntity().setUserEntity(newUserEntity); // bind stats to user
+
+        return userRepository.save(newUserEntity);
     }
 
     /**
