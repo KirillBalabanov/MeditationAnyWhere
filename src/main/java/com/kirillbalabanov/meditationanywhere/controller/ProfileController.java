@@ -47,25 +47,17 @@ public class ProfileController {
     @PutMapping(value = "/profile/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updateProfileSettings(@RequestParam(value = "bio", required = true) String bio,
                                                    @RequestParam(value = "image", required = false) MultipartFile image) {
-        if(bio == null) return ResponseEntity.badRequest().body("Invalid arguments.");
+        if (bio == null) return ResponseEntity.badRequest().body("Invalid arguments.");
 
         UserDet userDet = (UserDet) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ProfileEntity profileEntity;
         HashMap<String, String> hm = new HashMap<>();
 
-        UserEntity userEntity;
         try {
-            userEntity = userService.findById(userDet.getUserId());
-        } catch (NoUserFoundException e) {
-            hm.put("error", e.getMessage());
-            return ResponseEntity.ok().body(hm);
-        }
-
-        try{
             if (image == null) {
-                profileEntity = profileService.updateProfileSettings(userEntity, bio);
+                profileEntity = profileService.updateProfileSettings(userDet.getUserId(), bio);
             } else {
-                profileEntity = profileService.updateProfileSettings(userEntity, bio, image);
+                profileEntity = profileService.updateProfileSettings(userDet.getUserId(), bio, image);
             }
         } catch (Exception e) {
             hm.put("error", e.getMessage());
@@ -73,5 +65,20 @@ public class ProfileController {
         }
 
         return ResponseEntity.ok().body(ProfileModel.toModel(profileEntity));
+    }
+
+    @GetMapping("profile/settings")
+    public ResponseEntity<?> getProfileEntitySettings() {
+        UserDet userDet = (UserDet) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserEntity userEntity;
+        try {
+            userEntity = userService.findById(userDet.getUserId());
+        } catch (NoUserFoundException e) {
+            HashMap<String, String> hm = new HashMap<>();
+            hm.put("error", e.getMessage());
+            return ResponseEntity.ok().body(hm);
+        }
+        ProfileModel model = ProfileModel.toModel(userEntity.getProfileEntity());
+        return ResponseEntity.ok().body(model);
     }
 }

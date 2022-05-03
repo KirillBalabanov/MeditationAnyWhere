@@ -4,54 +4,44 @@ import com.kirillbalabanov.meditationanywhere.entity.ProfileEntity;
 import com.kirillbalabanov.meditationanywhere.entity.UserEntity;
 import com.kirillbalabanov.meditationanywhere.exception.user.NoUserFoundException;
 import com.kirillbalabanov.meditationanywhere.repository.ProfileRepository;
-import com.kirillbalabanov.meditationanywhere.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Optional;
 
 @Service
 public class ProfileService {
-    private ProfileRepository profileRepository;
-    private UserRepository userRepository;
-
+    private final ProfileRepository profileRepository;
+    private final UserService userService;
     private final String profilePath;
 
     @Autowired
-    public ProfileService(ProfileRepository profileRepository, UserRepository userRepository) {
+    public ProfileService(ProfileRepository profileRepository, UserService userService) {
         this.profileRepository = profileRepository;
-        this.userRepository = userRepository;
+        this.userService = userService;
         this.profilePath = "D:\\Documents\\Projects\\GitHub\\meditationanywhere\\src\\main\\resources\\static\\profile";
     }
 
-    public ProfileEntity updateProfileSettings(UserEntity userEntity, String bio, MultipartFile image) throws NoUserFoundException, IOException {
+    public ProfileEntity updateProfileSettings(long id, String bio, MultipartFile image) throws NoUserFoundException, IOException {
+        UserEntity userEntity = userService.findById(id);
         ProfileEntity profileEntity = userEntity.getProfileEntity();
 
-        File resultFile = createUserFolderAndSaveAvatar(userEntity.getId(), image);
+        File resultFile = createUserFolderAndSaveAvatar(id, image);
 
         profileEntity.setBio(bio);
         profileEntity.setAvatarFilePath(resultFile.getPath());
         return profileRepository.save(profileEntity);
     }
 
-    public ProfileEntity updateProfileSettings(UserEntity userEntity, String bio) throws NoUserFoundException, IOException {
+    public ProfileEntity updateProfileSettings(long id, String bio) throws NoUserFoundException {
+        UserEntity userEntity = userService.findById(id);
+
         ProfileEntity profileEntity = userEntity.getProfileEntity();
 
         profileEntity.setBio(bio);
 
-        return profileRepository.save(profileEntity);
-    }
-
-    public ProfileEntity updateProfileSettings(UserEntity userEntity, MultipartFile image) throws NoUserFoundException, IOException {
-        ProfileEntity profileEntity = userEntity.getProfileEntity();
-
-        File resultFile = createUserFolderAndSaveAvatar(userEntity.getId(), image);
-
-        profileEntity.setAvatarFilePath(resultFile.getPath());
         return profileRepository.save(profileEntity);
     }
 
