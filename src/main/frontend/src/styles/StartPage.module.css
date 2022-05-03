@@ -1,14 +1,50 @@
-.bg {
-    background: url("../images/startBackground.jpg");
-    width: 100vw;
-    height: 100vh;
-    margin: 0;
+.frame {
+    background: url("../images/startBackgroundCentered.jpg") center / cover no-repeat;
     position: absolute;
-
+    width: 120%;
+    height: 120%;
+    left: -10%;
+    top: -10%;
+    transition: all .1s cubic-bezier(0.6, 0.6, 0.6, 0.6);
 }
 
-.link {
+.body {
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+}
+
+.start {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+}
+.start__inner {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.start__title {
+    font-size: 72px;
+    width: 100%;
+    text-align: center;
+    margin-top: 0;
+}
+.start__link {
     padding: 10px 20px;
     background-color: white;
     color: black;
+    text-align: center;
+    margin: 0 auto;
+    transition: all .4s;
+}
+.start__link:hover {
+    padding: 10px 40px;
+}
+.start__link:hover .start__title {
+    left: -200px;
 }
