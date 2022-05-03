@@ -20,7 +20,7 @@ const UserProfile = ({profile}: any) => {
                 <img src={defaultAvatar} alt="avatar"
                      className={classes.profile__infoAvatar} onMouseOver={() => setPopupShown(true)}
                      onMouseLeave={() => setPopupShown(false)}
-                     onClick={() => navigateFunction("/settings")}
+                     onClick={() => navigateFunction("/settings/profile")}
                 />
                 <div className={popupShown ? classes.profile__popup + " " + classes.shown : classes.profile__popup}>
                     <div className={classes.profile__popupText}>change your avatar</div>

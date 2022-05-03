@@ -35,8 +35,6 @@ const Timer = () => {
             body: JSON.stringify({
                 minListened: minListened
             })
-        }).then((response) => response.json()).then((data) => {
-            console.log(data);
         });
         setSessionEnded(false);
 

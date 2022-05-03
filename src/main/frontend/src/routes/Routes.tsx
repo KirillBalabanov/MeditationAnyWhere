@@ -7,6 +7,7 @@ import MainPage from "../pages/MainPage";
 import React from "react";
 import {Navigate} from "react-router-dom";
 import ProfilePage from "../pages/ProfilePage";
+import Settings from "../pages/Settings";
 
 const publicRoutes = [
     {path: "/start", component: <StartPage></StartPage>},
@@ -19,7 +20,7 @@ const publicRoutes = [
 ]
 
 const privateRoutes = (auth: boolean) => [
-    {path: "/settings", component: auth ? <MainPage></MainPage> : <Navigate to={"/login"}/>},
+    {path: "/settings/:setting", component: auth ? <Settings></Settings> : <Navigate to={"/login"}/>},
 ]
 
 export const AppRoutes = (auth: boolean) =>  [

@@ -56,7 +56,7 @@ const Header = () => {
                                 Go to profile
                             </li>
                             <li className="user__menu-item"
-                                onClick={() => redirectTo("/settings" + authContext?.username)}>
+                                onClick={() => redirectTo("/settings/profile")}>
                                 Settings
                             </li>
                             <li className="user__menu-item" onClick={() => {

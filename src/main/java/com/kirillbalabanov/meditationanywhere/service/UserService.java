@@ -1,20 +1,16 @@
 package com.kirillbalabanov.meditationanywhere.service;
 
-import com.kirillbalabanov.meditationanywhere.entity.StatsEntity;
 import com.kirillbalabanov.meditationanywhere.entity.UserEntity;
 import com.kirillbalabanov.meditationanywhere.exception.user.LoginException;
 import com.kirillbalabanov.meditationanywhere.exception.user.NoUserFoundException;
 import com.kirillbalabanov.meditationanywhere.exception.user.RegistrationException;
-import com.kirillbalabanov.meditationanywhere.repository.StatsRepository;
 import com.kirillbalabanov.meditationanywhere.repository.UserRepository;
 import com.kirillbalabanov.meditationanywhere.util.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class UserService {
