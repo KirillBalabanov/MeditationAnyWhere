@@ -4,11 +4,14 @@ import defaultAvatar from "../../images/defaultAvatar.svg";
 import timeIcon from "../../images/timeIcon.svg";
 import polygon from "../../images/polygonOnRectangleGray.svg";
 import {useNavigate} from "react-router-dom";
+import Date from "../date/Date";
 
 const UserProfile = ({profile}: any) => {
 
     const [popupShown, setPopupShown] = useState(false);
     let navigateFunction = useNavigate();
+
+
 
 
     return (
@@ -39,7 +42,7 @@ const UserProfile = ({profile}: any) => {
                                 Joined
                             </div>
                             <div>
-                                May 6, 2022
+                                <Date date={profile.registrationDate}></Date>
                             </div>
                         </div>
                     </div>

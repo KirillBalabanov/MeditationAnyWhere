@@ -65,6 +65,7 @@ class UserServiceTest {
                 "encodedPassword", "ROLE_USER", false, "SomeCode");
         registeredUser.setStatsEntity(StatsEntity.initStatsEntity());
 
+
         Mockito.doReturn(Optional.empty()).when(userRepository).findByUsername(givenUserEntity.getUsername());
         Mockito.doReturn(Optional.empty()).when(userRepository).findByEmail(givenUserEntity.getEmail());
         Mockito.doReturn(registeredUser).when(userRepository).save(givenUserEntity);

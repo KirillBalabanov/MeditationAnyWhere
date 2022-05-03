@@ -20,15 +20,14 @@ const ProfilePage = () => {
         minListened: "",
         sessionsListened: "",
         currentStreak: "",
-        longestStreak: ""
+        longestStreak: "",
+        registrationDate: ""
     }
     const [profile, setProfile] = useState(profileModel);
 
     const [fetched, errorMsg] = useFetching("/profile/" + username, setProfile, setIsLoading);
 
     if(!fetched) return (<Error errorMsg={errorMsg}/>);
-
-
 
     return (
         <div>

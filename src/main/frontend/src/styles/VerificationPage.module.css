@@ -26,5 +26,7 @@
 .verification__link {
     text-align: center;
     margin-top: 30px;
-    font-size: 22px;
+    font-size: 18px;
+    text-decoration: underline;
+    text-decoration-color: white;
 }

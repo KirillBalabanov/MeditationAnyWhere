@@ -1,6 +1,7 @@
 package com.kirillbalabanov.meditationanywhere.entity;
 
 import javax.persistence.*;
+import java.sql.Date;
 
 @Entity
 @Table(name = "users")
@@ -22,6 +23,9 @@ public class UserEntity {
     private String email;
     @Column(nullable = false)
     private String role;
+
+    @Column(nullable = false)
+    private Date registrationDate;
 
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "userEntity")
     private StatsEntity statsEntity;
@@ -50,7 +54,17 @@ public class UserEntity {
         this.activationCode = activationCode;
         this.statsEntity = statsEntity;
         this.isActivated = false;
+        this.setRegistrationDate(new Date(new java.util.Date().getTime()));
     }
+
+    public Date getRegistrationDate() {
+        return registrationDate;
+    }
+
+    public void setRegistrationDate(Date registrationDate) {
+        this.registrationDate = registrationDate;
+    }
+
     public String getActivationCode() {
         return activationCode;
     }
