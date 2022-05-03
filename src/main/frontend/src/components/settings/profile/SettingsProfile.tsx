@@ -1,24 +1,22 @@
 import React from 'react';
 import defaultAvatar from "../../../images/defaultAvatar.svg";
 import classes from "./SettingsProfile.module.css";
+import Section from "../section/Section";
 
 const SettingsProfile = () => {
     return (
         <div>
-            <div className={classes.profile__section}>
-                <p className={classes.profile__sectionTitle}>Profile picture</p>
+            <Section title={"Profile image"}>
                 <img className={classes.avatar} src={defaultAvatar} alt="avatar"/>
-                <button className={classes.profile__sectionButton + " " + classes.upload}>Upload a photo</button>
-                <button className={classes.profile__sectionButton + " " + classes.remove}>Remove photo</button>
-            </div>
+                <button className={classes.upload}>Upload a photo</button>
+                <button className={classes.remove}>Remove photo</button>
+            </Section>
             <form>
-                <div className={classes.profile__section}>
-                    <p className={classes.profile__sectionTitle}>Bio</p>
+                <Section title={"Bio"}>
                     <textarea className={classes.bio} name="bio" cols={50} rows={7}></textarea>
-                </div>
-                <button className={classes.profile__sectionButton + " " + classes.updateProfile}>Update profile</button>
+                </Section>
             </form>
-
+            <button className={classes.updateProfile}>Update profile</button>
         </div>
     );
 };

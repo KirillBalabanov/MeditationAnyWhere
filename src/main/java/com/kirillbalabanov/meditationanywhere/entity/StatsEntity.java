@@ -18,7 +18,7 @@ public class StatsEntity {
     @Column(nullable = true)
     private Date lastSessionsDate;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity userEntity;
 

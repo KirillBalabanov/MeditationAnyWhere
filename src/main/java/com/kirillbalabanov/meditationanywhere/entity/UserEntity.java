@@ -28,7 +28,7 @@ public class UserEntity {
     @Column(nullable = false)
     private Date registrationDate;
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "userEntity")
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "userEntity", fetch = FetchType.EAGER)
     private StatsEntity statsEntity;
 
     public UserEntity() {

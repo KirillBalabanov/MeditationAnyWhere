@@ -10,7 +10,7 @@
     border-right: 1px solid #2D2E32;
 }
 .settings__option {
-    font-size: 18px;
+    font-size: 16px;
     width: 295px;
     padding-left: 5px;
     height: 30px;
@@ -66,6 +66,7 @@
 .setting__title {
     padding: 0 0 10px;
     border-bottom: 1px solid #2D2E32;
-    font-size: 28px;
-    margin: 0 0 30px;
+    font-size: 26px;
+    margin: 0;
 }
+
