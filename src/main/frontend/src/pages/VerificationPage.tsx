@@ -22,7 +22,7 @@ const VerificationPage = () => {
                             :
                             <div className={classes.verification__box}>
                                 <p>{data["message"].toString()}</p>
-                                <Link to={"/"} className={classes.verification__link}>Go to main page</Link>
+                                <Link to={"/login"} className={classes.verification__link}>Go to login page</Link>
                             </div>
 
                     }

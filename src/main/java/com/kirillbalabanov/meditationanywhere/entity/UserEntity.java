@@ -31,6 +31,9 @@ public class UserEntity {
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "userEntity", fetch = FetchType.EAGER)
     private StatsEntity statsEntity;
 
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "userEntity", fetch = FetchType.EAGER)
+    private ProfileEntity profileEntity;
+
     public UserEntity() {
     }
 
@@ -47,7 +50,16 @@ public class UserEntity {
         userEntity.setActivated(false);
         userEntity.setActivationCode(UUID.randomUUID().toString());
         userEntity.setRegistrationDate(new Date(new java.util.Date().getTime()));
+        userEntity.setProfileEntity(ProfileEntity.initProfileEntity());
         return userEntity;
+    }
+
+    public ProfileEntity getProfileEntity() {
+        return profileEntity;
+    }
+
+    public void setProfileEntity(ProfileEntity profileEntity) {
+        this.profileEntity = profileEntity;
     }
 
     public Date getRegistrationDate() {

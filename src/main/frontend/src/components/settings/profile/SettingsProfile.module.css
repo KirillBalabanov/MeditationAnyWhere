@@ -11,6 +11,12 @@
     background: #0D091F;
     margin-bottom: 10px;
     margin-left: 30px;
+    width: 140px;
+    height: 20px;
+    font-size: 16px;
+    display: block;
+    text-align: center;
+    cursor: pointer;
 }
 
 .remove {

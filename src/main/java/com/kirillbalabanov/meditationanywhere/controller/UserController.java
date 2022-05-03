@@ -89,22 +89,6 @@ public class UserController {
 
         return ResponseEntity.ok().body(newToken);
     }
-
-    @GetMapping("/profile/{username}")
-    public ResponseEntity<?> showUsersProfile(@PathVariable String username) {
-        UserEntity userEntity;
-        try {
-            userEntity = userService.findByUsername(username);
-        } catch (NoUserFoundException e) {
-            HashMap<String, String> hashMap = new HashMap<>();
-            hashMap.put("error", e.getMessage());
-            return ResponseEntity.ok().body(hashMap);
-        }
-        StatsEntity statsEntity = userEntity.getStatsEntity();
-
-        return ResponseEntity.ok().body(UserProfileModel.toModel(statsEntity, userEntity));
-    }
-
     @GetMapping("/verification/{activationCode}")
     public ResponseEntity<?> verification(@PathVariable String activationCode) {
         HashMap<String, String> hashMap = new HashMap<>();

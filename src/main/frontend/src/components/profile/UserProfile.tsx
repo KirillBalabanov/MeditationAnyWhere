@@ -12,8 +12,6 @@ const UserProfile = ({profile}: any) => {
     let navigateFunction = useNavigate();
 
 
-
-
     return (
         <div className={classes.profile}>
             <div className={classes.profile__info}>
@@ -24,12 +22,11 @@ const UserProfile = ({profile}: any) => {
                 />
                 <div className={popupShown ? classes.profile__popup + " " + classes.shown : classes.profile__popup}>
                     <div className={classes.profile__popupText}>change your avatar</div>
-                    <img src={polygon} alt="avatar" className={classes.profile__popupIcon}/>
+                    <img src={polygon} alt="polygon" className={classes.profile__popupIcon}/>
                 </div>
                 <div className={classes.profile__username}>{profile.username}</div>
                 <div className={classes.profile__status}>
-                    status status status status status status status status status status status status
-                    status status status status status status status status.
+                    {profile.bio}
                 </div>
                 <div className={classes.profile__button} onClick={() => navigateFunction("/settings/profile")}>
                     Edit Profile

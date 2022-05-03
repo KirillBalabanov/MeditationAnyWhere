@@ -84,7 +84,7 @@ const RegistrationPage = () => {
             <div className={classes.auth__outer}>
                 <form className={authClasses.join(" ").trim()} onSubmit={postRegister}>
                     <h2 className={classes.auth__title}>Create Account</h2>
-                    <input type="text" className={classes.auth__input} placeholder="Input username"
+                    <input type="text" name="username" className={classes.auth__input} placeholder="Input username"
                            onInput={(e) => { // validation on input
                                 try {
                                     isValidUsername((e.target as HTMLInputElement).value);
@@ -93,7 +93,7 @@ const RegistrationPage = () => {
                                     if (e instanceof Error) setErrorMsg(e.message);
                                 }
                     }}/>
-                    <input type="email" className={classes.auth__input} placeholder="Input email"
+                    <input type="email" name="email" className={classes.auth__input} placeholder="Input email"
                            onInput={(e) => { // validation on input
                                 try {
                                     isValidEmail((e.target as HTMLInputElement).value);
@@ -102,7 +102,7 @@ const RegistrationPage = () => {
                                     if (e instanceof Error) setErrorMsg(e.message);
                                 }
                     }}/>
-                    <input type="password" className={classes.auth__input} placeholder="Input password"
+                    <input type="password" name="password" className={classes.auth__input} placeholder="Input password"
                            onInput={(e) => { // validation on input
                                 try {
                                     isValidPassword((e.target as HTMLInputElement).value);

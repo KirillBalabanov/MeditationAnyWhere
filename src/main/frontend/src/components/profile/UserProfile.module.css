@@ -49,6 +49,7 @@
 .profile__status {
     font-size: 20px;
     margin: 20px 0 30px;
+    width: 380px;
 }
 .profile__button {
     padding: 10px 40px;

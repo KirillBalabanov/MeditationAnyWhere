@@ -21,7 +21,9 @@ const ProfilePage = () => {
         sessionsListened: "",
         currentStreak: "",
         longestStreak: "",
-        registrationDate: ""
+        registrationDate: "",
+        bio: "",
+        avatarFilePath: ""
     }
     const [profile, setProfile] = useState(profileModel);
 

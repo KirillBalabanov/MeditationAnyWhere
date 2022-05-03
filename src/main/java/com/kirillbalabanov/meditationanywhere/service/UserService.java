@@ -42,6 +42,7 @@ public class UserService {
         emailSenderService.sendVerificationEmail(newUserEntity.getActivationCode(), email, username);
 
         newUserEntity.getStatsEntity().setUserEntity(newUserEntity); // bind stats to user
+        newUserEntity.getProfileEntity().setUserEntity(newUserEntity); // bind profile to user
 
         return userRepository.save(newUserEntity);
     }
@@ -70,6 +71,12 @@ public class UserService {
     public UserEntity findByUsername(String username) throws NoUserFoundException {
         Optional<UserEntity> optional = userRepository.findByUsername(username);
         if(optional.isEmpty()) throw new NoUserFoundException("User " + "'" + username + "'" + " not found.");
+        return optional.get();
+    }
+
+    public UserEntity findById(long id) throws NoUserFoundException {
+        Optional<UserEntity> optional = userRepository.findById(id);
+        if(optional.isEmpty()) throw new NoUserFoundException("No user found.");
         return optional.get();
     }
 
