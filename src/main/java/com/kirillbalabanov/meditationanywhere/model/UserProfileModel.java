@@ -13,11 +13,11 @@ public class UserProfileModel {
     private final long longestStreak;
     private final Date registrationDate;
     private final String bio;
-    private final String avatarFilePath;
+    private final String avatarUrl;
 
     private final String username;
 
-    public UserProfileModel(String username, long minListened, long sessionsListened, long currentStreak, long longestStreak, Date registrationDate, String bio, String avatarFilePath) {
+    public UserProfileModel(String username, long minListened, long sessionsListened, long currentStreak, long longestStreak, Date registrationDate, String bio, String avatarUrl) {
         this.username = username;
         this.minListened = minListened;
         this.sessionsListened = sessionsListened;
@@ -25,13 +25,13 @@ public class UserProfileModel {
         this.longestStreak = longestStreak;
         this.registrationDate = registrationDate;
         this.bio = bio;
-        this.avatarFilePath = avatarFilePath;
+        this.avatarUrl = avatarUrl;
     }
 
     public static UserProfileModel toModel(UserEntity ue, StatsEntity se, ProfileEntity pe) {
         return new UserProfileModel(ue.getUsername(), se.getMinListened(), se.getSessionsListened(),
                 se.getCurrentStreak(), se.getLongestStreak(), ue.getRegistrationDate(), pe.getBio(),
-                pe.getAvatarFilePath());
+                pe.getAvatarUrl());
     }
 
     public Date getRegistrationDate() {
@@ -42,8 +42,8 @@ public class UserProfileModel {
         return bio;
     }
 
-    public String getAvatarFilePath() {
-        return avatarFilePath;
+    public String getAvatarUrl() {
+        return avatarUrl;
     }
 
     public long getMinListened() {

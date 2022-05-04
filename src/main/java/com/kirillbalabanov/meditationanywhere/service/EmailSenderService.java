@@ -19,7 +19,7 @@ public class EmailSenderService {
     @Autowired
     public EmailSenderService(JavaMailSender javaMailSender, @Value("${server.address}") String serverIp,
                               @Value("${spring.mail.username}") String email,
-                              @Value("${spring.devtools.remote.proxy.port}") int serverPort) {
+                              @Value("${app.mail-port}") int serverPort) {
         this.javaMailSender = javaMailSender;
         this.serverIp = serverIp;
         this.email = email;

@@ -5,14 +5,13 @@
     height: 200px;
     object-fit: cover;
     margin-bottom: 10px;
+    border-radius: 50%;
 }
 
 .upload {
-    background: #0D091F;
     margin-bottom: 10px;
-    margin-left: 30px;
-    width: 140px;
-    height: 20px;
+    width: 200px;
+    height: 200px;
     font-size: 16px;
     display: block;
     text-align: center;

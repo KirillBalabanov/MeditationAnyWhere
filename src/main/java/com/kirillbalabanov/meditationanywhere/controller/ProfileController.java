@@ -11,15 +11,14 @@ import com.kirillbalabanov.meditationanywhere.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.security.Principal;
 import java.util.HashMap;
 
 @RestController
+@RequestMapping("/profile")
 public class ProfileController {
 
     private final UserService userService;
@@ -31,7 +30,7 @@ public class ProfileController {
         this.profileService = profileService;
     }
 
-    @GetMapping("/profile/{username}")
+    @GetMapping("/{username}")
     public ResponseEntity<?> showUsersProfile(@PathVariable String username) {
         UserEntity userEntity;
         try {
@@ -44,7 +43,7 @@ public class ProfileController {
         return ResponseEntity.ok().body(UserProfileModel.toModel(userEntity, userEntity.getStatsEntity(), userEntity.getProfileEntity()));
     }
 
-    @PutMapping(value = "/profile/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "/settings/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updateProfileSettings(@RequestParam(value = "bio", required = true) String bio,
                                                    @RequestParam(value = "image", required = false) MultipartFile image) {
         if (bio == null) return ResponseEntity.badRequest().body("Invalid arguments.");
@@ -67,7 +66,7 @@ public class ProfileController {
         return ResponseEntity.ok().body(ProfileModel.toModel(profileEntity));
     }
 
-    @GetMapping("profile/settings")
+    @GetMapping("/settings/settings")
     public ResponseEntity<?> getProfileEntitySettings() {
         UserDet userDet = (UserDet) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         UserEntity userEntity;
@@ -80,5 +79,22 @@ public class ProfileController {
         }
         ProfileModel model = ProfileModel.toModel(userEntity.getProfileEntity());
         return ResponseEntity.ok().body(model);
+    }
+
+    @GetMapping("/user/avatar")
+    public ResponseEntity<?> avatarUrl() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDet userDet = (UserDet) principal;
+        HashMap<String, String> hm = new HashMap<>();
+
+        UserEntity userEntity;
+        try {
+            userEntity = userService.findById(userDet.getUserId());
+        } catch (NoUserFoundException e) {
+            hm.put("error", e.getMessage());
+            return ResponseEntity.ok().body(hm);
+        }
+        hm.put("avatarUrl", userEntity.getProfileEntity().getAvatarUrl());
+        return ResponseEntity.ok().body(hm);
     }
 }

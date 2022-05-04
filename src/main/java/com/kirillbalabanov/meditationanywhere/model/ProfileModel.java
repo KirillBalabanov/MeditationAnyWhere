@@ -4,22 +4,22 @@ import com.kirillbalabanov.meditationanywhere.entity.ProfileEntity;
 
 public class ProfileModel {
     private final String bio;
-    private final String avatarPath;
+    private final String avatarUrl;
 
-    public ProfileModel(String bio, String avatarPath) {
+    public ProfileModel(String bio, String avatarUrl) {
         this.bio = bio;
-        this.avatarPath = avatarPath;
+        this.avatarUrl = avatarUrl;
     }
 
     public static ProfileModel toModel(ProfileEntity profileEntity) {
-        return new ProfileModel(profileEntity.getBio(), profileEntity.getAvatarFilePath());
+        return new ProfileModel(profileEntity.getBio(), profileEntity.getAvatarUrl());
     }
 
     public String getBio() {
         return bio;
     }
 
-    public String getAvatarPath() {
-        return avatarPath;
+    public String getAvatarUrl() {
+        return avatarUrl;
     }
 }

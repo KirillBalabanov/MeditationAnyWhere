@@ -3,10 +3,12 @@ import {Link, useNavigate} from "react-router-dom";
 import logo from "../../images/logo.svg";
 import {AuthContext} from "../../context/AuthContext";
 
-import avatar from "../../images/defaultAvatar.svg";
+import defaultAvatar from "../../images/defaultAvatar.svg";
 import polygon from "../../images/polygon.svg";
 import polygonOnRectangle from "../../images/polygonOnRectangle.svg"
 import {CsrfContext} from "../../context/CsrfContext";
+import {useFetching} from "../../hooks/useFetching";
+import Loader from "../loading/Loader";
 
 const Header = () => {
 
@@ -17,6 +19,11 @@ const Header = () => {
     const redirectTo = (path: string) => {
         redirect(path);
     };
+
+    const [avatarUrObj, setAvatarUrlObj] = useState({avatarUrl: ""});
+    const [isLoading, setIsLoading] = useState(true);
+
+    useFetching("/profile/user/avatar", setAvatarUrlObj, setIsLoading);
 
     function logout() {
         fetch("/logout", {
@@ -41,32 +48,36 @@ const Header = () => {
             {
                 authContext?.auth
                     ?
-                    <div className="header__box">
-                        <div className="header__user" onClick={() => setShowMenu(!showMenu)}>
-                            <img src={avatar} alt="avatar" className={"header__user-avatar"}/>
-                            <img src={polygon} alt="polygon"/>
+                    isLoading
+                        ?
+                        <div></div>
+                        :
+                        <div className="header__box">
+                            <div className="header__user" onClick={() => setShowMenu(!showMenu)}>
+                                <img src={avatarUrObj.avatarUrl==="" ? defaultAvatar : avatarUrObj.avatarUrl} alt="avatar" className={"header__user-avatar"}/>
+                                <img src={polygon} alt="polygon"/>
+                            </div>
+                            <ul className={showMenu ? "user__menu active" : "user__menu"}>
+                                <img src={polygonOnRectangle} alt="polygon" className="user__menu-polygon"/>
+                                <li className="user__menu-item">
+                                    {authContext.username}
+                                </li>
+                                <li className="user__menu-item"
+                                    onClick={() => redirectTo("/profile/" + authContext?.username)}>
+                                    Go to profile
+                                </li>
+                                <li className="user__menu-item"
+                                    onClick={() => redirectTo("/settings/profile")}>
+                                    Settings
+                                </li>
+                                <li className="user__menu-item" onClick={() => {
+                                    logout();
+                                    redirect("/start");
+                                }}>
+                                    Log out
+                                </li>
+                            </ul>
                         </div>
-                        <ul className={showMenu ? "user__menu active" : "user__menu"}>
-                            <img src={polygonOnRectangle} alt="polygon" className="user__menu-polygon"/>
-                            <li className="user__menu-item">
-                                {authContext.username}
-                            </li>
-                            <li className="user__menu-item"
-                                onClick={() => redirectTo("/profile/" + authContext?.username)}>
-                                Go to profile
-                            </li>
-                            <li className="user__menu-item"
-                                onClick={() => redirectTo("/settings/profile")}>
-                                Settings
-                            </li>
-                            <li className="user__menu-item" onClick={() => {
-                                logout();
-                                redirect("/start");
-                            }}>
-                                Log out
-                            </li>
-                        </ul>
-                    </div>
                     :
                     <Link to={"/login"}>log in</Link>
             }

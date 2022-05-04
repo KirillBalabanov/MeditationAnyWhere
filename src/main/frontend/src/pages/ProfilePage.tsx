@@ -1,18 +1,19 @@
-import React, {useContext, useState} from 'react';
-import {useParams} from "react-router-dom";
+import React, {useState} from 'react';
+import {useNavigate, useParams} from "react-router-dom";
 import Header from "../components/header/Header";
 import {useFetching} from "../hooks/useFetching";
 import Error from "./Error";
 import Loader from "../components/loading/Loader";
-import UserProfile from "../components/profile/UserProfile";
 import classes from "../styles/ProfilePage.module.css";
-import {AuthContext} from "../context/AuthContext";
-import {CsrfContext} from "../context/CsrfContext";
+import defaultAvatar from "../images/defaultAvatar.svg";
+import polygon from "../images/polygonOnRectangleGray.svg";
+import timeIcon from "../images/timeIcon.svg";
+import Date from "../components/date/Date";
 
 const ProfilePage = () => {
-    let csrfContext = useContext(CsrfContext);
     const [isLoading, setIsLoading] = useState(true);
-    let authContext = useContext(AuthContext);
+    const [popupShown, setPopupShown] = useState(false);
+    let navigateFunction = useNavigate();
 
     let username = useParams()["username"];
     let profileModel = {
@@ -23,12 +24,11 @@ const ProfilePage = () => {
         longestStreak: "",
         registrationDate: "",
         bio: "",
-        avatarFilePath: ""
+        avatarUrl: ""
     }
     const [profile, setProfile] = useState(profileModel);
 
     const [fetched, errorMsg] = useFetching("/profile/" + username, setProfile, setIsLoading);
-
     if(!fetched) return (<Error errorMsg={errorMsg}/>);
 
     return (
@@ -41,7 +41,60 @@ const ProfilePage = () => {
                     :
                     <div className="container">
                         <div className={classes.main}>
-                            <UserProfile profile={profile}></UserProfile>
+                            <div className={classes.profile}>
+                                <div className={classes.profile__info}>
+                                    <div className={classes.profile__infoAvatarOuter}>
+                                        <img src={profile.avatarUrl==="" ? defaultAvatar : profile.avatarUrl} alt="avatar"
+                                             className={classes.profile__infoAvatar} onMouseOver={() => setPopupShown(true)}
+                                             onMouseLeave={() => setPopupShown(false)}
+                                             onClick={() => navigateFunction("/settings/profile")}
+                                        />
+                                    </div>
+                                    <div className={popupShown ? classes.profile__popup + " " + classes.shown : classes.profile__popup}>
+                                        <div className={classes.profile__popupText}>change your avatar</div>
+                                        <img src={polygon} alt="polygon" className={classes.profile__popupIcon}/>
+                                    </div>
+                                    <div className={classes.profile__username}>{profile.username}</div>
+                                    <div className={classes.profile__status}>
+                                        {profile.bio}
+                                    </div>
+                                    <div className={classes.profile__button} onClick={() => navigateFunction("/settings/profile")}>
+                                        Edit Profile
+                                    </div>
+                                    <div className={classes.profile__time}>
+                                        <div className={classes.profile__timeInner}>
+                                            <img src={timeIcon} alt="timeIcon" className={classes.profile__timeIcon}/>
+                                            <div className={classes.profile__timeData}>
+                                                <div>
+                                                    Joined
+                                                </div>
+                                                <div>
+                                                    <Date date={profile.registrationDate}></Date>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className={classes.stats}>
+                                    <div className={classes.stats__box}>
+                                        <p className={classes.stats__boxTitle}>Minutes Listened</p>
+                                        <p className={classes.stats__boxData}>{profile.minListened}</p>
+                                    </div>
+                                    <div className={classes.stats__box}>
+                                        <p className={classes.stats__boxTitle}>Sessions Listened</p>
+                                        <p className={classes.stats__boxData}>{profile.sessionsListened}</p>
+                                    </div>
+                                    <div className={classes.stats__box}>
+                                        <p className={classes.stats__boxTitle}>Current Streak</p>
+                                        <p className={classes.stats__boxData}>{profile.currentStreak}</p>
+                                    </div>
+                                    <div className={classes.stats__box}>
+                                        <p className={classes.stats__boxTitle}>Longest Streak</p>
+                                        <p className={classes.stats__boxData}>{profile.longestStreak}</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
             }

@@ -5,6 +5,7 @@ import com.kirillbalabanov.meditationanywhere.entity.UserEntity;
 import com.kirillbalabanov.meditationanywhere.exception.user.NoUserFoundException;
 import com.kirillbalabanov.meditationanywhere.repository.ProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,23 +16,25 @@ import java.io.IOException;
 public class ProfileService {
     private final ProfileRepository profileRepository;
     private final UserService userService;
-    private final String profilePath;
-
+    private final String userFolderPath;
+    private final String userFolderUrl;
     @Autowired
-    public ProfileService(ProfileRepository profileRepository, UserService userService) {
+    public ProfileService(ProfileRepository profileRepository, UserService userService, @Value("${app.user-folder-path}") String userFolderPath,
+                          @Value("${app.user-folder-url}") String userFolderUrl) {
         this.profileRepository = profileRepository;
         this.userService = userService;
-        this.profilePath = "D:\\Documents\\Projects\\GitHub\\meditationanywhere\\src\\main\\resources\\static\\profile";
+        this.userFolderPath = userFolderPath;
+        this.userFolderUrl = userFolderUrl;
     }
 
     public ProfileEntity updateProfileSettings(long id, String bio, MultipartFile image) throws NoUserFoundException, IOException {
         UserEntity userEntity = userService.findById(id);
         ProfileEntity profileEntity = userEntity.getProfileEntity();
 
-        File resultFile = createUserFolderAndSaveAvatar(id, image);
+        String imageUrl = saveFileInUserFolder(id, image);
 
         profileEntity.setBio(bio);
-        profileEntity.setAvatarFilePath(resultFile.getPath());
+        profileEntity.setAvatarUrl(imageUrl);
         return profileRepository.save(profileEntity);
     }
 
@@ -45,15 +48,15 @@ public class ProfileService {
         return profileRepository.save(profileEntity);
     }
 
-    private File createUserFolderAndSaveAvatar(long id, MultipartFile image) throws IOException {
-        File resultFileFolder = new File(profilePath + "/" + id);
-
-        if (!resultFileFolder.exists()) {
-            resultFileFolder.mkdir();
+    private String saveFileInUserFolder(long id, MultipartFile file) throws IOException {
+        String imageFileName = file.getOriginalFilename();
+        File fileInFileSys = new File( userFolderPath + "/" + id + "/" + imageFileName);
+        if (!fileInFileSys.exists()) {
+            fileInFileSys.mkdirs();
         }
-        File resultFile = new File(resultFileFolder + "/" + image.getOriginalFilename());
-        image.transferTo(resultFile);
-        return resultFile;
+        file.transferTo(fileInFileSys);
+
+        return userFolderUrl + "/" + id + "/" + imageFileName;
     }
 
 }

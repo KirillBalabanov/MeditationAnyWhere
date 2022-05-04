@@ -11,7 +11,7 @@ public class ProfileEntity {
     private long id;
 
     @Column(nullable = true)
-    private String avatarFilePath;
+    private String avatarUrl;
 
     @Column(nullable = true)
     private String bio;
@@ -26,7 +26,7 @@ public class ProfileEntity {
     public static ProfileEntity initProfileEntity() {
         ProfileEntity profileEntity = new ProfileEntity();
         profileEntity.setBio("");
-        profileEntity.setAvatarFilePath("");
+        profileEntity.setAvatarUrl("");
         return profileEntity;
     }
 
@@ -46,12 +46,12 @@ public class ProfileEntity {
         this.userEntity = userEntity;
     }
 
-    public String getAvatarFilePath() {
-        return avatarFilePath;
+    public String getAvatarUrl() {
+        return avatarUrl;
     }
 
-    public void setAvatarFilePath(String avatarFilePath) {
-        this.avatarFilePath = avatarFilePath;
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 
     public String getBio() {

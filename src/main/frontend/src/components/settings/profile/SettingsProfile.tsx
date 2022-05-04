@@ -1,20 +1,29 @@
-import React, {FormEvent, useContext, useState} from 'react';
+import React, {FormEvent, useContext, useEffect, useState} from 'react';
 import defaultAvatar from "../../../images/defaultAvatar.svg";
 import classes from "./SettingsProfile.module.css";
 import Section from "../section/Section";
 import {CsrfContext} from "../../../context/CsrfContext";
 import {useFetching} from "../../../hooks/useFetching";
+import Loader from "../../loading/Loader";
 
 const SettingsProfile = () => {
     const token = useContext(CsrfContext)?.csrfToken!;
-    const [data, setData] = useState({bio: "", avatarPath: ""});
-    const [isLoading, setIsLoading] = useState(false);
 
-    const [fetched, errorMsg] = useFetching("/profile/settings", setData, setIsLoading);
-    console.log(data);
+    const [bio, setBio] = useState("");
+    const [avatarUrl, setAvatarUrl] = useState("");
+
+    const [data, setData] = useState({bio: "", avatarUrl: ""});
+    const [isLoading, setIsLoading] = useState(true);
+
+    useFetching("/profile/settings/settings", setData, setIsLoading);
+
+    useEffect(() => {
+        setBio(data.bio);
+        setAvatarUrl(data.avatarUrl);
+    }, [data]);
+
     function formSubmit(e: FormEvent) {
         e.preventDefault();
-
         // @ts-ignore
         let image = e.target[0].files[0];
         // @ts-ignore
@@ -23,38 +32,45 @@ const SettingsProfile = () => {
         let formData = new FormData();
         formData.append("bio", bio);
         formData.append("image", image);
-        fetch("/profile/update", {
+        fetch("/profile/settings/update", {
             method: "PUT",
             headers: {
                 'X-XSRF-TOKEN': token
             },
             body: formData
         }).then((response) => response.json()).then((data) => {
-            console.log(data);
+            setAvatarUrl(data["avatarUrl"]);
         });
     }
 
     return (
         <div>
-            <form onSubmit={formSubmit}>
-                <Section title={"Profile image"}>
-                    <img className={classes.avatar}
-                         src={"http://192.168.132.103/profile/1/startBackground.jpg"}
-                         alt="avatar"/>
-                    <label className={classes.upload}>
-                        Upload a photo
-                        <input style={{display: "none"}} type={"file"} name={"image"}/>
-                    </label>
+            {
+                isLoading
+                    ?
+                    <Loader></Loader>
+                    :
+                    <div>
+                        <form onSubmit={formSubmit}>
+                            <Section title={"Profile image"}>
+                                <label className={classes.upload}>
+                                    <img className={classes.avatar}
+                                         src={avatarUrl==="" ? defaultAvatar : avatarUrl}
+                                         alt="avatar"/>
+                                    <input style={{display: "none"}} type={"file"} name={"image"}/>
+                                </label>
 
-                    <button type={"button"} className={classes.remove}>Remove photo</button>
-                </Section>
-                <div>
-                    <Section title={"Bio"}>
-                        <textarea className={classes.bio} name="bio" cols={50} rows={7} defaultValue={data.bio}></textarea>
-                    </Section>
-                </div>
-                <button type={"submit"} className={classes.updateProfile}>Update profile</button>
-            </form>
+                                <button type={"button"} className={classes.remove}>Remove photo</button>
+                            </Section>
+                            <div>
+                                <Section title={"Bio"}>
+                                    <textarea className={classes.bio} name="bio" cols={50} rows={7} defaultValue={bio}></textarea>
+                                </Section>
+                            </div>
+                            <button type={"submit"} className={classes.updateProfile}>Update profile</button>
+                        </form>
+                    </div>
+            }
         </div>
     );
 };
