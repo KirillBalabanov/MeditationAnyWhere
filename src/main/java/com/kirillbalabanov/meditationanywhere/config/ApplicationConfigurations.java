@@ -8,6 +8,16 @@ public class ApplicationConfigurations {
     private String userFolderPath;
     private String userFolderUrl;
 
+    private int amountOfDifferentSymbolsBetweenUrlAndFolderPath;
+
+    public int getAmountOfDifferentSymbolsBetweenUrlAndFolderPath() {
+        return amountOfDifferentSymbolsBetweenUrlAndFolderPath;
+    }
+
+    public void setAmountOfDifferentSymbolsBetweenUrlAndFolderPath(int amountOfDifferentSymbolsBetweenUrlAndFolderPath) {
+        this.amountOfDifferentSymbolsBetweenUrlAndFolderPath = amountOfDifferentSymbolsBetweenUrlAndFolderPath;
+    }
+
     public int getMailPort() {
         return mailPort;
     }

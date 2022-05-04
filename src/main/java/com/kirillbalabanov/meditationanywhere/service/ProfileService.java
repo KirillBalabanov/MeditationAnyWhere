@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.UUID;
 
 @Service
 public class ProfileService {
@@ -19,14 +20,15 @@ public class ProfileService {
     private final String userFolderPath;
     private final String userFolderUrl;
 
-    private static final int indexOfSubstringUrlMatchingFolder = 8;
+    private int differenceBetweenUrlAndPath = 8;
     @Autowired
     public ProfileService(ProfileRepository profileRepository, UserService userService, @Value("${app.user-folder-path}") String userFolderPath,
-                          @Value("${app.user-folder-url}") String userFolderUrl) {
+                          @Value("${app.user-folder-url}") String userFolderUrl, @Value("${app.amount-of-different-symbols-between-url-and-folder-path}") int difference ) {
         this.profileRepository = profileRepository;
         this.userService = userService;
         this.userFolderPath = userFolderPath;
         this.userFolderUrl = userFolderUrl;
+        this.differenceBetweenUrlAndPath = difference;
     }
 
     public ProfileEntity updateProfileSettings(long id, String bio, MultipartFile image) throws NoUserFoundException, IOException {
@@ -34,7 +36,7 @@ public class ProfileService {
         ProfileEntity profileEntity = userEntity.getProfileEntity();
 
         if(!profileEntity.getAvatarUrl().equals("")) { // delete avatar if exists
-            new File(userFolderPath + "/" + profileEntity.getAvatarUrl().substring(indexOfSubstringUrlMatchingFolder)).delete();
+            new File(userFolderPath + "/" + profileEntity.getAvatarUrl().substring(differenceBetweenUrlAndPath)).delete();
         }
 
         String imageUrl = saveFileInUserFolder(id, image);
@@ -51,7 +53,7 @@ public class ProfileService {
 
         profileEntity.setBio(bio);
         if (deleteAvatar) {
-            new File(userFolderPath + "/" + profileEntity.getAvatarUrl().substring(indexOfSubstringUrlMatchingFolder)).delete();
+            new File(userFolderPath + "/" + profileEntity.getAvatarUrl().substring(differenceBetweenUrlAndPath)).delete();
             profileEntity.setAvatarUrl("");
         }
 
@@ -59,7 +61,7 @@ public class ProfileService {
     }
 
     private String saveFileInUserFolder(long id, MultipartFile file) throws IOException {
-        String imageFileName = file.getOriginalFilename();
+        String imageFileName = UUID.randomUUID() + "." + file.getOriginalFilename();
         File fileInFileSys = new File(userFolderPath + "/" + id + "/" + imageFileName);
         if (!fileInFileSys.exists()) {
             fileInFileSys.mkdirs();

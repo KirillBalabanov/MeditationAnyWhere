@@ -10,10 +10,10 @@ public class ProfileEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(nullable = true)
+    @Column(nullable = true, length = 255)
     private String avatarUrl;
 
-    @Column(nullable = true)
+    @Column(nullable = true, length = 255)
     private String bio;
 
     @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)

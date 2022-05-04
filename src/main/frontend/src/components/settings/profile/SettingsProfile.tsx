@@ -1,21 +1,31 @@
-import React, {FormEvent, useContext, useEffect, useState} from 'react';
+import React, {ChangeEvent, FormEvent, useContext, useEffect, useState} from 'react';
 import defaultAvatar from "../../../images/defaultAvatar.svg";
 import classes from "./SettingsProfile.module.css";
 import Section from "../section/Section";
 import {CsrfContext} from "../../../context/CsrfContext";
 import {useFetching} from "../../../hooks/useFetching";
 import Loader from "../../loading/Loader";
+import {HeaderReloadContext} from "../../../context/HeaderReloadContext";
+import PopupRectangle from "../../popup/PopupRectangle";
+import Popup from "../../popup/Popup";
 
 const SettingsProfile = () => {
-    const token = useContext(CsrfContext)?.csrfToken!;
+    const csrfContext = useContext(CsrfContext)!;
+    const headerReloadContext = useContext(HeaderReloadContext);
 
     const [bio, setBio] = useState("");
     const [avatarUrl, setAvatarUrl] = useState("");
 
     const [deleteAvatar, setDeleteAvatar] = useState(false);
+    const [imageUploadFailed, setImageUploadFailed] = useState(false);
+    const [inputKey, setInputKey] = useState(Date.now());
+    const [errorMsg, setErrorMsg] = useState("");
 
+    const [popupShown, setPopupShown] = useState(false);
     const [data, setData] = useState({bio: "", avatarUrl: ""});
     const [isLoading, setIsLoading] = useState(true);
+
+    const [rectangleShown, setRectangleShown] = useState(false);
 
     useFetching("/profile/settings/settings", setData, setIsLoading);
 
@@ -24,14 +34,46 @@ const SettingsProfile = () => {
         setAvatarUrl(data.avatarUrl);
     }, [data]);
 
-    function formSubmit(e: FormEvent) {
+    const imagePreview = (e: ChangeEvent) => {
+        let fileReader = new FileReader();
+        // @ts-ignore
+        let file = (e.target as HTMLInputElement).files[0];
+        if(file == null) return;
+
+        if (!file.type.match("image.*")) {
+            setImageUploadFailed(true);
+            setInputKey(Date.now()); // reset file input
+            setErrorMsg("Invalid type");
+            return;
+        }
+
+        if(file.size > 3_000_000) {
+            setImageUploadFailed(true);
+            setInputKey(Date.now()); // reset file input
+            setErrorMsg("Image cannot exceed 3mb.");
+            return;
+        }
+
+        fileReader.onloadend = () => {
+            // @ts-ignore
+            setAvatarUrl(fileReader.result);
+        };
+        fileReader.readAsDataURL(file);
+        setImageUploadFailed(false);
+    };
+
+    const formSubmit = (e: FormEvent) => {
         e.preventDefault();
         // @ts-ignore
         let image = e.target[0].files[0];
         // @ts-ignore
         let bioForm = e.target[2].value;
+        if(image == null && bioForm === bio && !deleteAvatar) { // in case no changes but user clicked the btn.
+            return;
+        }
 
-        if(image == null && bioForm === bio && !deleteAvatar) return;
+        if(bioForm == bio && deleteAvatar && avatarUrl === "") return;
+        if(imageUploadFailed) return;
 
         let formData = new FormData();
         formData.append("bio", bioForm);
@@ -40,11 +82,17 @@ const SettingsProfile = () => {
         fetch("/profile/settings/update", {
             method: "PUT",
             headers: {
-                'X-XSRF-TOKEN': token
+                'X-XSRF-TOKEN': csrfContext.csrfToken
             },
             body: formData
         }).then((response) => response.json()).then((data) => {
             setAvatarUrl(data["avatarUrl"]);
+            setBio(data["bio"]);
+
+            headerReloadContext?.setReload(true);
+            setPopupShown(true);
+            setDeleteAvatar(false);
+            setInputKey(Date.now()); // reset file input
         });
     }
 
@@ -58,24 +106,32 @@ const SettingsProfile = () => {
                     <div>
                         <form onSubmit={formSubmit}>
                             <Section title={"Profile image"}>
-                                <label className={classes.upload}>
+                                <label className={classes.upload} onMouseOver={() => setRectangleShown(true)} onMouseLeave={() => setRectangleShown(false)}>
                                     <img className={classes.avatar}
                                          src={avatarUrl==="" ? defaultAvatar : avatarUrl}
                                          alt="avatar"/>
-                                    <input style={{display: "none"}} type={"file"} name={"image"}/>
+                                    <PopupRectangle popupShown={rectangleShown} popupText={"change avatar"} left={40} top={250}></PopupRectangle>
+                                    <input style={{display: "none"}} type={"file"} name={"image"}
+                                           key={inputKey} onChange={imagePreview}/>
                                 </label>
-
-                                <button type={"button"} className={classes.remove} onClick={() => setDeleteAvatar(!deleteAvatar)}>Remove photo</button>
+                                <p className={imageUploadFailed ? classes.uploadError + " " + classes.uploadErrorShown : classes.uploadError}>
+                                    {errorMsg}
+                                </p>
+                                <button type={"button"} className={deleteAvatar ? classes.remove + " " + classes.removeSelected : classes.remove}
+                                        onClick={() => {
+                                            setDeleteAvatar(!deleteAvatar)
+                                        }}>Remove photo</button>
                             </Section>
                             <div>
                                 <Section title={"Bio"}>
-                                    <textarea className={classes.bio} name="bio" cols={50} rows={7} defaultValue={bio}></textarea>
+                                    <textarea className={classes.bio} name="bio" cols={50} rows={6} defaultValue={bio} maxLength={255}></textarea>
                                 </Section>
                             </div>
                             <button type={"submit"} className={classes.updateProfile}>Update profile</button>
                         </form>
                     </div>
             }
+            <Popup popupInfo={"Profile updated."} shown={popupShown} setShown={setPopupShown} popupConfirm={"Ok"}></Popup>
         </div>
     );
 };

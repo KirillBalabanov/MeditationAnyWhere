@@ -2,6 +2,7 @@
     border-bottom: 1px solid #2D2E32;
     padding-bottom: 20px;
     padding-top: 20px;
+    position: relative;
 }
 .profile__section:last-child {
     border-bottom: none;

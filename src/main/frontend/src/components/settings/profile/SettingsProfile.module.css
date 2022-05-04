@@ -1,5 +1,4 @@
 
-
 .avatar {
     width: 200px;
     height: 200px;
@@ -17,10 +16,28 @@
     text-align: center;
     cursor: pointer;
 }
+.uploadError {
+    color: red;
+    font-size: 14px;
+    width: 200px;
+    justify-content: center;
+    display: none;
+}
+.uploadError.uploadErrorShown {
+    display: flex;
+}
 
 .remove {
     background: #480c0c;
-    margin-left: 30px;
+    margin-left: 35px;
+    margin-top: 30px;
+    transition: all .3s ease;
+}
+.remove:hover {
+    background: #5d1a1a;
+}
+.remove.removeSelected {
+    border: 2px solid #853232;
 }
 
 .bio {

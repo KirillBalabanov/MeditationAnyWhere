@@ -46,7 +46,6 @@ const Timer = () => {
     useEffect(() => {
         const keyListener = (e: KeyboardEvent) => {
             if (e.code === "Space") toggleTimer();
-            if(e.code == "Escape") setShowPopup(false);
         }
         window.addEventListener("keyup", keyListener);
         return () => {
@@ -117,7 +116,7 @@ const Timer = () => {
                 }
 
             </div>
-            <Popup popupInfo={popupContent} popupConfirm={"Ok"} active={showPopup} setStatus={setShowPopup}></Popup>
+            <Popup popupInfo={popupContent} popupConfirm={"Ok"} shown={showPopup} setShown={setShowPopup}></Popup>
         </div>
     );
 };

@@ -1,4 +1,4 @@
-import React, {useContext, useRef, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Link, useNavigate} from "react-router-dom";
 import logo from "../../images/logo.svg";
 import {AuthContext} from "../../context/AuthContext";
@@ -8,11 +8,12 @@ import polygon from "../../images/polygon.svg";
 import polygonOnRectangle from "../../images/polygonOnRectangle.svg"
 import {CsrfContext} from "../../context/CsrfContext";
 import {useFetching} from "../../hooks/useFetching";
-import Loader from "../loading/Loader";
+import {HeaderReloadContext} from "../../context/HeaderReloadContext";
 
 const Header = () => {
+    const headerReloadContext = useContext(HeaderReloadContext)!;
 
-    const authContext = useContext(AuthContext);
+    const authContext = useContext(AuthContext)!;
     const csrfContext = useContext(CsrfContext);
     const [showMenu, setShowMenu] = useState(false);
     let redirect = useNavigate();
@@ -23,7 +24,14 @@ const Header = () => {
     const [avatarUrObj, setAvatarUrlObj] = useState({avatarUrl: ""});
     const [isLoading, setIsLoading] = useState(true);
 
-    useFetching("/profile/user/avatar", setAvatarUrlObj, setIsLoading);
+    // fetch on reload and on page load
+    useEffect(() => {
+        fetch("/profile/user/avatar").then((response) => response.json()).then((data) => {
+            setAvatarUrlObj(data);
+            setIsLoading(false);
+        });
+        headerReloadContext.setReload(false);
+    }, [headerReloadContext.reload]);
 
     function logout() {
         fetch("/logout", {
@@ -53,6 +61,7 @@ const Header = () => {
                         <div></div>
                         :
                         <div className="header__box">
+
                             <div className="header__user" onClick={() => setShowMenu(!showMenu)}>
                                 <img src={avatarUrObj.avatarUrl==="" ? defaultAvatar : avatarUrObj.avatarUrl} alt="avatar" className={"header__user-avatar"}/>
                                 <img src={polygon} alt="polygon"/>

@@ -9,6 +9,7 @@ import defaultAvatar from "../images/defaultAvatar.svg";
 import polygon from "../images/polygonOnRectangleGray.svg";
 import timeIcon from "../images/timeIcon.svg";
 import Date from "../components/date/Date";
+import PopupRectangle from "../components/popup/PopupRectangle";
 
 const ProfilePage = () => {
     const [isLoading, setIsLoading] = useState(true);
@@ -50,10 +51,7 @@ const ProfilePage = () => {
                                              onClick={() => navigateFunction("/settings/profile")}
                                         />
                                     </div>
-                                    <div className={popupShown ? classes.profile__popup + " " + classes.shown : classes.profile__popup}>
-                                        <div className={classes.profile__popupText}>change your avatar</div>
-                                        <img src={polygon} alt="polygon" className={classes.profile__popupIcon}/>
-                                    </div>
+                                    <PopupRectangle popupShown={popupShown} popupText={"change your avatar"} top={300} left={85}></PopupRectangle>
                                     <div className={classes.profile__username}>{profile.username}</div>
                                     <div className={classes.profile__status}>
                                         {profile.bio}

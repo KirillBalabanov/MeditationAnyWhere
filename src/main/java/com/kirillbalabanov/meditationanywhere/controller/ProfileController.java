@@ -8,6 +8,7 @@ import com.kirillbalabanov.meditationanywhere.model.ProfileModel;
 import com.kirillbalabanov.meditationanywhere.model.UserProfileModel;
 import com.kirillbalabanov.meditationanywhere.service.ProfileService;
 import com.kirillbalabanov.meditationanywhere.service.UserService;
+import com.kirillbalabanov.meditationanywhere.util.validator.ContentTypeValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -44,16 +45,21 @@ public class ProfileController {
     }
 
     @PutMapping(value = "/settings/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> updateProfileSettings(@RequestParam(value = "bio", required = true) String bio,
-                                                   @RequestParam(value = "deleteAvatar", required = true) String delete,
+    public ResponseEntity<?> updateProfileSettings(@RequestParam(value = "bio") String bio,
+                                                   @RequestParam(value = "deleteAvatar") String delete,
                                                    @RequestParam(value = "image", required = false) MultipartFile image) {
         if (bio == null) return ResponseEntity.badRequest().body("Invalid arguments.");
 
+        if(image != null && !ContentTypeValidator.isValidImage(image.getContentType()))
+            return ResponseEntity.badRequest().body("Invalid type");
+
+        HashMap<String, String> hm = new HashMap<>();
         boolean deleteAvatar = delete.equals("true");
 
-        UserDet userDet = (UserDet) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!(principal instanceof UserDet userDet)) return ResponseEntity.badRequest().body("user not authenticated");
         ProfileEntity profileEntity;
-        HashMap<String, String> hm = new HashMap<>();
 
         try {
             if (image == null) {
@@ -71,7 +77,8 @@ public class ProfileController {
 
     @GetMapping("/settings/settings")
     public ResponseEntity<?> getProfileEntitySettings() {
-        UserDet userDet = (UserDet) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(!(principal instanceof UserDet userDet)) return ResponseEntity.badRequest().body("user not authenticated");
         UserEntity userEntity;
         try {
             userEntity = userService.findById(userDet.getUserId());
@@ -86,9 +93,9 @@ public class ProfileController {
 
     @GetMapping("/user/avatar")
     public ResponseEntity<?> avatarUrl() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        UserDet userDet = (UserDet) principal;
         HashMap<String, String> hm = new HashMap<>();
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(!(principal instanceof UserDet userDet)) return ResponseEntity.badRequest().body("user not authenticated");
 
         UserEntity userEntity;
         try {
