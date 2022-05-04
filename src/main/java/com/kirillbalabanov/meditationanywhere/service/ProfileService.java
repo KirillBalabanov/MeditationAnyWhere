@@ -18,6 +18,8 @@ public class ProfileService {
     private final UserService userService;
     private final String userFolderPath;
     private final String userFolderUrl;
+
+    private static final int indexOfSubstringUrlMatchingFolder = 8;
     @Autowired
     public ProfileService(ProfileRepository profileRepository, UserService userService, @Value("${app.user-folder-path}") String userFolderPath,
                           @Value("${app.user-folder-url}") String userFolderUrl) {
@@ -31,6 +33,10 @@ public class ProfileService {
         UserEntity userEntity = userService.findById(id);
         ProfileEntity profileEntity = userEntity.getProfileEntity();
 
+        if(!profileEntity.getAvatarUrl().equals("")) { // delete avatar if exists
+            new File(userFolderPath + "/" + profileEntity.getAvatarUrl().substring(indexOfSubstringUrlMatchingFolder)).delete();
+        }
+
         String imageUrl = saveFileInUserFolder(id, image);
 
         profileEntity.setBio(bio);
@@ -38,19 +44,23 @@ public class ProfileService {
         return profileRepository.save(profileEntity);
     }
 
-    public ProfileEntity updateProfileSettings(long id, String bio) throws NoUserFoundException {
+    public ProfileEntity updateProfileSettings(long id, String bio, boolean deleteAvatar) throws NoUserFoundException {
         UserEntity userEntity = userService.findById(id);
 
         ProfileEntity profileEntity = userEntity.getProfileEntity();
 
         profileEntity.setBio(bio);
+        if (deleteAvatar) {
+            new File(userFolderPath + "/" + profileEntity.getAvatarUrl().substring(indexOfSubstringUrlMatchingFolder)).delete();
+            profileEntity.setAvatarUrl("");
+        }
 
         return profileRepository.save(profileEntity);
     }
 
     private String saveFileInUserFolder(long id, MultipartFile file) throws IOException {
         String imageFileName = file.getOriginalFilename();
-        File fileInFileSys = new File( userFolderPath + "/" + id + "/" + imageFileName);
+        File fileInFileSys = new File(userFolderPath + "/" + id + "/" + imageFileName);
         if (!fileInFileSys.exists()) {
             fileInFileSys.mkdirs();
         }
@@ -58,5 +68,4 @@ public class ProfileService {
 
         return userFolderUrl + "/" + id + "/" + imageFileName;
     }
-
 }

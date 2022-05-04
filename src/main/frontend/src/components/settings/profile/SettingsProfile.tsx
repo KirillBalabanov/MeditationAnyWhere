@@ -12,6 +12,8 @@ const SettingsProfile = () => {
     const [bio, setBio] = useState("");
     const [avatarUrl, setAvatarUrl] = useState("");
 
+    const [deleteAvatar, setDeleteAvatar] = useState(false);
+
     const [data, setData] = useState({bio: "", avatarUrl: ""});
     const [isLoading, setIsLoading] = useState(true);
 
@@ -27,10 +29,13 @@ const SettingsProfile = () => {
         // @ts-ignore
         let image = e.target[0].files[0];
         // @ts-ignore
-        let bio = e.target[2].value;
+        let bioForm = e.target[2].value;
+
+        if(image == null && bioForm === bio && !deleteAvatar) return;
 
         let formData = new FormData();
-        formData.append("bio", bio);
+        formData.append("bio", bioForm);
+        formData.append("deleteAvatar", deleteAvatar.toString());
         formData.append("image", image);
         fetch("/profile/settings/update", {
             method: "PUT",
@@ -60,7 +65,7 @@ const SettingsProfile = () => {
                                     <input style={{display: "none"}} type={"file"} name={"image"}/>
                                 </label>
 
-                                <button type={"button"} className={classes.remove}>Remove photo</button>
+                                <button type={"button"} className={classes.remove} onClick={() => setDeleteAvatar(!deleteAvatar)}>Remove photo</button>
                             </Section>
                             <div>
                                 <Section title={"Bio"}>

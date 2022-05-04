@@ -45,8 +45,11 @@ public class ProfileController {
 
     @PutMapping(value = "/settings/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updateProfileSettings(@RequestParam(value = "bio", required = true) String bio,
+                                                   @RequestParam(value = "deleteAvatar", required = true) String delete,
                                                    @RequestParam(value = "image", required = false) MultipartFile image) {
         if (bio == null) return ResponseEntity.badRequest().body("Invalid arguments.");
+
+        boolean deleteAvatar = delete.equals("true");
 
         UserDet userDet = (UserDet) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ProfileEntity profileEntity;
@@ -54,7 +57,7 @@ public class ProfileController {
 
         try {
             if (image == null) {
-                profileEntity = profileService.updateProfileSettings(userDet.getUserId(), bio);
+                profileEntity = profileService.updateProfileSettings(userDet.getUserId(), bio, deleteAvatar);
             } else {
                 profileEntity = profileService.updateProfileSettings(userDet.getUserId(), bio, image);
             }
