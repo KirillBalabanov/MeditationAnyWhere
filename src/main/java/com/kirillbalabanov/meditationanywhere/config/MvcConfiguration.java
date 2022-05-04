@@ -11,14 +11,24 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class MvcConfiguration implements WebMvcConfigurer {
     private final String userFolderPath;
     private final String userFolderUrl;
+    private final String serverFolderPath;
+    private final String serverFolderUrl;
 
-    public MvcConfiguration(@Value("${app.user-folder-path}") String userFolderPath, @Value("${app.user-folder-url}") String userFolderUrl) {
+    public MvcConfiguration(@Value("${app.user-folder-path}") String userFolderPath, @Value("${app.user-folder-url}") String userFolderUrl,
+                            @Value("${app.server-folder-path}") String serverFolderPath, @Value("${app.server-folder-url}") String serverFolderUrl
+                            ) {
         this.userFolderPath = userFolderPath;
         this.userFolderUrl = userFolderUrl;
+        this.serverFolderPath = serverFolderPath;
+        this.serverFolderUrl = serverFolderUrl;
     }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler(userFolderUrl + "/**").addResourceLocations("file:///" + userFolderPath + "/");
+        registry.addResourceHandler(userFolderUrl + "/**").addResourceLocations("file:///" + userFolderPath + "/").
+                resourceChain(true).addResolver(new UrlResolver());
+        registry.addResourceHandler(serverFolderUrl + "/**").addResourceLocations("file:///" + serverFolderPath + "/").
+                resourceChain(true).addResolver(new UrlResolver());
+
     }
 }

@@ -4,6 +4,7 @@ import Header from "../components/header/Header";
 import classes from "../styles/Settings.module.css";
 import SettingsProfile from "../components/settings/profile/SettingsProfile";
 import SettingsAccount from "../components/settings/account/SettingsAccount";
+import SettingsLibrary from "../components/settings/library/SettingsLibrary";
 
 const Settings = () => {
     const setting = useParams()["setting"];
@@ -35,6 +36,14 @@ const Settings = () => {
                                 </p>
                             </div>
                         </div>
+                        <div className={classes.settings__option}>
+                            <div className={setting==="library" ? classes.settings__optionInner + " " + classes.active : classes.settings__optionInner}
+                                 onClick={() => navigate("/settings/library")}>
+                                <p className={classes.settings__optionText}>
+                                    Library
+                                </p>
+                            </div>
+                        </div>
                     </div>
                     <div className={classes.settings__setting}>
                         <h3 className={classes.setting__title}>
@@ -43,6 +52,7 @@ const Settings = () => {
                         </h3>
                         {setting=="profile" && <SettingsProfile></SettingsProfile>}
                         {setting=="account" && <SettingsAccount></SettingsAccount>}
+                        {setting=="library" && <SettingsLibrary></SettingsLibrary>}
                     </div>
                 </div>
             </div>

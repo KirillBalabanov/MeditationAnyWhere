@@ -1,0 +1,13 @@
+.audio {
+    background: #14102a;
+    width: 500px;
+    height: 40px;
+    border-radius: 10px;
+}
+.audioTitle {
+    font-size: 16px;
+    margin-top: 0;
+}
+.audio audio {
+    background: none;
+}

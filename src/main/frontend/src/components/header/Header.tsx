@@ -7,7 +7,6 @@ import defaultAvatar from "../../images/defaultAvatar.svg";
 import polygon from "../../images/polygon.svg";
 import polygonOnRectangle from "../../images/polygonOnRectangle.svg"
 import {CsrfContext} from "../../context/CsrfContext";
-import {useFetching} from "../../hooks/useFetching";
 import {HeaderReloadContext} from "../../context/HeaderReloadContext";
 
 const Header = () => {

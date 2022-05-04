@@ -8,7 +8,27 @@ public class ApplicationConfigurations {
     private String userFolderPath;
     private String userFolderUrl;
 
+    private String serverFolderPath;
+
+    private String serverFolderUrl;
+
     private int amountOfDifferentSymbolsBetweenUrlAndFolderPath;
+
+    public String getServerFolderPath() {
+        return serverFolderPath;
+    }
+
+    public void setServerFolderPath(String serverFolderPath) {
+        this.serverFolderPath = serverFolderPath;
+    }
+
+    public String getServerFolderUrl() {
+        return serverFolderUrl;
+    }
+
+    public void setServerFolderUrl(String serverFolderUrl) {
+        this.serverFolderUrl = serverFolderUrl;
+    }
 
     public int getAmountOfDifferentSymbolsBetweenUrlAndFolderPath() {
         return amountOfDifferentSymbolsBetweenUrlAndFolderPath;
