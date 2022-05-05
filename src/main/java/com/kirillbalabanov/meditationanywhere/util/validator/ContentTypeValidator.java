@@ -8,18 +8,24 @@ public class ContentTypeValidator {
         return Patterns.IMG_PATTERN.getPattern().matcher(contentType).matches();
     }
 
-}
-
-enum Patterns {
-    IMG_PATTERN("image.*");
-
-    private final Pattern pattern;
-
-    Patterns(String regex) {
-        this.pattern = Pattern.compile(regex);
+    public static boolean isValidAudio(String contentType) {
+        return Patterns.AUDIO_PATTERN.getPattern().matcher(contentType).matches();
     }
 
-    public Pattern getPattern() {
-        return pattern;
+    enum Patterns {
+        IMG_PATTERN("image.*"),
+        AUDIO_PATTERN("audio.*");
+
+        private final Pattern pattern;
+
+        Patterns(String regex) {
+            this.pattern = Pattern.compile(regex);
+        }
+
+        public Pattern getPattern() {
+            return pattern;
+        }
     }
+
 }
+

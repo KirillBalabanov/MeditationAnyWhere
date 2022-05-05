@@ -5,27 +5,21 @@ import com.kirillbalabanov.meditationanywhere.entity.UserEntity;
 import com.kirillbalabanov.meditationanywhere.exception.user.NoUserFoundException;
 import com.kirillbalabanov.meditationanywhere.repository.ProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.UUID;
 
 @Service
 public class ProfileService {
     private final ProfileRepository profileRepository;
     private final UserService userService;
-    private final String userFolderPath;
-    private final String userFolderUrl;
+    private final FileService fileService;
     @Autowired
-    public ProfileService(ProfileRepository profileRepository, UserService userService, @Value("${app.user-folder-path}") String userFolderPath,
-                          @Value("${app.user-folder-url}") String userFolderUrl) {
+    public ProfileService(ProfileRepository profileRepository, UserService userService, FileService fileService) {
         this.profileRepository = profileRepository;
         this.userService = userService;
-        this.userFolderPath = userFolderPath;
-        this.userFolderUrl = userFolderUrl;
+        this.fileService = fileService;
     }
 
     public ProfileEntity updateProfileSettings(long id, String bio, MultipartFile image) throws NoUserFoundException, IOException {
@@ -33,21 +27,14 @@ public class ProfileService {
         ProfileEntity profileEntity = userEntity.getProfileEntity();
 
         if (!profileEntity.getAvatarPath().equals("")) {
-            new File(profileEntity.getAvatarPath()).delete();
+            fileService.deleteFileFromUserDirectory(profileEntity.getAvatarPath());
         }
 
-        String imageFileName = UUID.randomUUID() + "." + image.getOriginalFilename();
-        String avatarPath = userFolderPath + "/" + id + "/" + imageFileName;
-
-        File fileInFileSys = new File(avatarPath);
-        if (!fileInFileSys.exists()) {
-            fileInFileSys.mkdirs();
-        }
-        image.transferTo(fileInFileSys);
+        String fileName = fileService.createFileInUserDirectory(image, id);
 
         profileEntity.setBio(bio);
-        profileEntity.setAvatarUrl(userFolderUrl + "/" + id + "/" + imageFileName);
-        profileEntity.setAvatarPath(avatarPath);
+        profileEntity.setAvatarUrl(fileService.getFileUrl(fileName, id));
+        profileEntity.setAvatarPath(fileService.getFilePathInFileSys(fileName, id));
 
         return profileRepository.save(profileEntity);
     }
@@ -58,7 +45,7 @@ public class ProfileService {
         ProfileEntity profileEntity = userEntity.getProfileEntity();
 
         if (deleteAvatar && !profileEntity.getAvatarPath().equals("")) {
-            new File(profileEntity.getAvatarPath()).delete();
+           fileService.deleteFileFromUserDirectory(profileEntity.getAvatarPath());
             profileEntity.setAvatarUrl("");
             profileEntity.setAvatarPath("");
         }

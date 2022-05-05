@@ -2,6 +2,9 @@ package com.kirillbalabanov.meditationanywhere.entity;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -34,6 +37,9 @@ public class UserEntity {
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "userEntity", fetch = FetchType.EAGER)
     private ProfileEntity profileEntity;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userEntity", fetch = FetchType.EAGER)
+    private List<AudioEntity> audioEntityList;
+
     public UserEntity() {
     }
 
@@ -51,7 +57,16 @@ public class UserEntity {
         userEntity.setActivationCode(UUID.randomUUID().toString());
         userEntity.setRegistrationDate(new Date(new java.util.Date().getTime()));
         userEntity.setProfileEntity(ProfileEntity.initProfileEntity());
+        userEntity.setAudioEntityList(new ArrayList<AudioEntity>());
         return userEntity;
+    }
+
+    public List<AudioEntity> getAudioEntityList() {
+        return audioEntityList;
+    }
+
+    public void setAudioEntityList(List<AudioEntity> audioEntityList) {
+        this.audioEntityList = audioEntityList;
     }
 
     public ProfileEntity getProfileEntity() {
