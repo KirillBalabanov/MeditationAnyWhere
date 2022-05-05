@@ -5,7 +5,7 @@ import {isValidEmail, isValidPassword, isValidUsername} from "../util/UserValida
 import {CsrfContext} from "../context/CsrfContext";
 import {AuthContext} from "../context/AuthContext";
 import {useAuthRedirect} from "../hooks/useAuthRedirect";
-import Loader from "../components/loading/Loader";
+import Loader from "../components/loader/Loader";
 
 const RegistrationPage = () => {
     const token = useContext(CsrfContext)?.csrfToken;

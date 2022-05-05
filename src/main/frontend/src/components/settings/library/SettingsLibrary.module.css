@@ -1,7 +1,13 @@
+.form {
+    min-height: 500px;
+}
+.formInner {
+    height: 500px;
+}
+
 .previewOuter {
     margin-top: 20px;
     width: 400px;
-    height: 50px;
 }
 .input {
     background: #0D091F;
@@ -20,28 +26,56 @@
     width: 40px;
     height: 40px;
     object-fit: cover;
+    padding-left: 10px;
 }
 .inputText {
     font-size: 16px;
     padding-left: 20px;
 }
-.inputError {
+.fileError {
     font-size: 16px;
     color: red;
+}
+.inputError {
+    width: 100%;
+    font-size: 16px;
+    color: red;
+    margin: 0;
 }
 
 .preview {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
+    position: relative;
 }
 .removePreviewBtn {
     width: 40px;
     height: 40px;
     margin-left: 10px;
+    position: absolute;
+    top: 10px;
+    right: -50px;
+}
+.previewInput {
+    width: 50%;
+    background: none;
+    height: 0;
+    border: none;
+    color: white;
+    padding-left: 0;
+    margin-top: 15px;
+}
+.previewInput:focus {
+    border: none
+}
+.previewInput::placeholder {
+    color: white;
 }
 
+
 .submitBtn {
-    margin-top: 40px;
+    margin-top: 30px;
     background: #2196f3;
     width: 120px;
     height: 30px;

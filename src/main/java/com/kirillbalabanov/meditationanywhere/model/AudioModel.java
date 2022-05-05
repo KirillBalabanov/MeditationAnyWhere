@@ -12,7 +12,7 @@ public class AudioModel {
     public static AudioModel toModel(AudioEntity audioEntity) {
         AudioModel audioModel = new AudioModel();
         audioModel.setAudioTitle(audioEntity.getAudioTitle());
-        audioModel.setAudioUrl(audioModel.getAudioUrl());
+        audioModel.setAudioUrl(audioEntity.getAudioUrl());
         return audioModel;
     }
 

@@ -41,8 +41,8 @@ public class AudioService {
 
     public AudioModel[] getUserAudioInArrayModels(long userId) throws NoUserFoundException {
         UserEntity userEntity = userService.findById(userId);
-
-        return (AudioModel[]) userEntity.getAudioEntityList().stream().map(AudioModel::toModel).toArray();
+        if(userEntity.getAudioEntityList().size() == 0) return null;
+        return userEntity.getAudioEntityList().stream().map(AudioModel::toModel).toArray(AudioModel[]::new);
     }
 
 }

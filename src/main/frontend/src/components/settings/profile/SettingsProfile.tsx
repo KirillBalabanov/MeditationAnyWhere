@@ -4,7 +4,7 @@ import classes from "./SettingsProfile.module.css";
 import Section from "../section/Section";
 import {CsrfContext} from "../../../context/CsrfContext";
 import {useFetching} from "../../../hooks/useFetching";
-import Loader from "../../loading/Loader";
+import Loader from "../../loader/Loader";
 import {HeaderReloadContext} from "../../../context/HeaderReloadContext";
 import PopupRectangle from "../../popup/PopupRectangle";
 import Popup from "../../popup/Popup";

@@ -3,7 +3,7 @@ import {useNavigate, useParams} from "react-router-dom";
 import Header from "../components/header/Header";
 import {useFetching} from "../hooks/useFetching";
 import Error from "./Error";
-import Loader from "../components/loading/Loader";
+import Loader from "../components/loader/Loader";
 import classes from "../styles/ProfilePage.module.css";
 import defaultAvatar from "../images/defaultAvatar.svg";
 import polygon from "../images/polygonOnRectangleGray.svg";

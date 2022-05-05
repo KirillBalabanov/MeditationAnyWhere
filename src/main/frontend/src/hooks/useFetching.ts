@@ -5,6 +5,7 @@ export const useFetching = (fetchRequest: string, setData: (obj: any) => void, s
     let [fetched, setFetched] = useState(true);
     useEffect(() => {
         fetch(fetchRequest).then((response) => response.json()).then((data) => {
+            console.log(data);
             if("error" in data) {
                 setFetched(false);
                 setErrorMsg(data["error"]);

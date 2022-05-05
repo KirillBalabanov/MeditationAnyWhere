@@ -4,7 +4,7 @@ import {Link, useNavigate} from "react-router-dom";
 import {isValidPassword, isValidUsername} from "../util/UserValidator";
 import {AuthContext} from "../context/AuthContext";
 import {CsrfContext} from "../context/CsrfContext";
-import Loader from "../components/loading/Loader";
+import Loader from "../components/loader/Loader";
 import {useAuthRedirect} from "../hooks/useAuthRedirect";
 
 const LoginPage = () => {

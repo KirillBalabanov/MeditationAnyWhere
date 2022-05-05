@@ -6,7 +6,7 @@ import {CsrfContext, CsrfContextI} from "./context/CsrfContext";
 import {AppRoutes} from "./routes/Routes";
 import {useAuth} from "./hooks/useAuth";
 import {useToken} from "./hooks/useToken";
-import Loader from "./components/loading/Loader";
+import Loader from "./components/loader/Loader";
 import {HeaderReloadContext, HeaderReloadContextI} from "./context/HeaderReloadContext";
 
 
