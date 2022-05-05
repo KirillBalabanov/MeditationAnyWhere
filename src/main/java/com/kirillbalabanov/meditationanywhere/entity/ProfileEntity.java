@@ -13,6 +13,9 @@ public class ProfileEntity {
     @Column(nullable = true, length = 255)
     private String avatarUrl;
 
+    @Column(nullable = true)
+    private String avatarPath;
+
     @Column(nullable = true, length = 255)
     private String bio;
 
@@ -27,7 +30,16 @@ public class ProfileEntity {
         ProfileEntity profileEntity = new ProfileEntity();
         profileEntity.setBio("");
         profileEntity.setAvatarUrl("");
+        profileEntity.setAvatarPath("");
         return profileEntity;
+    }
+
+    public String getAvatarPath() {
+        return avatarPath;
+    }
+
+    public void setAvatarPath(String avatarPath) {
+        this.avatarPath = avatarPath;
     }
 
     public long getId() {
