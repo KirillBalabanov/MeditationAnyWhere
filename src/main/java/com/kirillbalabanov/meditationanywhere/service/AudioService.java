@@ -2,6 +2,7 @@ package com.kirillbalabanov.meditationanywhere.service;
 
 import com.kirillbalabanov.meditationanywhere.entity.AudioEntity;
 import com.kirillbalabanov.meditationanywhere.entity.UserEntity;
+import com.kirillbalabanov.meditationanywhere.exception.audio.AudioNotFoundException;
 import com.kirillbalabanov.meditationanywhere.exception.user.NoUserFoundException;
 import com.kirillbalabanov.meditationanywhere.model.AudioModel;
 import com.kirillbalabanov.meditationanywhere.repository.AudioRepository;
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 public class AudioService {
@@ -45,4 +46,25 @@ public class AudioService {
         return userEntity.getAudioEntityList().stream().map(AudioModel::toModel).toArray(AudioModel[]::new);
     }
 
+    public AudioEntity updateAudioTitle(long userId, String url, String title) throws NoUserFoundException, AudioNotFoundException {
+        AudioEntity audioEntity = findUserAudioByUrl(userId, url);
+        audioEntity.setAudioTitle(title);
+        return audioEntity;
+    }
+
+    public AudioEntity findUserAudioByUrl(long userId, String url) throws NoUserFoundException, AudioNotFoundException {
+        UserEntity userEntity = userService.findById(userId);
+        Optional<AudioEntity> optional = userEntity.getAudioEntityList().stream().filter((el) -> el.getAudioUrl().equals(url)).findFirst();
+        if(optional.isEmpty()) throw new AudioNotFoundException("Audio not found.");
+        return optional.get();
+    }
+
+    public void deleteUserAudiByUrl(long userId, String url) throws NoUserFoundException, AudioNotFoundException {
+        UserEntity userEntity = userService.findById(userId);
+        Optional<AudioEntity> optional = userEntity.getAudioEntityList().stream().filter((el) -> el.getAudioUrl().equals(url)).findFirst();
+        if(optional.isEmpty()) throw new AudioNotFoundException("Audio not found.");
+        AudioEntity audioEntity = optional.get();
+        fileService.deleteFileFromUserDirectory(audioEntity.getAudioPath());
+        userEntity.getAudioEntityList().remove(audioEntity);
+    }
 }

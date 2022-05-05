@@ -29,7 +29,10 @@ const SettingsLibrary = () => {
         // @ts-ignore
         let file = (e.target as HTMLInputElement).files[0];
         if(file == null) return;
-
+        if (audioFetched.length >= 3) {
+            setFileErrorMsg("You cannot have more than 3 tracks.");
+            return;
+        }
         setAudioFile(null);
 
         if (!file.type.match("audio.*")) {
@@ -54,7 +57,73 @@ const SettingsLibrary = () => {
 
     function formPost(e: React.FormEvent) {
         e.preventDefault();
-        if(audioFile === null) return;
+        if(audioFile === null) { // update request
+            let target = e.target;
+            let index = 0;
+            let inputs = [];
+            while (true) {
+                let obj = {title: "", url: "", delete: false, changed: false}
+                // @ts-ignore
+                let ct = target[index];
+                if(ct === undefined) break;
+                if (ct.name === "audioTitle") {
+                    obj.url = ct.dataset.url;
+                    obj.title = ct.value;
+                    obj.changed = ct.dataset.changed;
+                    index++;
+                    while(true) { // find button of that form audio
+                        // @ts-ignore
+                        let bt = target[index];
+                        if (bt.name === "deleteButton") {
+                            obj.delete = bt.dataset.delete;
+                            inputs.push(obj);
+                            break;
+                        }
+                        index++;
+                    }
+                }
+                index++;
+            } // fill inputs
+
+            inputs.forEach((inp) => {
+                console.log(inp)
+                let fd = new FormData();
+                if (inp.delete) {
+                    fd.append("url", inp.url);
+                    fetch("/audio/del", {
+                        method: "DELETE",
+                        headers: {
+                            'X-XSRF-TOKEN': csrfContext.csrfToken
+                        },
+                        body: fd,
+                    }).then((response) => response.json()).then((data) => {
+                        console.log(data);
+                        setAudioFetched(audioFetched.filter((af) => af.audioUrl !== data["deleted"]));
+                    });
+                }
+                else if (inp.changed) {
+                    fd.append("url", inp.url);
+                    fd.append("title", inp.title);
+                    fetch("/audio/update", {
+                        method: "PUT",
+                        headers: {
+                            'X-XSRF-TOKEN': csrfContext.csrfToken
+                        },
+                        body: fd,
+                    }).then((response) => response.json()).then((data) => {
+                        console.log(data);
+                        setAudioFetched(audioFetched.map((af) => {
+                            if (af.audioUrl === data.audioUrl) {
+                                af.audioTitle = data.audioTitle;
+                            }
+                            return af;
+                        }));
+                    });
+                }
+            });
+            return;
+        }
+        if(audioFetched.length >= 3) return;
         // @ts-ignore
         let audioTitle = e.target[2].value;
         if(!AudioValidator.isValidAudioName(audioTitle)) return;
@@ -67,7 +136,9 @@ const SettingsLibrary = () => {
                 'X-XSRF-TOKEN': csrfContext.csrfToken
             },
             body: formData
-        }).then((response) => response.json()).then((data) => console.log(data));
+        }).then((response) => response.json()).then((data) => setAudioFetched([...audioFetched, data]));
+        setInputKey(Date.now());
+        setAudioFile(null);
     }
 
     return (

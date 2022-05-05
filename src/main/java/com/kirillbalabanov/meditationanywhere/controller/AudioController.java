@@ -2,6 +2,8 @@ package com.kirillbalabanov.meditationanywhere.controller;
 
 import com.kirillbalabanov.meditationanywhere.config.UserDet;
 import com.kirillbalabanov.meditationanywhere.entity.AudioEntity;
+import com.kirillbalabanov.meditationanywhere.exception.audio.AudioNotFoundException;
+import com.kirillbalabanov.meditationanywhere.exception.user.NoUserFoundException;
 import com.kirillbalabanov.meditationanywhere.model.AudioModel;
 import com.kirillbalabanov.meditationanywhere.service.AudioService;
 import com.kirillbalabanov.meditationanywhere.util.validator.ContentTypeValidator;
@@ -53,5 +55,33 @@ public class AudioController {
             return ResponseEntity.ok().body(hm);
         }
         return ResponseEntity.ok().body(audioModels);
+    }
+
+    @PutMapping(value = "/update")
+    public ResponseEntity<?> updateTitle(@RequestParam(value = "url") String audioUrl, @RequestParam(value = "title") String newTitle) {
+        UserDet userDet = (UserDet) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        AudioEntity audioEntity;
+        try {
+            audioEntity = audioService.updateAudioTitle(userDet.getUserId(), audioUrl, newTitle);
+        } catch (Exception e) {
+            HashMap<String, String> hm = new HashMap<>();
+            hm.put("error", e.getMessage());
+            return ResponseEntity.ok().body(hm);
+        }
+        return ResponseEntity.ok().body(audioEntity);
+    }
+
+    @DeleteMapping("/del")
+    public ResponseEntity<?> deleteAudio(@RequestParam(value = "url") String audioUrl) {
+        UserDet userDet = (UserDet) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        HashMap<String, String> hm = new HashMap<>();
+        try {
+            audioService.deleteUserAudiByUrl(userDet.getUserId(), audioUrl);
+        } catch (Exception e) {
+            hm.put("error", e.getMessage());
+            return ResponseEntity.ok().body(hm);
+        }
+        hm.put("deleted", audioUrl);
+        return ResponseEntity.ok().body(hm);
     }
 }
