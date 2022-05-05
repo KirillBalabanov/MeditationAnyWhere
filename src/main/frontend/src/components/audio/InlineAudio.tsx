@@ -1,17 +1,14 @@
-import React from 'react';
+import React, {ChangeEvent, ChangeEventHandler, FormEvent, useState} from 'react';
 import classes from "./InlineAudio.module.css";
-import startButton from "../../images/startButton.svg";
-import stopButton  from "../../images/stopButton.svg";
 
-interface InlineAudio {
-    title: string,
+interface InlineAudioProps {
     url: string
 }
 
-const InlineAudio = ({title, url}: InlineAudio) => {
+const InlineAudio = ({url}: InlineAudioProps) => {
+
     return (
         <div className={classes.audioOuter}>
-            <p className={classes.audioTitle}>{title}</p>
             <div className={classes.audio}>
                 <audio controls className={classes.audio}>
                     <source src={url}/>

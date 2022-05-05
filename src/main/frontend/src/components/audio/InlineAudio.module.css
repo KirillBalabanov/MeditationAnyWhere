@@ -1,13 +1,18 @@
+.audioOuter {
+    width: 100%;
+    height: 100%;
+}
+
 .audio {
     background: #14102a;
-    width: 500px;
-    height: 40px;
     border-radius: 10px;
 }
-.audioTitle {
-    font-size: 16px;
-    margin-top: 0;
-}
+
 .audio audio {
     background: none;
 }
+
+.remove.deleteSelected {
+    border: 2px solid #853232;
+}
+

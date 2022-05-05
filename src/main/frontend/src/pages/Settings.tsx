@@ -49,6 +49,7 @@ const Settings = () => {
                         <h3 className={classes.setting__title}>
                             {setting==="profile" && "Public profile"}
                             {setting==="account" && "Account"}
+                            {setting==="library" && "Library"}
                         </h3>
                         {setting=="profile" && <SettingsProfile></SettingsProfile>}
                         {setting=="account" && <SettingsAccount></SettingsAccount>}

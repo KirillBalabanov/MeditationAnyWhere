@@ -1,7 +1,7 @@
 import React, {FormEvent, useContext, useState} from 'react';
 import classes from "../styles/AuthPage.module.css";
 import {Link} from "react-router-dom";
-import {isValidEmail, isValidPassword, isValidUsername} from "../util/Validator";
+import {isValidEmail, isValidPassword, isValidUsername} from "../util/UserValidator";
 import {CsrfContext} from "../context/CsrfContext";
 import {AuthContext} from "../context/AuthContext";
 import {useAuthRedirect} from "../hooks/useAuthRedirect";

@@ -1,57 +1,48 @@
-.input {
-    cursor: pointer;
-    background: #0D091F;
-    width: 500px;
+.previewOuter {
+    margin-top: 20px;
+    width: 400px;
     height: 50px;
-    border-radius: 10px;
+}
+.input {
+    background: #0D091F;
+    width: 400px;
+    height: 50px;
     display: flex;
+    cursor: pointer;
     align-items: center;
+    border-radius: 20px;
     transition: all .2s ease;
-    position: relative;
-    margin: 10px 0 30px;
 }
 .input:hover {
-    background: #14102a;
+    background: #110c2a;
+}
+.inputImg {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
 }
 .inputText {
-    padding-left: 20px;
     font-size: 16px;
-}
-.inputImages {
-    width: 30px;
-    height: 30px;
-    object-fit: cover;
-    padding-left: 10px;
+    padding-left: 20px;
 }
 .inputError {
-    color: red;
-    display: none;
     font-size: 16px;
-    position: absolute;
-    bottom: -40px;
-}
-.inputErrorShown {
-    display: block;
+    color: red;
 }
 
+.preview {
+    display: flex;
+    align-items: center;
+}
+.removePreviewBtn {
+    width: 40px;
+    height: 40px;
+    margin-left: 10px;
+}
 
-.formButton {
+.submitBtn {
+    margin-top: 40px;
     background: #2196f3;
+    width: 120px;
     height: 30px;
-}
-
-
-.remove {
-    background: #480c0c;
-    margin-left: 20px;
-    width: 100px;
-    height: 20px;
-}
-.remove:hover {
-    background: #5d1a1a;
-}
-
-
-.audioOuter {
-    margin: 20px 0 0;
 }
