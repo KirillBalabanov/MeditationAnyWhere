@@ -1,14 +1,10 @@
-.form {
+.library {
     min-height: 500px;
 }
-.formInner {
-    height: 500px;
+.libraryInner {
+    height: 100%;
 }
 
-.previewOuter {
-    margin-top: 20px;
-    width: 400px;
-}
 .input {
     background: #0D091F;
     width: 400px;
@@ -31,18 +27,27 @@
 .inputText {
     font-size: 16px;
     padding-left: 20px;
+
 }
 .fileError {
     font-size: 16px;
     color: red;
+    margin-top: 10px;
+    margin-bottom: 0;
 }
 .inputError {
     width: 100%;
     font-size: 16px;
     color: red;
-    margin: 0;
+    margin-top: 10px;
 }
 
+.addForm{
+    width: 400px;
+    margin: 20px 0 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #2D2E32;
+}
 .preview {
     display: flex;
     align-items: center;
@@ -65,18 +70,25 @@
     color: white;
     padding-left: 0;
     margin-top: 15px;
+    margin-bottom: 0;
+    border-bottom: 1px solid #2D2E32;
 }
 .previewInput:focus {
-    border: none
-}
-.previewInput::placeholder {
-    color: white;
+    border: none;
+    border-bottom: 1px solid white;
 }
 
 
-.submitBtn {
+.updateBtn {
     margin-top: 30px;
     background: #2196f3;
     width: 120px;
     height: 30px;
+}
+
+.addBtn {
+    background: #2196f3;
+    width: 120px;
+    height: 30px;
+    margin-top: 20px;
 }

@@ -9,7 +9,7 @@ import java.io.IOException;
 public class UrlResolver extends PathResourceResolver implements ResourceResolver {
     @Override
     protected Resource getResource(String resourcePath, Resource location) throws IOException {
-        String resolved = resourcePath.replace("%2520", " ");
+        String resolved = resourcePath.replaceAll("%20|%2520", " ");
         return super.getResource(resolved, location);
     }
 }

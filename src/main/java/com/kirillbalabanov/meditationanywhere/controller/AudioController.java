@@ -19,7 +19,7 @@ import java.util.HashMap;
 @RequestMapping(value = "/audio")
 public class AudioController {
 
-    private AudioService audioService;
+    private final AudioService audioService;
 
     public AudioController(AudioService audioService) {
         this.audioService = audioService;
@@ -58,7 +58,9 @@ public class AudioController {
     }
 
     @PutMapping(value = "/update")
-    public ResponseEntity<?> updateTitle(@RequestParam(value = "url") String audioUrl, @RequestParam(value = "title") String newTitle) {
+    public ResponseEntity<?> updateTitle(@RequestBody HashMap<String, String> hashMap) {
+        String newTitle = hashMap.get("title");
+        String audioUrl = hashMap.get("url");
         UserDet userDet = (UserDet) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         AudioEntity audioEntity;
         try {
@@ -68,15 +70,16 @@ public class AudioController {
             hm.put("error", e.getMessage());
             return ResponseEntity.ok().body(hm);
         }
-        return ResponseEntity.ok().body(audioEntity);
+        return ResponseEntity.ok().body(AudioModel.toModel(audioEntity));
     }
 
     @DeleteMapping("/del")
-    public ResponseEntity<?> deleteAudio(@RequestParam(value = "url") String audioUrl) {
+    public ResponseEntity<?> deleteAudio(@RequestBody HashMap<String, String> audioObj) {
+        String audioUrl = audioObj.get("url");
         UserDet userDet = (UserDet) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         HashMap<String, String> hm = new HashMap<>();
         try {
-            audioService.deleteUserAudiByUrl(userDet.getUserId(), audioUrl);
+            audioService.deleteUserAudioByUrl(userDet.getUserId(), audioUrl);
         } catch (Exception e) {
             hm.put("error", e.getMessage());
             return ResponseEntity.ok().body(hm);

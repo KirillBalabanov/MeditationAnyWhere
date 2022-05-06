@@ -18,7 +18,7 @@ const FormAudio = ({audioUrl, audioTitle}: FormAudioProps) => {
 
     return (
         <div className={classes.audio}>
-            <input className={classes.audioTitle} name={"audioTitle"} value={inputValue} data-url={audioUrl} data-changed={changed}
+            <input className={classes.audioTitle} name={"audioTitle"} value={inputValue} data-url={audioUrl} data-changed={changed ? 1 : 0}
                    onChange={(e) => {
                 if(!AudioValidator.isValidAudioName(e.target.value)) setErrorMsg("Invalid audio name");
                 else setErrorMsg("");
@@ -32,7 +32,7 @@ const FormAudio = ({audioUrl, audioTitle}: FormAudioProps) => {
                     onClick={(e) => {
                         setDeleteAudio(!deleteAudio);
                     }}
-            name={"deleteButton"} data-delete={deleteAudio}>delete audio
+            name={"deleteButton"} data-delete={deleteAudio ? 1 : 0}>delete audio
             </button>
         </div>
     );
