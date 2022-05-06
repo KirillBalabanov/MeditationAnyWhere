@@ -1,9 +1,9 @@
 import classes from "./SettingsLibrary.module.css";
 import Section from "../section/Section";
 import audioUploadIcon from "../../../images/audioUploadIcon.svg";
-import InlineAudio from "../../audio/InlineAudio";
+import InlineAudio from "../../audio/inline/InlineAudio";
 import React, {ChangeEvent, useContext, useEffect, useState} from "react";
-import FormAudio from "../../audio/FormAudio";
+import FormAudio from "../../audio/form/FormAudio";
 import removeIcon from "../../../images/removeIcon.svg";
 import Loader from "../../loader/Loader";
 import {CsrfContext} from "../../../context/CsrfContext";
@@ -80,6 +80,7 @@ const SettingsLibrary = () => {
         let titleHash = {};
         let index = 0;
         let inputs = [];
+        let changed = false;
         while (true) {
             let obj = {title: "", url: "", delete: "0", changed: "0"}
             // @ts-ignore
@@ -89,6 +90,7 @@ const SettingsLibrary = () => {
                 obj.url = ct.dataset.url;
                 obj.title = ct.value;
                 obj.changed = ct.dataset.changed;
+                if(obj.changed === "1") changed = true;
                 if (obj.title in titleHash) {
                     setFileErrorMsg("Title already taken");
                     return;
@@ -101,6 +103,7 @@ const SettingsLibrary = () => {
                     let bt = target[index];
                     if (bt.name === "deleteButton") {
                         obj.delete = bt.dataset.delete;
+                        if(obj.delete === "1") changed = true;
                         inputs.push(obj);
                         break;
                     }
@@ -109,6 +112,7 @@ const SettingsLibrary = () => {
             }
             index++;
         } // fill inputs
+        if(!changed) return;
         setAudioFetched([]);
         inputs.forEach((inp) => {
             if (inp.delete === "1") {
@@ -125,8 +129,9 @@ const SettingsLibrary = () => {
                         return;
                     }
                 });
+
             }
-            else setAudioFetched([...audioFetched, {audioTitle: inp.title, audioUrl: inp.url}]);
+            else setAudioFetched([...audioFetched, {audioUrl: inp.url, audioTitle: inp.title}])
             if (inp.changed === "1") {
                 fetch("/audio/update", {
                     method: "PUT",
@@ -152,9 +157,11 @@ const SettingsLibrary = () => {
         if(audioFile == null) return;
 
         if(!addAllowed) return;
+
         if(audioFetched.length >= 3) return;
         // @ts-ignore
-        let audioTitle = e.target[2].value;
+        let audioTitle = e.target[5].value;
+
         if(!AudioValidator.isValidAudioName(audioTitle)) return;
 
         if(audioFetched.filter((el) => el.audioTitle === audioTitle).length != 0) {

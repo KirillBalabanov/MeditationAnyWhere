@@ -1,0 +1,109 @@
+.audioOuter {
+    width: 100%;
+    height: 50px;
+    background: #0D091F;
+    border-radius: 20px;
+    position: relative;
+}
+
+.audio {
+    border-radius: 10px;
+    display: none;
+}
+
+.audio audio {
+    background: none;
+}
+
+.remove.deleteSelected {
+    border: 2px solid #853232;
+}
+
+.playBtn {
+    width: 35px;
+    height: 35px;
+    position: absolute;
+    left: 10px;
+    top: 8px;
+}
+.playBtn img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.playShown {
+    display: flex;
+}
+.playHide {
+    display: none;
+}
+
+.controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 25px;
+    padding-left: 55px;
+    padding-right: 10px;
+}
+
+.durationOuter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 70%;
+
+}
+.begin {
+    font-size: 12px;
+    margin: 0 5px 0 0;
+}
+.end {
+    font-size: 12px;
+    margin: 0 0 0 5px;
+}
+.duration {
+    margin: 0;
+    padding: 0;
+    border: none;
+    accent-color: #2196f3;
+    height: 3px;
+    cursor: pointer;
+}
+.duration:focus {
+    border: none;
+}
+
+.volumeOuter {
+    display: flex;
+    align-items: center;
+    width: 7%;
+    transition: all .4s ease-out;
+}
+.volumeOuter.volumeOuterFull {
+    width: 25%;
+}
+.volumeImg {
+    width: 20px;
+    height: 20px;
+    object-fit: cover;
+}
+.volume {
+    margin: 0;
+    padding: 0;
+    bottom: 10px;
+    border: none;
+    accent-color: #2196f3;
+    height: 3px;
+    width: 0;
+    visibility: hidden;
+    transition: all .3s ease-in;
+    cursor: pointer;
+}
+.volumeShown {
+    width: 100%;
+    visibility: visible;
+}
+.volume:focus {
+    border: none;
+}
