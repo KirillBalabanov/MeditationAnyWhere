@@ -8,6 +8,7 @@ import btnStop from "../../images/stopIcon.svg";
 import TimerService from "./TimerService";
 import {AuthContext} from "../../context/AuthContext";
 import {CsrfContext} from "../../context/CsrfContext";
+import AudioSelect from "../select/audio/AudioSelect";
 
 const Timer = () => {
     const [timer, setTimer] = useState("00:00");
@@ -106,6 +107,7 @@ const Timer = () => {
                 <TimerSelect timerValue={50} className={classes.timer__select_item}/>
                 <TimerSelect timerValue={60} className={classes.timer__select_item}/>
             </div>
+            <AudioSelect></AudioSelect>
             <div className={classes.timer__btn} onClick={() => toggleTimer()}>
                 {
                     timerRunning

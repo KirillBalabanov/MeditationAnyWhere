@@ -6,8 +6,7 @@
     position: relative;
 }
 
-.audio {
-    border-radius: 10px;
+.audioSrc {
     display: none;
 }
 
@@ -107,4 +106,8 @@
 }
 .volume:focus {
     border: none;
+}
+
+.audioSrc {
+    display: none;
 }
