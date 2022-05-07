@@ -54,6 +54,10 @@
     flex-wrap: wrap;
     position: relative;
 }
+.previewAudio {
+    height: 50px;
+    width: 400px;
+}
 .removePreviewBtn {
     width: 30px;
     height: 30px;

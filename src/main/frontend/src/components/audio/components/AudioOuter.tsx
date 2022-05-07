@@ -35,7 +35,7 @@ const AudioOuter = ({url, audioElement, looped, children}: AudioOuterProps) => {
                     ?
                     <p style={{color: "red", fontSize: "16px", display: "flex", alignItems: "center", justifyContent: "center", height: "100%"}}>{errMsg}</p>
                     :
-                    <div>
+                    <div className={classes.audioInner}>
                         <AudioSource url={url} audioElement={audioElement} looped={looped}></AudioSource>
                         {children}
                     </div>

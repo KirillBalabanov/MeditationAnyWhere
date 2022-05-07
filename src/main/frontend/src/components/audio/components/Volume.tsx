@@ -7,12 +7,14 @@ interface VolumeProps {
     setAudioShown: (b: boolean) => void,
     audioVolume: number,
     setAudioVolume: (n: number) => void,
-    audioElement: React.RefObject<HTMLAudioElement>
+    audioElement: React.RefObject<HTMLAudioElement>,
+    customWidth?: string
 }
 
-const Volume = ({audioShown, setAudioShown, audioVolume, setAudioVolume, audioElement}: VolumeProps) => {
+const Volume = ({audioShown, setAudioShown, audioVolume, setAudioVolume, audioElement, customWidth}: VolumeProps) => {
     return (
         <div className={audioShown ? classes.volumeOuter + " " + classes.volumeOuterFull : classes.volumeOuter}
+             style={{width: audioShown ? customWidth : "7%"}}
              onMouseLeave={() => setAudioShown(false)}
         >
             <img className={classes.volumeImg} src={volume} alt="volume"

@@ -226,7 +226,9 @@ const SettingsLibrary = () => {
                                         </div>
                                         :
                                         <div className={classes.preview}>
-                                            <InlineAudio url={audioPreviewUrl}></InlineAudio>
+                                            <div className={classes.previewAudio}>
+                                                <InlineAudio url={audioPreviewUrl}></InlineAudio>
+                                            </div>
                                             <button type={"button"} className={classes.removePreviewBtn}
                                                     onClick={() => {
                                                         setAudioPreviewUrl("");

@@ -1,11 +1,15 @@
 .audioOuter {
     width: 100%;
-    height: 50px;
+    height: 100%;
     background: #0D091F;
     border-radius: 20px;
     position: relative;
 }
-
+.audioInner {
+    height: 100%;
+    width: 100%;
+    display: flex;
+}
 .audioSrc {
     display: none;
 }
@@ -19,15 +23,14 @@
 }
 
 .playBtn {
-    width: 35px;
-    height: 35px;
-    position: absolute;
-    left: 10px;
-    top: 8px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+    width: auto;
 }
 .playBtn img {
-    width: 100%;
-    height: 100%;
+    height: 70%;
     object-fit: cover;
 }
 .playShown {
@@ -41,17 +44,17 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-top: 25px;
-    padding-left: 55px;
+    padding-top: 5%;
+    padding-left: 10px;
     padding-right: 10px;
+    width: 100%;
 }
 
 .durationOuter {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 90%;
-
+    width: 100%;
 }
 .begin {
     font-size: 12px;
@@ -76,16 +79,17 @@
 .volumeOuter {
     display: flex;
     align-items: center;
-    width: 7%;
+    object-fit: cover;
     transition: all .4s ease-out;
     padding-left: 10px;
+    height: 50%;
+
 }
 .volumeOuter.volumeOuterFull {
     width: 25%;
 }
 .volumeImg {
-    width: 20px;
-    height: 20px;
+    height: 100%;
     object-fit: cover;
 }
 .volume {
@@ -97,7 +101,7 @@
     height: 3px;
     width: 0;
     visibility: hidden;
-    transition: all .3s ease-in;
+    transition: all .2s ease-in;
     cursor: pointer;
 }
 .volumeShown {

@@ -1,0 +1,67 @@
+.select {
+    background: #050B18;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    width: 250px;
+    height: 40px;
+    overflow: hidden;
+    margin: 0 auto 50px;
+    transition: all .7s ease;
+}
+.selectToggled {
+    height: 206px;
+    width: 350px;
+}
+.title {
+    display: flex;
+    justify-content: center;
+    padding-top: 5px;
+
+}
+.titleInner {
+    border-bottom: 1px solid #2D2E32;
+    display: flex;
+    align-items: center;
+    padding-bottom: 5px;
+    cursor: pointer;
+}
+.titleText {
+    font-size: 18px;
+    margin: 0 0 0 5px;
+}
+
+
+.library {
+    overflow: auto;
+    height: 130px;
+    width: 350px;
+    margin-top: 10px;
+}
+.libraryTitle {
+    font-size: 16px;
+    display: flex;
+    justify-content: center;
+    margin: 0 0 10px;
+}
+
+.libraryItem {
+    font-size: 14px;
+    width: 100%;
+    background: #0A121C;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    margin: 5px 0;
+}
+.libraryItem:hover {
+    background: #0D091F;
+}
+.libraryText {
+    padding-left: 10px;
+}
+
+
+
+
+
