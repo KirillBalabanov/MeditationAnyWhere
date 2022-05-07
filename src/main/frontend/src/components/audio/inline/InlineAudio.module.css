@@ -51,7 +51,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 70%;
+    width: 90%;
 
 }
 .begin {
@@ -79,6 +79,7 @@
     align-items: center;
     width: 7%;
     transition: all .4s ease-out;
+    padding-left: 10px;
 }
 .volumeOuter.volumeOuterFull {
     width: 25%;

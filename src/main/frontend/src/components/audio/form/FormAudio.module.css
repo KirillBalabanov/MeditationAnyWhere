@@ -6,7 +6,7 @@
 .audioTitle {
     width: 100%;
     font-size: 16px;
-    margin: 0 0 10px;
+    margin: 0;
     background: none;
     border: none;
     outline: none;
@@ -22,7 +22,8 @@
     transition: all .3s ease;
     margin-left: 20px;
     height: 20px;
-    width: 120px;
+    width: 110px;
+    font-size: 14px;
 }
 .audioDelete:hover {
     background: #5d1a1a;

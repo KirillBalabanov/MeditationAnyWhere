@@ -27,10 +27,13 @@ const SettingsLibrary = () => {
     const [inputKey, setInputKey] = useState(Date.now());
 
     const [addAllowed, setAddAllowed] = useState(false);
+    const [updateAllowed, setUpdateAllowed] = useState(false);
+    const [errorUpdateMsg, setErrorUpdateMsg] = useState("");
 
     useEffect(() => { // fetch user's audio from server
         fetch("/audio/get").then((json) => json.json()).then((data) => setAudioFetched(data)).catch(() => setAudioFetched([])).then(() => setIsLoading(false));
     }, []);
+
 
     const audioPreview = (e: ChangeEvent) => {
         setAudioFile(null);
@@ -71,11 +74,11 @@ const SettingsLibrary = () => {
         fileReader.readAsDataURL(file);
 
         setAudioFile(file);
-        setAddAllowed(true);
     };
 
     function updateLibrarySubmit(e: React.FormEvent) {
         e.preventDefault();
+        setErrorUpdateMsg("");
         let target = e.target;
         let titleHash = {};
         let index = 0;
@@ -89,6 +92,7 @@ const SettingsLibrary = () => {
             if (ct.name === "audioTitle") {
                 obj.url = ct.dataset.url;
                 obj.title = ct.value;
+                if(!AudioValidator.isValidAudioName(obj.title)) return;
                 obj.changed = ct.dataset.changed;
                 if(obj.changed === "1") changed = true;
                 if (obj.title in titleHash) {
@@ -112,8 +116,12 @@ const SettingsLibrary = () => {
             }
             index++;
         } // fill inputs
-        if(!changed) return;
-        setAudioFetched([]);
+        if(!changed) {
+            setErrorUpdateMsg("Please make some changes first.");
+            return;
+        }
+
+        let audioChanged: any = []
         inputs.forEach((inp) => {
             if (inp.delete === "1") {
                 fetch("/audio/del", {
@@ -131,7 +139,7 @@ const SettingsLibrary = () => {
                 });
 
             }
-            else setAudioFetched([...audioFetched, {audioUrl: inp.url, audioTitle: inp.title}])
+            else audioChanged = [...audioChanged, {audioUrl: inp.url, audioTitle: inp.title}]
             if (inp.changed === "1") {
                 fetch("/audio/update", {
                     method: "PUT",
@@ -148,6 +156,7 @@ const SettingsLibrary = () => {
                 });
             }
         });
+        setAudioFetched(audioChanged);
         setPopupContent("Library updated!");
         setShowPopup(true);
     }
@@ -163,7 +172,6 @@ const SettingsLibrary = () => {
         let audioTitle = e.target[5].value;
 
         if(!AudioValidator.isValidAudioName(audioTitle)) return;
-
         if(audioFetched.filter((el) => el.audioTitle === audioTitle).length != 0) {
             setInputErrorMsg("Title already taken.");
             return;
@@ -226,11 +234,18 @@ const SettingsLibrary = () => {
                                                     }}><img src={removeIcon} alt="remove"/></button>
                                             <input className={classes.previewInput} type="text" maxLength={20}
                                                    placeholder={"Enter file name"} onChange={(e) => {
+                                                       setAddAllowed(false);
                                                 if(!AudioValidator.isValidAudioName(e.target.value)) setInputErrorMsg("Invalid audio title");
-                                                else setInputErrorMsg("");
+                                                else{
+                                                    setAddAllowed(true);
+                                                    setInputErrorMsg("");
+                                                }
                                             }}/>
                                             <p className={classes.inputError}>{inputErrorMsg}</p>
-                                            <button className={classes.addBtn} type={"submit"}>Add audio</button>
+                                            {
+                                                addAllowed&&
+                                                <button className={classes.addBtn} type={"submit"}>Add audio</button>
+                                            }
                                         </div>
                                 }
                             </form>
@@ -239,8 +254,18 @@ const SettingsLibrary = () => {
                                 <form onSubmit={updateLibrarySubmit}>
                                     {audioFetched.map(audio => <FormAudio audioUrl={audio.audioUrl}
                                                                      audioTitle={audio.audioTitle}
-                                                                     key={audio.audioUrl}></FormAudio>)}
-                                    <button className={classes.updateBtn} type={"submit"}>Update library</button>
+                                                                     key={audio.audioUrl} setUpdateAllowed={setUpdateAllowed}></FormAudio>) }
+                                    {
+                                        updateAllowed&&
+                                        <div>
+                                            <button className={classes.updateBtn} type={"submit"}>
+                                                Update library
+                                            </button>
+                                            <p className={classes.updateError}>{errorUpdateMsg}</p>
+                                        </div>
+
+                                    }
+
                                 </form>
                             }
 
