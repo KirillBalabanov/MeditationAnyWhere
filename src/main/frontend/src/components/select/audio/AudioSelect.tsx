@@ -8,7 +8,11 @@ import {Link} from "react-router-dom";
 import {useFetching} from "../../../hooks/useFetching";
 import Loader from "../../loader/Loader";
 
-const AudioSelect = () => {
+interface AudioSelectProps {
+    setAudioData: (el: any) => void
+}
+
+const AudioSelect = ({setAudioData}: AudioSelectProps) => {
     const [isToggled, setIsToggled] = useState(false);
     const authContext = useContext(AuthContext);
 
@@ -20,6 +24,8 @@ const AudioSelect = () => {
     const [isLoadingUser, setIsLoadingUser] = useState(true);
     const [fetchedUserAudio, setFetchedUserAudio] = useState(true);
     const [errorMsgUserAudio, setErrorMsgUserAudio] = useState("");
+
+    const [isPlaying, setIsPlaying] = useState(false);
 
     useEffect(() => {
         if (authContext?.auth) {
@@ -53,12 +59,15 @@ const AudioSelect = () => {
                             ?
                             <Loader/>
                             :
-
                             fetchedUserAudio
                                 ?
                                 userAudio.map((el) => {
                                     return (
-                                        <LibraryItem url={el.audioUrl} title={el.audioTitle} key={el.audioUrl}></LibraryItem>
+                                        <LibraryItem isPlayingLibrary={isPlaying}
+                                                     setIsPlayingLibrary={setIsPlaying}
+                                                     url={el.audioUrl} title={el.audioTitle}
+                                                     setAudioData={setAudioData}
+                                                     key={el.audioUrl}></LibraryItem>
                                     )
                                 })
                                 :
@@ -81,7 +90,11 @@ const AudioSelect = () => {
                                 ?
                                 serverAudio.map((el) => {
                                     return (
-                                        <LibraryItem url={el.audioUrl} title={el.audioTitle} key={el.audioUrl}></LibraryItem>
+                                        <LibraryItem isPlayingLibrary={isPlaying}
+                                                     setIsPlayingLibrary={setIsPlaying}
+                                                     url={el.audioUrl} title={el.audioTitle}
+                                                     setAudioData={setAudioData}
+                                                     key={el.audioUrl}></LibraryItem>
                                     )
                                 })
                                 :

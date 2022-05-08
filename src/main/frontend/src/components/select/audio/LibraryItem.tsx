@@ -8,9 +8,12 @@ import volumeMuted from "../../../images/volumeMuted.svg";
 interface LibraryItemProps {
     url: string,
     title: string,
+    isPlayingLibrary: boolean,
+    setIsPlayingLibrary: (b: boolean) => void,
+    setAudioData: (obj: any) => void
 }
 
-const LibraryItem = ({url, title}: LibraryItemProps) => {
+const LibraryItem = ({url, title, isPlayingLibrary, setIsPlayingLibrary, setAudioData}: LibraryItemProps) => {
     const audioElement = useRef<HTMLAudioElement>(null);
 
     const [isPlaying, setIsPlaying] = useState(false);
@@ -26,16 +29,55 @@ const LibraryItem = ({url, title}: LibraryItemProps) => {
                 setErr(true);
                 setErrMsg("Audio not found.");
             }
-
         });
     }, []);
+
+
+    function togglePlay() {
+        if(isPlayingLibrary && !isPlaying) return;
+        if (isPlaying) {
+            stopPlay();
+        }
+        else {
+            runPlay();
+        }
+    }
+
+    function runPlay() {
+        setIsPlayingLibrary(true);
+        setIsPlaying(true);
+        audioElement.current!.play();
+        setAudioData({stopPlay: stopPlay, decrementVolumeByPercents: decrementVolumeByPercents});
+    }
+    console.log(isPlaying);
+    function stopPlay() {
+
+        if(isPlayingLibrary && !isPlaying) return;
+        if (isPlaying) {
+            audioElement.current!.pause();
+            setIsPlayingLibrary(false);
+            setIsPlaying(false);
+        }
+    }
+
+    function decrementVolumeByPercents(dec: number) {
+        let volume = audioElement.current!.volume * 100;
+        if (volume < dec) {
+            setVolume(0);
+            return;
+        }
+        setVolume(volume - dec);
+    }
+
+    function setVolume(vol: number) {
+        setAudioVolume(vol);
+        audioElement.current!.volume = vol / 100;
+    }
 
     return (
         <div className={isPlaying ? classes.libraryItem + " " + classes.libraryItemActive : classes.libraryItem}
              onClick={(e) => {
-                 if (isPlaying) audioElement.current!.pause();
-                 else audioElement.current!.play();
-                 setIsPlaying(!isPlaying);
+                togglePlay()
              }}>
             <AudioSource url={url} audioElement={audioElement} looped={true}></AudioSource>
             <div className={classes.libraryText}>
@@ -67,8 +109,7 @@ const LibraryItem = ({url, title}: LibraryItemProps) => {
                         e.stopPropagation();
                         let vol = Number(e.target.value);
                         setMuted(false);
-                        setAudioVolume(vol);
-                        audioElement.current!.volume = vol / 100;
+                        setVolume(vol);
                     }} onMouseMove={(e) => {
                         e.stopPropagation();
                     }}/>

@@ -17,9 +17,15 @@ let timerLenDecrement = 0;
 const timerLenDefault = 283;
 let timerLenCur = 0;
 
+interface audioDataI {
+    audioService: any
+}
+
 const Timer = () => {
     const {timerValue, setTimerValue, timerLen, setTimerLen, isPlayingState, setIsPlayingState, popupContent, setPopupContent, showPopup,
         setShowPopup, authContext, csrfContext} = useTimer();
+
+    let audioData: audioDataI = {audioService: null}
 
     useEffect(() => {
         const keyListener = (e: KeyboardEvent) => {
@@ -44,7 +50,15 @@ const Timer = () => {
         setIsPlayingState(true);
 
         interval = setInterval(() => {
+            if(min == 0 && sec <= 10 && audioData.audioService != null) { // audio volume decrement
+                // @ts-ignore
+                audioData.audioService.decrementVolumeByPercents(10);
+            }
+
             if (min === 0 && sec === 0) { // timer stop
+                if (audioData.audioService != null) {
+                    audioData.audioService.stopPlay();
+                }
                 stopTimer();
                 if (authContext?.auth) { // update user stats
                     fetch("/user/stats/updateStats", {
@@ -68,7 +82,7 @@ const Timer = () => {
             if(timerLenCur <= 0) timerLenCur = 0;
             else timerLenCur -= timerLenDecrement;
             setTimerLen(timerLenCur);
-        }, 10);
+        }, 100);
     }
 
     function toggleTimer() {
@@ -113,7 +127,7 @@ const Timer = () => {
                 <p>{timerValue}</p>
             </div>
             <div className={classes.timer__select} onClick={selectListener}>
-                <TimerSelect timerValue={5} className={classes.timer__select_item}/>
+                <TimerSelect timerValue={1} className={classes.timer__select_item}/>
                 <TimerSelect timerValue={7} className={classes.timer__select_item}/>
                 <TimerSelect timerValue={10} className={classes.timer__select_item}/>
                 <TimerSelect timerValue={12} className={classes.timer__select_item}/>
@@ -126,7 +140,7 @@ const Timer = () => {
                 <TimerSelect timerValue={50} className={classes.timer__select_item}/>
                 <TimerSelect timerValue={60} className={classes.timer__select_item}/>
             </div>
-            <AudioSelect></AudioSelect>
+            <AudioSelect setAudioData={(el) => audioData.audioService = el}></AudioSelect>
             <div className={classes.timer__btn} onClick={() => toggleTimer()}>
                 {
                     isPlayingState
