@@ -39,7 +39,7 @@ const RegistrationPage = () => {
         }
         setAuthClasses([...authClasses, classes.loading]);
         setIsLoading(true);
-        fetch("/registration", {
+        fetch("/user/auth/registration", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',

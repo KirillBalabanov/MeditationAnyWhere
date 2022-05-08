@@ -48,7 +48,7 @@ const LoginPage = () => {
         }
         setAuthClasses([...authClasses, classes.loading]);
         setIsLoading(true);
-        fetch("/login", { method: "POST", headers: {
+        fetch("/user/auth/login", { method: "POST", headers: {
                 'Content-Type': 'application/json',
                 'X-XSRF-TOKEN': csrfContext.csrfToken
             },

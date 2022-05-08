@@ -9,7 +9,7 @@ const VerificationPage = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [data, setData] = useState({message: ""});
 
-    useFetching("/verification/" + activationCode, setData, setIsLoading);
+    useFetching("/user/auth/verification/" + activationCode, setData, setIsLoading);
 
     return (
         <div className={classes.verification}>

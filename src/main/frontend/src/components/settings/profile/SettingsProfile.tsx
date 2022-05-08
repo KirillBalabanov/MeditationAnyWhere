@@ -27,7 +27,7 @@ const SettingsProfile = () => {
 
     const [rectangleShown, setRectangleShown] = useState(false);
 
-    useFetching("/profile/settings/settings", setData, setIsLoading);
+    useFetching("/user/profile/settings/get", setData, setIsLoading);
 
     useEffect(() => {
         setBio(data.bio);
@@ -79,7 +79,7 @@ const SettingsProfile = () => {
         formData.append("bio", bioForm);
         formData.append("deleteAvatar", deleteAvatar.toString());
         formData.append("image", image);
-        fetch("/profile/settings/update", {
+        fetch("/user/profile/settings/update", {
             method: "PUT",
             headers: {
                 'X-XSRF-TOKEN': csrfContext.csrfToken

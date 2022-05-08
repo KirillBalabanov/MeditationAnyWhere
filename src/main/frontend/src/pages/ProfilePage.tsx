@@ -6,7 +6,6 @@ import Error from "./Error";
 import Loader from "../components/loader/Loader";
 import classes from "../styles/ProfilePage.module.css";
 import defaultAvatar from "../images/defaultAvatar.svg";
-import polygon from "../images/polygonOnRectangleGray.svg";
 import timeIcon from "../images/timeIcon.svg";
 import Date from "../components/date/Date";
 import PopupRectangle from "../components/popup/PopupRectangle";
@@ -29,7 +28,7 @@ const ProfilePage = () => {
     }
     const [profile, setProfile] = useState(profileModel);
 
-    const [fetched, errorMsg] = useFetching("/profile/" + username, setProfile, setIsLoading);
+    const [fetched, errorMsg] = useFetching("/user/profile/" + username, setProfile, setIsLoading);
     if(!fetched) return (<Error errorMsg={errorMsg}/>);
 
     return (

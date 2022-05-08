@@ -29,7 +29,7 @@ const Timer = () => {
         if(!authContext.auth) {
             return;
         }
-        fetch("/updateStats", { method: "PUT", headers: {
+        fetch("/user/stats/updateStats", { method: "PUT", headers: {
                 'Content-Type': 'application/json',
                 'X-XSRF-TOKEN': csrfContext.csrfToken
             },

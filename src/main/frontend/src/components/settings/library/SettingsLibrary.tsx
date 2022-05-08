@@ -31,7 +31,7 @@ const SettingsLibrary = () => {
     const [errorUpdateMsg, setErrorUpdateMsg] = useState("");
 
     useEffect(() => { // fetch user's audio from server
-        fetch("/audio/get").then((json) => json.json()).then((data) => setAudioFetched(data)).catch(() => setAudioFetched([])).then(() => setIsLoading(false));
+        fetch("/user/audio/get").then((json) => json.json()).then((data) => setAudioFetched(data)).catch(() => setAudioFetched([])).then(() => setIsLoading(false));
     }, []);
 
 
@@ -124,7 +124,7 @@ const SettingsLibrary = () => {
         let audioChanged: any = []
         inputs.forEach((inp) => {
             if (inp.delete === "1") {
-                fetch("/audio/del", {
+                fetch("/user/audio/del", {
                     method: "DELETE",
                     headers: {
                         'X-XSRF-TOKEN': csrfContext.csrfToken,
@@ -141,7 +141,7 @@ const SettingsLibrary = () => {
             }
             else audioChanged = [...audioChanged, {audioUrl: inp.url, audioTitle: inp.title}]
             if (inp.changed === "1") {
-                fetch("/audio/update", {
+                fetch("/user/audio/update", {
                     method: "PUT",
                     headers: {
                         'X-XSRF-TOKEN': csrfContext.csrfToken,
@@ -180,7 +180,7 @@ const SettingsLibrary = () => {
         let formData = new FormData();
         formData.append("audio", audioFile!);
         formData.append("title", audioTitle);
-        fetch("/audio/add", {
+        fetch("/user/audio/add", {
             method: "POST",
             headers: {
                 'X-XSRF-TOKEN': csrfContext.csrfToken

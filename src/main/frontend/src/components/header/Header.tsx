@@ -25,7 +25,7 @@ const Header = () => {
 
     // fetch on reload and on page load
     useEffect(() => {
-        fetch("/profile/user/avatar").then((response) => response.json()).then((data) => {
+        fetch("/user/profile/avatar/get").then((response) => response.json()).then((data) => {
             setAvatarUrlObj(data);
             setIsLoading(false);
         });
