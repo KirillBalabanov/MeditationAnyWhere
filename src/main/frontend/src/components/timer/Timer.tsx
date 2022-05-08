@@ -9,6 +9,7 @@ import AudioSelect from "../select/audio/AudioSelect";
 import {useTimer} from "./useTimer";
 
 let timerRunning = false;
+let minListened = 0;
 let min = 0;
 let sec = 0;
 let interval: any;
@@ -18,7 +19,7 @@ let timerLenCur = 0;
 
 const Timer = () => {
     const {timerValue, setTimerValue, timerLen, setTimerLen, isPlayingState, setIsPlayingState, popupContent, setPopupContent, showPopup,
-        setShowPopup} = useTimer();
+        setShowPopup, authContext, csrfContext} = useTimer();
 
     useEffect(() => {
         const keyListener = (e: KeyboardEvent) => {
@@ -45,6 +46,16 @@ const Timer = () => {
         interval = setInterval(() => {
             if (min === 0 && sec === 0) { // timer stop
                 stopTimer();
+                if (authContext?.auth) { // update user stats
+                    fetch("/user/stats/updateStats", {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-XSRF-TOKEN": csrfContext?.csrfToken!
+                        },
+                        body: JSON.stringify({minListened: minListened})
+                    })
+                }
                 setShowPopup(true);
             }
             if(sec == 0) {
@@ -77,7 +88,8 @@ const Timer = () => {
         // @ts-ignore
         min = Number.parseInt(el.getAttribute("timer-value"));
         timerLenDecrement = timerLenDefault / (min * 60);
-        setPopupContent("Listened " + min + " min.");
+        minListened = min;
+        setPopupContent("Listened " + minListened + " min.");
         timerLenCur = timerLenDefault;
         setTimerLen(timerLenCur);
         setTimerValue(TimerService.formatToMinSecStr(min * 60));
