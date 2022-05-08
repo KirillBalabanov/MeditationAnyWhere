@@ -8,12 +8,10 @@ interface SliderProps {
 }
 
 let dragging = false;
-let currentSlideIndex = 0;
+let currentSliderIndex = 0;
 let startPosition = 0;
 let prevTranslate = 0;
 let currentTranslate = 0;
-
-let canWheelSwipe = true;
 
 const Slider = ({children, width, amountOfElements}: SliderProps) => {
     const sliderInner = useRef<HTMLDivElement>(null);
@@ -25,33 +23,40 @@ const Slider = ({children, width, amountOfElements}: SliderProps) => {
     const rightBoundary = -(width*(amountOfElements-1) + width/2);
 
     function moveHandler(pgx: number) {
-        currentTranslate = prevTranslate + pgx - startPosition;
-        if(currentTranslate > leftBoundary) return;
-        if(currentTranslate < rightBoundary) return;
+        let tr = prevTranslate + pgx - startPosition;
+        if(!canMove(tr)) return;
+        currentTranslate = tr;
         setRightScroll(currentTranslate);
+    }
+
+    function canMove(newTranslate: number) {
+        if(newTranslate > leftBoundary) return false;
+        if(newTranslate < rightBoundary) return false;
+        if(Math.abs(newTranslate - prevTranslate) > width) return false;
+        return true;
     }
 
     function upHandler() {
         const moved = Math.abs(currentTranslate - prevTranslate);
         if (moved < width / 2) { // don't flip
-            setSlide(currentSlideIndex);
+            setSlide(currentSliderIndex);
         } else {
             if(currentTranslate < prevTranslate)  { // flip to next
-                setSlide(currentSlideIndex + 1);
+                setSlide(currentSliderIndex + 1);
             }
             else {
-                setSlide(currentSlideIndex -  1); // flip to prev
+                setSlide(currentSliderIndex -  1); // flip to prev
             }
         }
     }
 
     function setSlide(i: number) {
-        if(i <= 0) currentSlideIndex = 0;
-        else if (i >= amountOfElements - 1) currentSlideIndex = amountOfElements - 1;
-        else currentSlideIndex = i;
+        if(i <= 0) currentSliderIndex = 0;
+        else if (i >= amountOfElements - 1) currentSliderIndex = amountOfElements - 1;
+        else currentSliderIndex = i;
 
-        setSliderCur(currentSlideIndex);
-        prevTranslate = (-currentSlideIndex) * width;
+        setSliderCur(currentSliderIndex);
+        prevTranslate = (-currentSliderIndex) * width;
         setTranslateRight(prevTranslate);
     }
 
@@ -86,21 +91,6 @@ const Slider = ({children, width, amountOfElements}: SliderProps) => {
              onMouseDown={(e) => {
                  startPosition = e.pageX;
                  dragging = true;
-             }}
-             onWheel={(e) => {
-                 if (canWheelSwipe && e.deltaX != 0) {
-                     if(e.deltaX < 0) {
-                         setSlide(sliderCur - 1);
-                     }
-                     if (e.deltaX > 0) {
-                         setSlide(sliderCur + 1);
-                     }
-                     canWheelSwipe = false;
-                     setTimeout(() => {
-                         canWheelSwipe = true;
-                     }, 500);
-                 }
-
              }}
              onTouchStart={(e) => {
                  startPosition = e.touches[0].pageX;
