@@ -7,70 +7,110 @@ interface SliderProps {
     amountOfElements: number
 }
 
+let dragging = false;
+let currentSlideIndex = 0;
+let startPosition = 0;
+let prevTranslate = 0;
+let currentTranslate = 0;
+
 const Slider = ({children, width, amountOfElements}: SliderProps) => {
-    const [sliderCur, setSliderCur] = useState(0);
     const sliderInner = useRef<HTMLDivElement>(null);
-    const [xPrev, setXPrev] = useState(0);
-    const [curPos, setCurPos] = useState(0);
-    const leftBoundary = -(width / 2);
-    const rightBoundary = (width*(amountOfElements-1) + width/2);
 
-    useEffect(() => {
-        // @ts-ignore
-        sliderInner.current.style.right = curPos + "px";
-    }, [curPos]);
+    const [sliderCur, setSliderCur] = useState(0); // for dots
+    const [translateRight, setTranslateRight] = useState(0); // sliderInner translateX
 
-    const setSliderCurrent = (newInd: number) => {
-        if(newInd <= 0) {
-            setSliderCur(0);
-            setCurPos(0);
-        }
-        else if (newInd >= amountOfElements - 1) {
-            setCurPos(width*(amountOfElements - 1));
-            setSliderCur(amountOfElements - 1);
-        }
-        else {
-            setSliderCur(newInd);
-            setCurPos((newInd-1) * width);
+    const leftBoundary = width / 2;
+    const rightBoundary = -(width*(amountOfElements-1) + width/2);
+
+    function moveHandler(pgx: number) {
+        currentTranslate = prevTranslate + pgx - startPosition;
+        if(currentTranslate > leftBoundary) return;
+        if(currentTranslate < rightBoundary) return;
+        setRightScroll(currentTranslate);
+    }
+
+    function upHandler() {
+        const moved = Math.abs(currentTranslate - prevTranslate);
+        if (moved < width / 2) { // don't flip
+            setSlide(currentSlideIndex);
+        } else {
+            if(currentTranslate < prevTranslate)  { // flip to next
+                setSlide(currentSlideIndex + 1);
+            }
+            else {
+                setSlide(currentSlideIndex -  1); // flip to prev
+            }
         }
     }
 
+    function setSlide(i: number) {
+        if(i <= 0) currentSlideIndex = 0;
+        else if (i >= amountOfElements - 1) currentSlideIndex = amountOfElements - 1;
+        else currentSlideIndex = i;
+
+        setSliderCur(currentSlideIndex);
+        prevTranslate = (-currentSlideIndex) * width;
+        setTranslateRight(prevTranslate);
+    }
+
+    function setRightScroll(n: number) {
+        setTranslateRight(n);
+    }
+
+    const mouseMoveHandler =(e: MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (dragging) {
+            moveHandler(e.pageX);
+        }
+    }
+    const mouseUpHandler = (e: MouseEvent) => {
+        dragging = false;
+        upHandler();
+    }
     useEffect(() => {
-        setCurPos(sliderCur * width);
-    }, [sliderCur]);
+        document.addEventListener("mousemove", mouseMoveHandler);
+        document.addEventListener("mouseup", mouseUpHandler);
+
+        return () => {
+            document.removeEventListener("mousemove", mouseMoveHandler);
+            document.removeEventListener("mouseup", mouseUpHandler);
+        };
+    }, []);
+
 
     return (
         <div className={classes.slider} style={{width: width + "px"}}
+             onMouseDown={(e) => {
+                 startPosition = e.pageX;
+                 dragging = true;
+             }}
+             onWheel={(e) => {
+                 if(e.deltaX < 0) {
+                     setSlide(sliderCur - 1)
+                 }
+                 if (e.deltaX > 0) {
+                     setSlide(sliderCur + 1);
+                 }
+             }}
              onTouchStart={(e) => {
-                 setXPrev(e.touches[0].pageX);
+                 startPosition = e.touches[0].pageX;
              }}
              onTouchMove={(e) => {
-                 let end = e.touches[0].pageX;
-                 let np = curPos - (end - xPrev);
-                 if (np < leftBoundary) np = leftBoundary;
-                 if (np > rightBoundary) np = rightBoundary;
-                 setCurPos(np);
-                 setXPrev(end);
+                 moveHandler(e.touches[0].pageX);
              }}
-             onTouchEnd={() => {
-                 let start = sliderCur * width;
-                 if (Math.abs(start - curPos) > width / 2) {
-                     if (curPos > start) setSliderCurrent(sliderCur + 1);
-                     else setSliderCurrent(sliderCur - 1);
-                 } else setSliderCurrent(sliderCur);
-             }}
-             onMouseDown={(e) => {
-                 setXPrev(e.pageX);
-             }}
+             onTouchEnd={(e) => upHandler()}
         >
-            <div className={classes.sliderInner} style={{width: width * amountOfElements + "px"}} ref={sliderInner}>
+            <div className={classes.sliderInner}
+                 style={{width: width * amountOfElements + "px", transform: "translateX(" + translateRight + "px)"}}
+                 ref={sliderInner}>
                 {children}
             </div>
             <div className={classes.dots}>
                 {Array.from({length: amountOfElements}, (a, index) =>
                     <div className={index === sliderCur ? classes.dot + " " + classes.dotCur : classes.dot} key={index}
                          onClick={() => {
-                             setSliderCur(index)
+                             setSlide(index)
                          }}
                     >
                     </div>)}
