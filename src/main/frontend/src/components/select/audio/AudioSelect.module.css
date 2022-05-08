@@ -51,8 +51,12 @@
     display: flex;
     align-items: center;
     cursor: pointer;
-
+    justify-content: space-between;
     margin: 5px 0;
+    transition: all .3s ease;
+}
+.libraryItemActive {
+    background: #0D091F;
 }
 .libraryItem:hover {
     background: #0D091F;
@@ -60,6 +64,59 @@
 .libraryText {
     padding-left: 10px;
 }
+.libraryControls {
+    display: flex;
+    padding-right: 10px;
+    align-items: center;
+
+}
+.libraryVolume {
+    height: 15px;
+    width: 90px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+.libraryVolume img {
+    object-fit: cover;
+    height: 100%;
+}
+.libraryVolumeImg {
+    object-fit: cover;
+    height: 100%;
+}
+.libraryVolumeInput {
+    height: 3px;
+    padding: 0;
+    width: 70px;
+    border: none;
+    margin: 0 5px 0 0;
+    cursor: pointer;
+}
+.libraryVolumeInput:focus {
+    border: none;
+}
+.libraryLogin {
+    font-size: 14px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+}
+.libraryLoginLink {
+    border-bottom: 1px solid white;
+}
+.libraryError {
+    font-size: 14px;
+    text-align: center;
+    display: flex;
+    color: red;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+}
+
 
 
 

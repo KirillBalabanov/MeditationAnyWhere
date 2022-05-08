@@ -25,15 +25,17 @@ const Header = () => {
 
     // fetch on reload and on page load
     useEffect(() => {
-        fetch("/user/profile/avatar/get").then((response) => response.json()).then((data) => {
-            setAvatarUrlObj(data);
-            setIsLoading(false);
-        });
+        if (authContext.auth) {
+            fetch("/user/profile/avatar/get").then((response) => response.json()).then((data) => {
+                setAvatarUrlObj(data);
+                setIsLoading(false);
+            });
+        }
         headerReloadContext.setReload(false);
     }, [headerReloadContext.reload]);
 
     function logout() {
-        fetch("/logout", {
+        fetch("/user/auth/logout", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
