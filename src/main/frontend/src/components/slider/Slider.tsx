@@ -13,6 +13,8 @@ let startPosition = 0;
 let prevTranslate = 0;
 let currentTranslate = 0;
 
+let canWheelSwipe = true;
+
 const Slider = ({children, width, amountOfElements}: SliderProps) => {
     const sliderInner = useRef<HTMLDivElement>(null);
 
@@ -86,12 +88,19 @@ const Slider = ({children, width, amountOfElements}: SliderProps) => {
                  dragging = true;
              }}
              onWheel={(e) => {
-                 if(e.deltaX < 0) {
-                     setSlide(sliderCur - 1)
+                 if (canWheelSwipe && e.deltaX != 0) {
+                     if(e.deltaX < 0) {
+                         setSlide(sliderCur - 1);
+                     }
+                     if (e.deltaX > 0) {
+                         setSlide(sliderCur + 1);
+                     }
+                     canWheelSwipe = false;
+                     setTimeout(() => {
+                         canWheelSwipe = true;
+                     }, 500);
                  }
-                 if (e.deltaX > 0) {
-                     setSlide(sliderCur + 1);
-                 }
+
              }}
              onTouchStart={(e) => {
                  startPosition = e.touches[0].pageX;
