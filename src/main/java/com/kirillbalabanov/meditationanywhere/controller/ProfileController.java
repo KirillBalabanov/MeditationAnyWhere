@@ -19,7 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.HashMap;
 
 @RestController
-@RequestMapping("/profile")
+@RequestMapping("/user/profile")
 public class ProfileController {
 
     private final UserService userService;
@@ -75,7 +75,7 @@ public class ProfileController {
         return ResponseEntity.ok().body(ProfileModel.toModel(profileEntity));
     }
 
-    @GetMapping("/settings/settings")
+    @GetMapping("/settings/get")
     public ResponseEntity<?> getProfileEntitySettings() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if(!(principal instanceof UserDet userDet)) return ResponseEntity.badRequest().body("user not authenticated");
@@ -91,7 +91,7 @@ public class ProfileController {
         return ResponseEntity.ok().body(model);
     }
 
-    @GetMapping("/user/avatar")
+    @GetMapping("/avatar/get")
     public ResponseEntity<?> avatarUrl() {
         HashMap<String, String> hm = new HashMap<>();
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();

@@ -1,9 +1,8 @@
 import React, {useState} from 'react';
 import classes from "./AudioSelect.module.css";
-import AudioPreviewLooped from "../../audio/preview/AudioPreviewLooped";
 import selectAudioIcon from "../../../images/selectAudioIcon.svg";
-import InlineAudio from "../../audio/inline/InlineAudio";
 import Slider from "../../slider/Slider";
+import LibraryItem from "./LibraryItem";
 
 const AudioSelect = () => {
     const [isToggled, setIsToggled] = useState(false);
@@ -15,66 +14,12 @@ const AudioSelect = () => {
                     <p className={classes.titleText}>Select your audio</p>
                 </div>
             </div>
-            <Slider width={350} amountOfElements={4}>
+            <Slider width={350} amountOfElements={2}>
                 <div className={classes.library}>
                     <div className={classes.libraryTitle}>
                         Default library
                     </div>
-                    <div className={classes.libraryItem}>
-                        <p className={classes.libraryText}>title</p>
-                    </div>
-                    <div className={classes.libraryItem}>
-                        <p className={classes.libraryText}>title</p>
-                    </div>
-                    <div className={classes.libraryItem}>
-                        <p className={classes.libraryText}>title</p>
-                    </div>
-                    <div className={classes.libraryItem}>
-                        <p className={classes.libraryText}>title</p>
-                    </div>
-                    <div className={classes.libraryItem}>
-                        <p className={classes.libraryText}>title</p>
-                    </div>
-                </div>
-                <div className={classes.library}>
-                    <div className={classes.libraryTitle}>
-                        Default library
-                    </div>
-                    <div className={classes.libraryItem}>
-                        <p className={classes.libraryText}>title</p>
-                    </div>
-                    <div className={classes.libraryItem}>
-                        <p className={classes.libraryText}>title</p>
-                    </div>
-                    <div className={classes.libraryItem}>
-                        <p className={classes.libraryText}>title</p>
-                    </div>
-                    <div className={classes.libraryItem}>
-                        <p className={classes.libraryText}>title</p>
-                    </div>
-                    <div className={classes.libraryItem}>
-                        <p className={classes.libraryText}>title</p>
-                    </div>
-                </div>
-                <div className={classes.library}>
-                    <div className={classes.libraryTitle}>
-                        Default library
-                    </div>
-                    <div className={classes.libraryItem}>
-                        <p className={classes.libraryText}>title</p>
-                    </div>
-                    <div className={classes.libraryItem}>
-                        <p className={classes.libraryText}>title</p>
-                    </div>
-                    <div className={classes.libraryItem}>
-                        <p className={classes.libraryText}>title</p>
-                    </div>
-                    <div className={classes.libraryItem}>
-                        <p className={classes.libraryText}>title</p>
-                    </div>
-                    <div className={classes.libraryItem}>
-                        <p className={classes.libraryText}>title</p>
-                    </div>
+                    <LibraryItem url={"s"} title={"my f"}></LibraryItem>
                 </div>
                 <div className={classes.library}>
                     <div className={classes.libraryTitle}>

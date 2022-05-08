@@ -2,8 +2,6 @@ package com.kirillbalabanov.meditationanywhere.controller;
 
 import com.kirillbalabanov.meditationanywhere.config.UserDet;
 import com.kirillbalabanov.meditationanywhere.entity.AudioEntity;
-import com.kirillbalabanov.meditationanywhere.exception.audio.AudioNotFoundException;
-import com.kirillbalabanov.meditationanywhere.exception.user.NoUserFoundException;
 import com.kirillbalabanov.meditationanywhere.model.AudioModel;
 import com.kirillbalabanov.meditationanywhere.service.AudioService;
 import com.kirillbalabanov.meditationanywhere.util.validator.ContentTypeValidator;
@@ -16,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.HashMap;
 
 @RestController
-@RequestMapping(value = "/audio")
+@RequestMapping(value = "/user/audio")
 public class AudioController {
 
     private final AudioService audioService;
@@ -87,4 +85,5 @@ public class AudioController {
         hm.put("deleted", audioUrl);
         return ResponseEntity.ok().body(hm);
     }
+
 }

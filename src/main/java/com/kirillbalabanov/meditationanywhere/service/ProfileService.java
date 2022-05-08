@@ -33,8 +33,8 @@ public class ProfileService {
         String fileName = fileService.createFileInUserDirectory(image, id);
 
         profileEntity.setBio(bio);
-        profileEntity.setAvatarUrl(fileService.getFileUrl(fileName, id));
-        profileEntity.setAvatarPath(fileService.getFilePathInFileSys(fileName, id));
+        profileEntity.setAvatarUrl(fileService.getUserFileUrl(fileName, id));
+        profileEntity.setAvatarPath(fileService.getUserFilePathInFileSys(fileName, id));
 
         return profileRepository.save(profileEntity);
     }

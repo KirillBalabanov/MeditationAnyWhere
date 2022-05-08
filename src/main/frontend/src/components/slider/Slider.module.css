@@ -1,5 +1,6 @@
 .slider {
     overflow: hidden;
+    cursor: grabbing;
 }
 .sliderInner {
     display: flex;

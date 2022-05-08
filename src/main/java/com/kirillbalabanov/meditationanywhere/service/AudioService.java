@@ -38,8 +38,8 @@ public class AudioService {
 
         String fileName = fileService.createFileInUserDirectory(audioFile, userId);
 
-        AudioEntity audioEntity = AudioEntity.createAudioEntity(audioTitle, fileService.getFileUrl(fileName, userId),
-                fileService.getFilePathInFileSys(fileName, userId), userEntity);
+        AudioEntity audioEntity = AudioEntity.createAudioEntity(audioTitle, fileService.getUserFileUrl(fileName, userId),
+                fileService.getUserFilePathInFileSys(fileName, userId), userEntity);
 
         userEntity.getAudioEntityList().add(audioEntity);
 

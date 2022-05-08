@@ -16,6 +16,12 @@ public class AudioModel {
         return audioModel;
     }
 
+    public static AudioModel fromValues(String audioUrl, String audioTitle) {
+        AudioModel audioModel = new AudioModel();
+        audioModel.setAudioUrl(audioUrl);
+        audioModel.setAudioTitle(audioTitle);
+        return audioModel;
+    }
     public String getAudioUrl() {
         return audioUrl;
     }

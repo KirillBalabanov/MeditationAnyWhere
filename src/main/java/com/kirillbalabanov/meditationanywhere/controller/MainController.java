@@ -1,27 +1,25 @@
 package com.kirillbalabanov.meditationanywhere.controller;
 
 import com.kirillbalabanov.meditationanywhere.config.UserDet;
+import com.kirillbalabanov.meditationanywhere.exception.audio.AudioNotFoundException;
+import com.kirillbalabanov.meditationanywhere.model.AudioModel;
+import com.kirillbalabanov.meditationanywhere.service.FileService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.web.csrf.CsrfFilter;
-import org.springframework.security.web.server.csrf.CsrfWebFilter;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.http.HttpServletRequest;
-import java.nio.file.attribute.UserPrincipal;
 import java.util.HashMap;
-import java.util.Map;
 
-@Controller
+@RestController
+@RequestMapping(value = "/server")
 public class MainController {
+    private FileService fileService;
+
+    public MainController(FileService fileService) {
+        this.fileService = fileService;
+    }
 
     @GetMapping("/principal")
     public ResponseEntity<?> authenticated() {
@@ -37,5 +35,17 @@ public class MainController {
         return ResponseEntity.ok().body(hashMap);
     }
 
+    @GetMapping("/audio/default")
+    public ResponseEntity<?> getServerAudioDefault() {
+        AudioModel[] audios;
+        try {
+            audios = fileService.getServerAudioDefaultArray();
+        } catch (AudioNotFoundException e) {
+            HashMap<String, String> hm = new HashMap<>();
+            hm.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(hm);
+        }
+        return ResponseEntity.ok().body(audios);
+    }
 }
 

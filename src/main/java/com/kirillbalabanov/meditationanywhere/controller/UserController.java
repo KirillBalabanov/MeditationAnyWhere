@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 
 @RestController
+@RequestMapping(value = "/user/auth")
 public class UserController {
     private final UserService userService;
 
