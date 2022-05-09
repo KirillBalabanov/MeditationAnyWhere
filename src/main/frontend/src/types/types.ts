@@ -31,7 +31,7 @@ export interface UserProfileI {
     username: string,
 }
 
-export interface AudioModelI {
+export interface AudioI {
     audioUrl: string,
     audioTitle: string,
 }

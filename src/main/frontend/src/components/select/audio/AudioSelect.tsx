@@ -7,6 +7,7 @@ import {AuthContext} from "../../../context/AuthContext";
 import {Link} from "react-router-dom";
 import {useFetching} from "../../../hooks/useFetching";
 import Loader from "../../loader/Loader";
+import {AudioI, ErrorI} from "../../../types/types";
 
 interface AudioSelectProps {
     setAudioData: (el: any) => void
@@ -17,8 +18,8 @@ const AudioSelect = ({setAudioData}: AudioSelectProps) => {
     const authContext = useContext(AuthContext);
 
     const [isLoadingServer, setIsLoadingServer] = useState(true);
-    const [serverAudio, setServerAudio] = useState([{audioUrl: "", audioTitle: ""}]);
-    const[fetchedServerAudio, errorMsgServerAudio] = useFetching("/server/audio/default", setServerAudio, setIsLoadingServer)
+    const [serverAudio, setServerAudio] = useState<AudioI[] | null | ErrorI>(null);
+    const fetchedServerAudio = useFetching("/server/audio/default", setIsLoadingServer, setServerAudio);
 
     const [userAudio, setUserAudio] = useState([{audioUrl: "", audioTitle: ""}]);
     const [isLoadingUser, setIsLoadingUser] = useState(true);
@@ -76,33 +77,37 @@ const AudioSelect = ({setAudioData}: AudioSelectProps) => {
                                 </div>
                     }
                 </div>
-                <div className={classes.library}>
-                    <div className={classes.libraryTitle}>
-                        Default library
-                    </div>
-                    {
-                        isLoadingServer
-                            ?
-                            <Loader/>
-                            :
-
-                            fetchedServerAudio
+                {
+                    serverAudio != null
+                    &&
+                    <div className={classes.library}>
+                        <div className={classes.libraryTitle}>
+                            Default library
+                        </div>
+                        {
+                            isLoadingServer
                                 ?
-                                serverAudio.map((el) => {
-                                    return (
-                                        <LibraryItem isPlayingLibrary={isPlaying}
-                                                     setIsPlayingLibrary={setIsPlaying}
-                                                     url={el.audioUrl} title={el.audioTitle}
-                                                     setAudioData={setAudioData}
-                                                     key={el.audioUrl}></LibraryItem>
-                                    )
-                                })
+                                <Loader/>
                                 :
-                                <div className={classes.libraryError}>
-                                    {errorMsgServerAudio}
-                                </div>
-                    }
-                </div>
+
+                                fetchedServerAudio
+                                    ?
+                                    Array.isArray(serverAudio) && serverAudio.length != 0 && "audioTitle" in serverAudio[0] && serverAudio.map((el) => {
+                                        return (
+                                            <LibraryItem isPlayingLibrary={isPlaying}
+                                                         setIsPlayingLibrary={setIsPlaying}
+                                                         url={el.audioUrl} title={el.audioTitle}
+                                                         setAudioData={setAudioData}
+                                                         key={el.audioUrl}></LibraryItem>
+                                        )
+                                    })
+                                    :
+                                    <div className={classes.libraryError}>
+                                        {"error" in serverAudio && serverAudio.error}
+                                    </div>
+                        }
+                    </div>
+                }
             </Slider>
 
         </div>

@@ -27,7 +27,7 @@ const SettingsProfile = () => {
 
     const [rectangleShown, setRectangleShown] = useState(false);
 
-    useFetching("/user/profile/settings/get", setData, setIsLoading);
+    useFetching("/user/profile/settings/get", setIsLoading, setData);
 
     useEffect(() => {
         setBio(data.bio);
