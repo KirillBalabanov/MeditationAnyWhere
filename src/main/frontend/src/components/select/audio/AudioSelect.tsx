@@ -26,7 +26,7 @@ const AudioSelect = ({setAudioPlaying}: AudioSelectProps) => {
     useFetchingOnCondition("/user/audio/get", setIsLoadingUser, setUserAudio, authContext!.auth);
 
     const [isPlaying, setIsPlaying] = useState(false);
-
+    console.log("select");
     return (
         <div className={isToggled ? classes.select + " " + classes.selectToggled : classes.select}>
             <div className={classes.title}>
@@ -52,7 +52,7 @@ const AudioSelect = ({setAudioPlaying}: AudioSelectProps) => {
                                 </div>
                                 :
                                     (
-                                        userAudio != null && Array.isArray(userAudio)
+                                        Array.isArray(userAudio)
                                             ?
                                             userAudio.map((el) => {
                                                 return (

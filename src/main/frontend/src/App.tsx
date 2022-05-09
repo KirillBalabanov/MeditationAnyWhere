@@ -12,6 +12,7 @@ import {HeaderContext, HeaderContextI} from "./context/HeaderContext";
 
 
 const App: FC = () => {
+
     const [isLoading, setIsLoading] = useState(true);
 
     const [auth, setAuth] = useState(false);

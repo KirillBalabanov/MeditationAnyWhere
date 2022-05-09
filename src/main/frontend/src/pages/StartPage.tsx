@@ -8,7 +8,6 @@ const speed = 0.003;
 
 const StartPage: FC = () => {
     const headerContext = useContext<HeaderContextI | null>(HeaderContext);
-
     useEffect(() => {
         headerContext?.setShowHeader(false);
 

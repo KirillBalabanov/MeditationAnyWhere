@@ -14,9 +14,8 @@ interface LibraryItemProps {
 
 const AudioSelectItem = ({url, title, isPlayingLibrary, setIsPlayingLibrary, setAudioPlaying}: LibraryItemProps) => {
     const audioElement = useRef<HTMLAudioElement>(null);
-
     const [isPlaying, setIsPlaying] = useState(false);
-
+    console.log("select item")
     const [err, setErr] = useState(false);
     const [errMsg, setErrMsg] = useState("");
 
@@ -47,14 +46,10 @@ const AudioSelectItem = ({url, title, isPlayingLibrary, setIsPlayingLibrary, set
     }
 
     function stopPlay() {
-        if(isPlayingLibrary && !isPlaying) return;
-        if (isPlaying) {
-            audioElement.current!.pause();
-            setIsPlayingLibrary(false);
-            setIsPlaying(false);
-        }
+        audioElement.current!.pause();
+        setIsPlayingLibrary(false);
+        setIsPlaying(false);
     }
-
 
     return (
         <div className={isPlaying ? classes.libraryItem + " " + classes.libraryItemActive : classes.libraryItem}

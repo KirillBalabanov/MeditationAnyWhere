@@ -19,7 +19,7 @@
     align-items: center;
     position: relative;
 }
-.header__user-avatar {
+.header__userAvatar {
     width: 30px;
     height: 30px;
     border-radius: 50%;
@@ -42,7 +42,7 @@
     font-size: 14px;
     transition: all .5s;
 }
-.user__menu-polygon {
+.user__menuPolygon {
     position: absolute;
     right: 16px;
     top: -8px;
@@ -51,7 +51,7 @@
 .user__menu.active {
     display: block;
 }
-.user__menu-item {
+.user__menuItem {
     white-space: pre-wrap;
     overflow: auto;
     max-width: 156px;
@@ -66,10 +66,10 @@
     cursor: pointer;
     transition: .2s all;
 }
-.user__menu-item:nth-child(2):hover {
+.user__menuItem:nth-child(2):hover {
     background: #10131B;
 }
-.user__menu-item:nth-child(2) {
+.user__menuItem:nth-child(2) {
     background: #10131B;
     border-top-left-radius: 7px;
     border-top-right-radius: 7px;
@@ -78,10 +78,10 @@
     color: white;
     cursor: auto;
 }
-.user__menu-item:hover {
+.user__menuItem:hover {
     background-color: #0D091F;
 }
-.user__menu-item:last-child {
+.user__menuItem:last-child {
     position: absolute;
     width: 156px;
     bottom: 0;

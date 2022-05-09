@@ -20,6 +20,7 @@ const Header = () => {
 
     let redirect = useNavigate();
     const redirectTo = (path: string) => {
+        setShowMenu(false);
         redirect(path);
     };
 
