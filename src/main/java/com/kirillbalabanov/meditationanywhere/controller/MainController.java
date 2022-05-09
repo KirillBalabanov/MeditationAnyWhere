@@ -2,7 +2,9 @@ package com.kirillbalabanov.meditationanywhere.controller;
 
 import com.kirillbalabanov.meditationanywhere.config.UserDet;
 import com.kirillbalabanov.meditationanywhere.exception.audio.AudioNotFoundException;
+import com.kirillbalabanov.meditationanywhere.exception.file.FolderNotExistsException;
 import com.kirillbalabanov.meditationanywhere.model.AudioModel;
+import com.kirillbalabanov.meditationanywhere.model.ErrorModel;
 import com.kirillbalabanov.meditationanywhere.service.FileService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -40,12 +42,21 @@ public class MainController {
         AudioModel[] audios;
         try {
             audios = fileService.getServerAudioDefaultArray();
-        } catch (AudioNotFoundException e) {
-            HashMap<String, String> hm = new HashMap<>();
-            hm.put("error", e.getMessage());
-            return ResponseEntity.badRequest().body(hm);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(ErrorModel.fromMessage(e.getMessage()));
         }
         return ResponseEntity.ok().body(audios);
+    }
+
+    @GetMapping("/audio/toggle")
+    public ResponseEntity<?> getServetToggleAudio() {
+        AudioModel audioModel;
+        try {
+            audioModel = fileService.getServerToggleAudio();
+        } catch (Exception e) {
+            return ResponseEntity.ok().body(ErrorModel.fromMessage(e.getMessage()));
+        }
+        return ResponseEntity.ok().body(audioModel);
     }
 }
 

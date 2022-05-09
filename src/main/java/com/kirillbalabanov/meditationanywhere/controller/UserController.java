@@ -4,6 +4,7 @@ import com.kirillbalabanov.meditationanywhere.entity.StatsEntity;
 import com.kirillbalabanov.meditationanywhere.entity.UserEntity;
 import com.kirillbalabanov.meditationanywhere.exception.user.LoginException;
 import com.kirillbalabanov.meditationanywhere.exception.user.NoUserFoundException;
+import com.kirillbalabanov.meditationanywhere.model.ErrorModel;
 import com.kirillbalabanov.meditationanywhere.model.UserModel;
 import com.kirillbalabanov.meditationanywhere.model.UserProfileModel;
 import com.kirillbalabanov.meditationanywhere.service.UserService;
@@ -46,9 +47,7 @@ public class UserController {
         try {
             registeredUser = userService.register(username, email, password);
         } catch (Exception e) {
-            HashMap<String, String> hashMap = new HashMap<>();
-            hashMap.put("error", e.getMessage());
-            return ResponseEntity.ok().body(hashMap);
+            return ResponseEntity.ok().body(ErrorModel.fromMessage(e.getMessage()));
         }
         return ResponseEntity.ok().body(UserModel.toModel(registeredUser));
     }
@@ -64,8 +63,7 @@ public class UserController {
         try {
             userService.isAbleToLogIn(username, password);
         } catch (Exception e) {
-            hm.put("error", e.getMessage());
-            return ResponseEntity.ok().body(hm);
+            return ResponseEntity.ok().body(ErrorModel.fromMessage(e.getMessage()));
         }
 
         hm.put("authenticated", true);
@@ -98,8 +96,7 @@ public class UserController {
         try {
             userService.verifyUserByActivationCode(activationCode);
         } catch (NoUserFoundException e) {
-            hashMap.put("error", e.getMessage());
-            return ResponseEntity.ok().body(hashMap);
+            return ResponseEntity.ok().body(ErrorModel.fromMessage(e.getMessage()));
         }
         hashMap.put("message", "Account is successfully activated!");
         return ResponseEntity.ok().body(hashMap);

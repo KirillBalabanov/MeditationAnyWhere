@@ -3,6 +3,7 @@ package com.kirillbalabanov.meditationanywhere.controller;
 import com.kirillbalabanov.meditationanywhere.config.UserDet;
 import com.kirillbalabanov.meditationanywhere.entity.StatsEntity;
 import com.kirillbalabanov.meditationanywhere.exception.user.NoUserFoundException;
+import com.kirillbalabanov.meditationanywhere.model.ErrorModel;
 import com.kirillbalabanov.meditationanywhere.model.StatsModel;
 import com.kirillbalabanov.meditationanywhere.service.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +26,7 @@ public class StatsController {
     @PutMapping("/updateStats")
     public ResponseEntity<?> updateStats(@RequestBody Map<String, String> map) throws NoUserFoundException {
         if (map.size() != 1) {
-            HashMap<Object, Object> hm = new HashMap<>();
-            hm.put("error", "Invalid arguments");
-            return ResponseEntity.ok().body(hm);
+            return ResponseEntity.ok().body(ErrorModel.fromMessage("Invalid arguments."));
         }
 
         // getting session's minListened, fetched by js.

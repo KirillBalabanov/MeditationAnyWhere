@@ -3,6 +3,7 @@ package com.kirillbalabanov.meditationanywhere.controller;
 import com.kirillbalabanov.meditationanywhere.config.UserDet;
 import com.kirillbalabanov.meditationanywhere.entity.AudioEntity;
 import com.kirillbalabanov.meditationanywhere.model.AudioModel;
+import com.kirillbalabanov.meditationanywhere.model.ErrorModel;
 import com.kirillbalabanov.meditationanywhere.service.AudioService;
 import com.kirillbalabanov.meditationanywhere.util.validator.ContentTypeValidator;
 import org.springframework.http.MediaType;
@@ -34,9 +35,7 @@ public class AudioController {
         try {
             audioEntity = audioService.addAudio(userDet.getUserId(), audioFile, audioTitle);
         } catch (Exception e) {
-            HashMap<String, String> hm = new HashMap<>();
-            hm.put("error", e.getMessage());
-            return ResponseEntity.ok().body(hm);
+            return ResponseEntity.ok().body(ErrorModel.fromMessage(e.getMessage()));
         }
         return ResponseEntity.ok().body(AudioModel.toModel(audioEntity));
     }
@@ -48,9 +47,7 @@ public class AudioController {
         try {
             audioModels = audioService.getUserAudioInArrayModels(userDet.getUserId());
         } catch (Exception e) {
-            HashMap<String, String> hm = new HashMap<>();
-            hm.put("error", e.getMessage());
-            return ResponseEntity.ok().body(hm);
+            return ResponseEntity.ok().body(ErrorModel.fromMessage(e.getMessage()));
         }
         return ResponseEntity.ok().body(audioModels);
     }
@@ -64,9 +61,7 @@ public class AudioController {
         try {
             audioEntity = audioService.updateAudioTitle(userDet.getUserId(), audioUrl, newTitle);
         } catch (Exception e) {
-            HashMap<String, String> hm = new HashMap<>();
-            hm.put("error", e.getMessage());
-            return ResponseEntity.ok().body(hm);
+            return ResponseEntity.ok().body(ErrorModel.fromMessage(e.getMessage()));
         }
         return ResponseEntity.ok().body(AudioModel.toModel(audioEntity));
     }
@@ -79,8 +74,7 @@ public class AudioController {
         try {
             audioService.deleteUserAudioByUrl(userDet.getUserId(), audioUrl);
         } catch (Exception e) {
-            hm.put("error", e.getMessage());
-            return ResponseEntity.ok().body(hm);
+            return ResponseEntity.ok().body(ErrorModel.fromMessage(e.getMessage()));
         }
         hm.put("deleted", audioUrl);
         return ResponseEntity.ok().body(hm);

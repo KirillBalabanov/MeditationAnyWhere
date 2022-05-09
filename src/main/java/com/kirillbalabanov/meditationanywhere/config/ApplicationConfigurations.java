@@ -12,7 +12,26 @@ public class ApplicationConfigurations {
 
     private String serverFolderUrl;
 
+    private String serverDefaultAudioPackRelativePath;
     private int amountOfDifferentSymbolsBetweenUrlAndFolderPath;
+
+    private String serverToggleAudioRelativePath;
+
+    public String getServerToggleAudioRelativePath() {
+        return serverToggleAudioRelativePath;
+    }
+
+    public void setServerToggleAudioRelativePath(String serverToggleAudioRelativePath) {
+        this.serverToggleAudioRelativePath = serverToggleAudioRelativePath;
+    }
+
+    public String getServerDefaultAudioPackRelativePath() {
+        return serverDefaultAudioPackRelativePath;
+    }
+
+    public void setServerDefaultAudioPackRelativePath(String serverDefaultAudioPackRelativePath) {
+        this.serverDefaultAudioPackRelativePath = serverDefaultAudioPackRelativePath;
+    }
 
     public String getServerFolderPath() {
         return serverFolderPath;

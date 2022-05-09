@@ -4,6 +4,7 @@ import com.kirillbalabanov.meditationanywhere.config.UserDet;
 import com.kirillbalabanov.meditationanywhere.entity.ProfileEntity;
 import com.kirillbalabanov.meditationanywhere.entity.UserEntity;
 import com.kirillbalabanov.meditationanywhere.exception.user.NoUserFoundException;
+import com.kirillbalabanov.meditationanywhere.model.ErrorModel;
 import com.kirillbalabanov.meditationanywhere.model.ProfileModel;
 import com.kirillbalabanov.meditationanywhere.model.UserProfileModel;
 import com.kirillbalabanov.meditationanywhere.service.ProfileService;
@@ -37,9 +38,7 @@ public class ProfileController {
         try {
             userEntity = userService.findByUsername(username);
         } catch (NoUserFoundException e) {
-            HashMap<String, String> hashMap = new HashMap<>();
-            hashMap.put("error", e.getMessage());
-            return ResponseEntity.ok().body(hashMap);
+            return ResponseEntity.ok().body(ErrorModel.fromMessage(e.getMessage()));
         }
         return ResponseEntity.ok().body(UserProfileModel.toModel(userEntity, userEntity.getStatsEntity(), userEntity.getProfileEntity()));
     }
@@ -53,9 +52,7 @@ public class ProfileController {
         if(image != null && !ContentTypeValidator.isValidImage(image.getContentType()))
             return ResponseEntity.badRequest().body("Invalid type");
 
-        HashMap<String, String> hm = new HashMap<>();
         boolean deleteAvatar = delete.equals("true");
-
 
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (!(principal instanceof UserDet userDet)) return ResponseEntity.badRequest().body("user not authenticated");
@@ -68,8 +65,7 @@ public class ProfileController {
                 profileEntity = profileService.updateProfileSettings(userDet.getUserId(), bio, image);
             }
         } catch (Exception e) {
-            hm.put("error", e.getMessage());
-            return ResponseEntity.ok().body(hm);
+            return ResponseEntity.ok().body(ErrorModel.fromMessage(e.getMessage()));
         }
 
         return ResponseEntity.ok().body(ProfileModel.toModel(profileEntity));
@@ -83,9 +79,7 @@ public class ProfileController {
         try {
             userEntity = userService.findById(userDet.getUserId());
         } catch (NoUserFoundException e) {
-            HashMap<String, String> hm = new HashMap<>();
-            hm.put("error", e.getMessage());
-            return ResponseEntity.ok().body(hm);
+            return ResponseEntity.ok().body(ErrorModel.fromMessage(e.getMessage()));
         }
         ProfileModel model = ProfileModel.toModel(userEntity.getProfileEntity());
         return ResponseEntity.ok().body(model);
@@ -101,8 +95,7 @@ public class ProfileController {
         try {
             userEntity = userService.findById(userDet.getUserId());
         } catch (NoUserFoundException e) {
-            hm.put("error", e.getMessage());
-            return ResponseEntity.ok().body(hm);
+            return ResponseEntity.ok().body(ErrorModel.fromMessage(e.getMessage()));
         }
         hm.put("avatarUrl", userEntity.getProfileEntity().getAvatarUrl());
         return ResponseEntity.ok().body(hm);

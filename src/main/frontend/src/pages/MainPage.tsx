@@ -39,39 +39,51 @@ const MainPage = () => {
         setIsPlayingState(false);
     }
 
+    function timerRunFunc() {
+        if(min == 0 && sec <= 10) { // audio volume decrement
+
+        }
+
+        if (min === 0 && sec === 0) { // timer stop
+            setTimerValue(TimerService.formatToMinSecStr(0));
+            timerLenCur = 0;
+            setTimerLen(timerLenCur);
+            stopTimer();
+            if (authContext?.auth) { // update user stats
+                fetch("/user/stats/updateStats", {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-XSRF-TOKEN": csrfContext?.csrfToken!
+                    },
+                    body: JSON.stringify({minListened: minListened})
+                })
+            }
+            setPopupContent("Listened " + minListened + " min.");
+            setShowPopup(true);
+
+            return;
+        }
+
+
+        if(sec == 0) {
+            min--;
+            sec = 60;
+        }
+        else sec--;
+
+        setTimerValue(TimerService.formatToMinSecStr(min * 60 + sec));
+        if(timerLenCur - timerLenDecrement <= 0) timerLenCur = 0;
+        else timerLenCur -= timerLenDecrement;
+        setTimerLen(timerLenCur);
+    }
+
     function runTimer() {
         timerRunning = true;
         setIsPlayingState(true);
+
         interval = setInterval(() => {
-            if(min == 0 && sec <= 10) { // audio volume decrement
-
-            }
-
-            if (min === 0 && sec === 0) { // timer stop
-                stopTimer();
-                if (authContext?.auth) { // update user stats
-                    fetch("/user/stats/updateStats", {
-                        method: "PUT",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "X-XSRF-TOKEN": csrfContext?.csrfToken!
-                        },
-                        body: JSON.stringify({minListened: minListened})
-                    })
-                }
-                setPopupContent("Listened " + minListened + " min.");
-                setShowPopup(true);
-            }
-            if(sec == 0) {
-                min--;
-                sec = 60;
-            }
-            else sec--;
-
-            setTimerValue(TimerService.formatToMinSecStr(min * 60 + sec));
-            if(timerLenCur <= 0) timerLenCur = 0;
-            else timerLenCur -= timerLenDecrement;
-            setTimerLen(timerLenCur);
+            timerRunFunc();
         }, 100);
     }
 
