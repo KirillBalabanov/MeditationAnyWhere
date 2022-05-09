@@ -7,7 +7,8 @@ import {AppRoutes} from "./routes/Routes";
 import {useAuth} from "./hooks/useAuth";
 import {useToken} from "./hooks/useToken";
 import Loader from "./components/loader/Loader";
-import {HeaderReloadContext, HeaderReloadContextI} from "./context/HeaderReloadContext";
+import Header from "./components/header/Header";
+import {HeaderContext, HeaderContextI} from "./context/HeaderContext";
 
 
 const App: FC = () => {
@@ -26,10 +27,13 @@ const App: FC = () => {
         csrfToken: token,
         setToken: setToken
     }
+    const [showHeader, setShowHeader] = useState(true);
     const [reloadHeader, setReloadHeader] = useState(false);
-    const ReloadHeaderContextImp: HeaderReloadContextI = {
+    const HeaderContextImp: HeaderContextI = {
         reload: reloadHeader,
-        setReload: setReloadHeader
+        setReload: setReloadHeader,
+        showHeader: showHeader,
+        setShowHeader: setShowHeader
     }
 
     useToken(CsrfContextImp);
@@ -40,15 +44,16 @@ const App: FC = () => {
     return (
         <CsrfContext.Provider value={CsrfContextImp}>
             <AuthContext.Provider value={AuthContextImp}>
-                <HeaderReloadContext.Provider value={ReloadHeaderContextImp}>
+                <HeaderContext.Provider value={HeaderContextImp}>
                     <BrowserRouter>
+                        <Header></Header>
                         <Routes>
                             {AppRoutes(AuthContextImp.auth).map(route =>
                                 <Route path={route.path} element={route.component} key={route.path}></Route>)
                             }
                         </Routes>
                     </BrowserRouter>
-                </HeaderReloadContext.Provider>
+                </HeaderContext.Provider>
             </AuthContext.Provider>
         </CsrfContext.Provider>
     );

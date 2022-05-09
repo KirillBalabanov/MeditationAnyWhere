@@ -1,6 +1,7 @@
-interface ParsedDate {
+interface DateParsed {
     day: number,
     month: number,
     year: number,
 }
-export default ParsedDate;
+
+export default DateParsed;

@@ -25,7 +25,7 @@ export interface UserProfileI {
     sessionsListened: number,
     currentStreak: number,
     longestStreak: number,
-    registrationDate: Date
+    registrationDate: string,
     bio: string,
     avatarUrl: string,
     username: string,
@@ -40,4 +40,12 @@ export interface LoginI {
     authenticated: boolean,
     username: string,
     csrf: string
+}
+
+export interface AvatarI {
+    avatarUrl: string
+}
+
+export interface CsrfI {
+    csrf: string,
 }

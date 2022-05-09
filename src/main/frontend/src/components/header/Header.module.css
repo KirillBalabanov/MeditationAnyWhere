@@ -1,0 +1,105 @@
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 80px;
+    background-color: #13181F;
+    padding: 0 200px;
+    font-size: 18px;
+}
+.header__box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    position: relative;
+}
+.header__user {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+.header__user-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.user__menu {
+    cursor: default;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    top: 37px;
+    right: 0;
+    width: 180px;
+    display: none;
+    height: 360px;
+    background: #10131B;
+    border-radius: 7px;
+    border: 1px solid #2D2E32;
+    z-index: 999;
+    font-size: 14px;
+    transition: all .5s;
+}
+.user__menu-polygon {
+    position: absolute;
+    right: 16px;
+    top: -8px;
+    z-index: -1;
+}
+.user__menu.active {
+    display: block;
+}
+.user__menu-item {
+    white-space: pre-wrap;
+    overflow: auto;
+    max-width: 156px;
+    padding: 0 12px;
+    margin: 0;
+    min-height: 40px;
+    flex-wrap: wrap;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #2D2E32;
+    color: white;
+    cursor: pointer;
+    transition: .2s all;
+}
+.user__menu-item:nth-child(2):hover {
+    background: #10131B;
+}
+.user__menu-item:nth-child(2) {
+    background: #10131B;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    font-weight: bold;
+    opacity: 1;
+    color: white;
+    cursor: auto;
+}
+.user__menu-item:hover {
+    background-color: #0D091F;
+}
+.user__menu-item:last-child {
+    position: absolute;
+    width: 156px;
+    bottom: 0;
+    border-bottom: none;
+    border-top: 1px solid #2D2E32;
+    border-bottom-left-radius: 7px;
+    border-bottom-right-radius: 7px;
+}
+
+.logo {
+    background: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 7px 0 0;
+}
+
+.logo img {
+    width: 350px;
+    object-fit: contain;
+}

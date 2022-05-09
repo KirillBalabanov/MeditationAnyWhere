@@ -1,11 +1,21 @@
-import React, {FC, MouseEventHandler, useRef, useState} from 'react';
+import React, {FC, MouseEventHandler, useContext, useEffect, useRef, useState} from 'react';
 import {Link} from "react-router-dom";
 
 import classes from "../styles/StartPage.module.css";
+import {HeaderContext, HeaderContextI} from "../context/HeaderContext";
 
 const speed = 0.003;
 
 const StartPage: FC = () => {
+    const headerContext = useContext<HeaderContextI | null>(HeaderContext);
+
+    useEffect(() => {
+        headerContext?.setShowHeader(false);
+
+        return () => {
+            headerContext?.setShowHeader(true);
+        };
+    }, []);
 
     const [x, setX] = useState(0);
     const [y, setY] = useState(0);

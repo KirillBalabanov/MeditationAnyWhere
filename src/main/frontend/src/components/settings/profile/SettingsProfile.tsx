@@ -5,13 +5,13 @@ import Section from "../section/Section";
 import {CsrfContext} from "../../../context/CsrfContext";
 import {useFetching} from "../../../hooks/useFetching";
 import Loader from "../../loader/Loader";
-import {HeaderReloadContext} from "../../../context/HeaderReloadContext";
+import {HeaderContext, HeaderContextI} from "../../../context/HeaderContext";
 import PopupRectangle from "../../popup/PopupRectangle";
 import Popup from "../../popup/Popup";
 
 const SettingsProfile = () => {
     const csrfContext = useContext(CsrfContext)!;
-    const headerReloadContext = useContext(HeaderReloadContext);
+    const headerContext = useContext<HeaderContextI | null>(HeaderContext);
 
     const [bio, setBio] = useState("");
     const [avatarUrl, setAvatarUrl] = useState("");
@@ -89,7 +89,7 @@ const SettingsProfile = () => {
             setAvatarUrl(data["avatarUrl"]);
             setBio(data["bio"]);
 
-            headerReloadContext?.setReload(true);
+            headerContext?.setReload(true);
             setPopupShown(true);
             setDeleteAvatar(false);
             setInputKey(Date.now()); // reset file input

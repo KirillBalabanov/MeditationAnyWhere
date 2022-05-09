@@ -88,7 +88,9 @@ public class UserController {
         // generate new csrf token
         String newToken = generateAndSaveToken(httpServletRequest, httpServletResponse);
 
-        return ResponseEntity.ok().body(newToken);
+        HashMap<String, String> hm = new HashMap<>();
+        hm.put("csrf", newToken);
+        return ResponseEntity.ok().body(hm);
     }
     @GetMapping("/verification/{activationCode}")
     public ResponseEntity<?> verification(@PathVariable String activationCode) {

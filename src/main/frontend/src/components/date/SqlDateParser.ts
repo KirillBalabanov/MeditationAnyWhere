@@ -1,17 +1,15 @@
-import ParsedDate from "./ParsedDate";
+import DateParsed from "./DateParsed";
 
 class SqlDateParser {
-
-    static getParsedDate(sqlDate: string): ParsedDate {
-        let strings = sqlDate.split("-");
-        let year = Number.parseInt(strings[0]);
-        let month = Number.parseInt(strings[1]);
-        let day = Number.parseInt(strings[2]);
+    static parse(date: string): DateParsed {
+        let year = date.substring(0, 4);
+        let month = date.substring(5, 7);
+        let day = date.substring(8, 10);
         return {
-            year: year,
-            month: month,
-            day: day
-        };
+            year: Number.parseInt(year),
+            month: Number.parseInt(month),
+            day: Number.parseInt(day),
+        }
     }
 }
 
