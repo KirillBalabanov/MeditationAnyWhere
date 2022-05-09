@@ -41,7 +41,7 @@ const ProfilePage = () => {
                                 profile != null && "avatarUrl" in profile
                                 &&
                                 <Profile>
-                                    <ProfileInfo profile={profile}>
+                                    <ProfileInfo>
                                         <ProfileAvatar avatarUrl={profile.avatarUrl} username={usernameUrl!}/>
                                         <ProfileUsername username={profile.username}/>
                                         <ProfileBio bio={profile.bio}/>

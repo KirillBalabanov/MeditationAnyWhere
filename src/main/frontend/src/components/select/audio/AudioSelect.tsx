@@ -2,9 +2,8 @@ import React, {useContext, useEffect, useState} from 'react';
 import classes from "./AudioSelect.module.css";
 import selectAudioIcon from "../../../images/selectAudioIcon.svg";
 import Slider from "../../slider/Slider";
-import LibraryItem from "./LibraryItem";
+import AudioSelectItem from "./AudioSelectItem";
 import {AuthContext} from "../../../context/AuthContext";
-import {Link} from "react-router-dom";
 import {useFetching} from "../../../hooks/useFetching";
 import Loader from "../../loader/Loader";
 import {AudioI, ErrorI} from "../../../types/types";
@@ -64,11 +63,11 @@ const AudioSelect = ({setAudioData}: AudioSelectProps) => {
                                 ?
                                 userAudio.map((el) => {
                                     return (
-                                        <LibraryItem isPlayingLibrary={isPlaying}
-                                                     setIsPlayingLibrary={setIsPlaying}
-                                                     url={el.audioUrl} title={el.audioTitle}
-                                                     setAudioData={setAudioData}
-                                                     key={el.audioUrl}></LibraryItem>
+                                        <AudioSelectItem isPlayingLibrary={isPlaying}
+                                                         setIsPlayingLibrary={setIsPlaying}
+                                                         url={el.audioUrl} title={el.audioTitle}
+                                                         setAudioData={setAudioData}
+                                                         key={el.audioUrl}></AudioSelectItem>
                                     )
                                 })
                                 :
@@ -94,11 +93,11 @@ const AudioSelect = ({setAudioData}: AudioSelectProps) => {
                                     ?
                                     Array.isArray(serverAudio) && serverAudio.length != 0 && "audioTitle" in serverAudio[0] && serverAudio.map((el) => {
                                         return (
-                                            <LibraryItem isPlayingLibrary={isPlaying}
-                                                         setIsPlayingLibrary={setIsPlaying}
-                                                         url={el.audioUrl} title={el.audioTitle}
-                                                         setAudioData={setAudioData}
-                                                         key={el.audioUrl}></LibraryItem>
+                                            <AudioSelectItem isPlayingLibrary={isPlaying}
+                                                             setIsPlayingLibrary={setIsPlaying}
+                                                             url={el.audioUrl} title={el.audioTitle}
+                                                             setAudioData={setAudioData}
+                                                             key={el.audioUrl}></AudioSelectItem>
                                         )
                                     })
                                     :

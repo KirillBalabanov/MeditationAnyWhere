@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import sadSmile from "../images/sadSmile.svg";
 import {Link} from "react-router-dom";
 

@@ -1,16 +1,15 @@
 import React, {FC} from 'react';
+import classes from "./Timer.module.css";
 
-interface TimeSelectProps {
-    timerValue: number,
-    className: string
+interface TimerSelectProps {
+    children: React.ReactNode,
+    onClickCallback: (e: React.MouseEvent<HTMLDivElement>) => void
 }
 
-const TimerSelect = (props: TimeSelectProps) => {
-    let timer_value_str = props.timerValue.toString();
-    let timer_value: string = timer_value_str.padStart(2, "0") + ":00";
+const TimerSelect: FC<TimerSelectProps> = ({children, onClickCallback}) => {
     return (
-        <div className={props.className} timer-value={timer_value}>
-            {timer_value_str}min
+        <div className={classes.timer__select} onClick={onClickCallback}>
+            {children}
         </div>
     );
 };
