@@ -1,4 +1,10 @@
 import {createContext} from "react";
-import {AuthContextI} from "../types/types";
+
+export interface AuthContextI {
+    auth: boolean,
+    setAuth: (auth: boolean) => void,
+    username: string,
+    setUsername: (username: string) =>  void
+}
 
 export const AuthContext = createContext<AuthContextI | null>(null);

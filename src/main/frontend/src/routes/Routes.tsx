@@ -9,7 +9,12 @@ import {Navigate} from "react-router-dom";
 import ProfilePage from "../pages/ProfilePage";
 import Settings from "../pages/Settings";
 
-const publicRoutes = [
+export interface RouteI {
+    path: string,
+    component: JSX.Element
+}
+
+const publicRoutes: RouteI[] = [
     {path: "/start", component: <StartPage></StartPage>},
     {path: "/registration", component: <RegistrationPage></RegistrationPage>},
     {path: "/login", component: <LoginPage></LoginPage>},

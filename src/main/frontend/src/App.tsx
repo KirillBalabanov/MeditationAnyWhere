@@ -1,17 +1,16 @@
 import React, {FC, useState} from 'react';
 import './styles/App.css';
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import {AuthContext} from "./context/AuthContext";
-import {CsrfContext} from "./context/CsrfContext";
+import {AuthContext, AuthContextI} from "./context/AuthContext";
+import {CsrfContext, CsrfContextI} from "./context/CsrfContext";
 import {AppRoutes} from "./routes/Routes";
 import {useAuth} from "./hooks/useAuth";
 import {useToken} from "./hooks/useToken";
 import Loader from "./components/loader/Loader";
-import {HeaderReloadContext} from "./context/HeaderReloadContext";
-import {AuthContextI, CsrfContextI, HeaderReloadContextI} from "./types/types";
+import {HeaderReloadContext, HeaderReloadContextI} from "./context/HeaderReloadContext";
 
 
-const App:FC = () => {
+const App: FC = () => {
     const [isLoading, setIsLoading] = useState(true);
 
     const [auth, setAuth] = useState(false);

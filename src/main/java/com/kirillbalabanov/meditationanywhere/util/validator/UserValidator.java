@@ -39,7 +39,7 @@ public class UserValidator {
 
     enum Patterns {
         USERNAME_PATTERN("(?=[A-Za-z]{3,})[A-Za-z1-9 ._]{0,19}[A-Za-z1-9._]$"),
-        PASSWORD_PATTERN("[A-Za-z1-9 ._]{0,19}[A-Za-z1-9._]$"),
+        PASSWORD_PATTERN("(?=[A-Za-z]{3,})[A-Za-z1-9 ._]{0,19}[A-Za-z1-9._]$"),
         EMAIL_PATTERN("^\\S+@\\S+\\.\\S+$");
 
         private final Pattern pattern;

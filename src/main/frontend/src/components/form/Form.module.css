@@ -1,0 +1,65 @@
+.form {
+    display: flex;
+    justify-content: center;
+    width: 400px;
+    flex-wrap: wrap;
+    position: relative;
+    background-color: white;
+    color: black;
+    padding: 0 0 55px;
+    box-shadow: black 0 0 5px 10px;
+    transition: all .5s cubic-bezier(0, 0.2, 0.7, 1);
+}
+
+.form.loading button {
+    height: 100%;
+    color: #2196f3;
+}
+.form.loading {
+    box-shadow: none;
+}
+
+.form.succeed {
+    box-shadow: green 0 0 5px 10px;
+}
+
+.form.failed {
+    box-shadow: red 0 0 5px 10px;
+}
+
+.form__btn {
+    background-color: #2196f3;
+    border: none;
+    color: white;
+    padding: 17px 30px;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 18px;
+    position: absolute;
+    width: 100%;
+    height: 55px;
+    transition: height 0.1s cubic-bezier(0.5, 0.4, 0.2, -0.1);
+    bottom: 0;
+    left: 0;
+}
+
+
+.form__error {
+    min-height: 20px;
+    font-size: 14px;
+    width: 100%;
+    text-align: center;
+    color: red;
+    bottom: 40px;
+    padding: 0 15px;
+    margin: 10px 0 15px;
+}
+
+.form__title {
+    margin: 20px 0 40px;
+}
+
+
+.form__input {
+    margin: 10px;
+}

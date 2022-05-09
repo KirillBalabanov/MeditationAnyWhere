@@ -1,3 +1,7 @@
+export interface ErrorI {
+    error: string
+}
+
 export interface UserI {
     username: string,
     email: string
@@ -32,20 +36,8 @@ export interface AudioModelI {
     audioTitle: string,
 }
 
-// frontend types
-export interface AuthContextI {
-    auth: boolean,
-    setAuth: (auth: boolean) => void,
+export interface LoginI {
+    authenticated: boolean,
     username: string,
-    setUsername: (username: string) =>  void
-}
-
-export interface CsrfContextI {
-    csrfToken: string,
-    setToken:(token: string) => void
-}
-
-export interface HeaderReloadContextI {
-    reload: boolean,
-    setReload(b: boolean): void
+    csrf: string
 }

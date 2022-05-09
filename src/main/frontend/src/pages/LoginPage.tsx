@@ -1,11 +1,15 @@
 import React, {FormEvent, useContext, useEffect, useState} from 'react';
 import classes from "../styles/AuthPage.module.css";
 import {Link, useNavigate} from "react-router-dom";
-import {isValidPassword, isValidUsername} from "../util/UserValidator";
 import {AuthContext} from "../context/AuthContext";
 import {CsrfContext} from "../context/CsrfContext";
-import Loader from "../components/loader/Loader";
 import {useAuthRedirect} from "../hooks/useAuthRedirect";
+import UserValidator from "../util/UserValidator";
+import Form, {FormStyles} from "../components/form/Form";
+import FormTitle from "../components/form/FormTitle";
+import FormInput from "../components/form/FormInput";
+import FormService, {ValidFormValidator} from "../components/form/FormService";
+import {ErrorI, LoginI} from "../types/types";
 
 const LoginPage = () => {
     const csrfContext = useContext(CsrfContext)!;
@@ -13,7 +17,7 @@ const LoginPage = () => {
 
     // animation states
     const [isLoading, setIsLoading] = useState(false);
-    const [authClasses, setAuthClasses] = useState([classes.auth]);
+    const [formClasses, setFormClasses] = useState<FormStyles[]>([]);
     const [redirect, setRedirect] = useState(false);
 
     const [errorMsg, setErrorMsg] = useState("");
@@ -37,8 +41,8 @@ const LoginPage = () => {
         let password = (children[2] as HTMLInputElement).value;
         let errorText = children[3] as HTMLParagraphElement;
         try {
-            isValidUsername(username);
-            isValidPassword(password);
+            UserValidator.isValidUsername(username);
+            UserValidator.isValidPassword(password);
             errorText.textContent = "";
         } catch (e) {
             if(e instanceof Error){
@@ -46,7 +50,7 @@ const LoginPage = () => {
             }
             return;
         }
-        setAuthClasses([...authClasses, classes.loading]);
+        setFormClasses([FormStyles.loading]);
         setIsLoading(true);
         fetch("/user/auth/login", { method: "POST", headers: {
                 'Content-Type': 'application/json',
@@ -56,69 +60,38 @@ const LoginPage = () => {
                 "username": username,
                 "password": password
             })
-        }).then((response) => response.json()).then((data) => {
+        }).then((response) => response.json()).then((data: LoginI | ErrorI) => {
             let failed: boolean = false;
             if("error" in data) {
                 errorText.textContent = data["error"];
                 failed = true;
             }
             else {
-                authContext.setAuth(true);
+                authContext.setAuth(data["authenticated"]);
                 authContext.setUsername(data["username"]);
                 csrfContext.setToken(data["csrf"]);
                 setRedirect(true);
             }
             // animation
-            setTimeout(() => {
-                setAuthClasses(authClasses.filter((c) => c !== classes.loading));
-                setIsLoading(false);
-                if (failed) {
-                    setAuthClasses([...authClasses, classes.failed]);
-                } else {
-                    setAuthClasses([...authClasses, classes.succeed]);
-                }
-                setTimeout(() => {
-                    setAuthClasses(authClasses.filter((c) => c !== classes.failed || c !== classes.succeed));
-                }, 500); // timeout for animation
-            }, 300); // set timeout in case fetch request is very fast.
-
+            FormService.animateFetchRequest(setIsLoading, setFormClasses, failed)
         });
     }
 
     return (
         <div>
             <div className={classes.auth__outer}>
-                <form className={authClasses.join(" ").trim()} onSubmit={postLogin}>
-                    <h2 className={classes.auth__title}>Log in</h2>
+                <Form formStyle={formClasses} submitCallback={postLogin} isLoadingRequest={isLoading}
+                      errorMsg={errorMsg} buttonTitle={"Log in"}>
 
-                    <input type="text" className={classes.auth__input} placeholder="Input username"
-                           onInput={(e) => { // validation on input
-                               try{
-                                   isValidUsername((e.target as HTMLInputElement).value);
-                                   setErrorMsg("");
-                               } catch (e) {
-                                   if(e instanceof Error) setErrorMsg(e.message);
-                               }
-                           }}/>
-
-                    <input type="password" className={classes.auth__input} placeholder="Input password"
-                           onInput={(e) => { // validation on input
-                               try{
-                                   isValidPassword((e.target as HTMLInputElement).value);
-                                   setErrorMsg("");
-                               } catch (e) {
-                                   if(e instanceof Error) setErrorMsg(e.message);
-                               }
-                           }}/>
-                    <p className={classes.auth__error}>{errorMsg}</p>
-                    {
-                        isLoading
-                        &&
-                        <Loader/>
-                    }
-                    <button type="submit" className={classes.auth__btn}>Log in</button>
-                    <Link to={"/registration"} className={classes.auth__link}>register</Link>
-                </form>
+                    <FormTitle title={"Create account"}></FormTitle>
+                    <FormInput setErrorMsg={setErrorMsg} placeholder={"Input username"} type={"text"} name={"username"}
+                               onInput={(e) => FormService.validFormInput(e, ValidFormValidator.username, setErrorMsg)}
+                    />
+                    <FormInput setErrorMsg={setErrorMsg} placeholder={"Input password"} type={"password"} name={"password"}
+                               onInput={(e) => FormService.validFormInput(e, ValidFormValidator.password, setErrorMsg)}
+                    />
+                </Form>
+                <Link to={"/registration"} className={classes.auth__link}>register</Link>
             </div>
         </div>
     );

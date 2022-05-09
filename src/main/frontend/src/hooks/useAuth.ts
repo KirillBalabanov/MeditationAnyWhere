@@ -1,4 +1,4 @@
-import {AuthContextI} from "../types/types";
+import {AuthContextI} from "../context/AuthContext";
 
 
 export const useAuth = (AuthContextImp: AuthContextI, setIsLoading: (loading: boolean) => void) => {

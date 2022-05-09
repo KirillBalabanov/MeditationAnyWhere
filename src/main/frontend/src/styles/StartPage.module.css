@@ -5,7 +5,7 @@
     height: 120%;
     left: -10%;
     top: -10%;
-    transition: all .1s cubic-bezier(0.6, 0.6, 0.6, 0.6);
+    transition: all .2s ease-out;
 }
 
 .body {

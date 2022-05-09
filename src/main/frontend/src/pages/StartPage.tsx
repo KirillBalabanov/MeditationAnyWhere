@@ -1,10 +1,12 @@
-import React, {MouseEventHandler, useRef, useState} from 'react';
+import React, {FC, MouseEventHandler, useRef, useState} from 'react';
 import {Link} from "react-router-dom";
 
 import classes from "../styles/StartPage.module.css";
 
-const StartPage = () => {
-    const speed = 0.003;
+const speed = 0.003;
+
+const StartPage: FC = () => {
+
     const [x, setX] = useState(0);
     const [y, setY] = useState(0);
 
