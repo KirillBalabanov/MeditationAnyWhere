@@ -30,7 +30,7 @@ const AudioSelect = ({setAudioData}: AudioSelectProps) => {
     useEffect(() => {
         if (authContext?.auth) {
             fetch("/user/audio/get").then((response) => response.json()).then((data) => {
-                if ("error" in data) {
+                if ("errorMsg" in data) {
                     setErrorMsgUserAudio(data["error"]);
                     setFetchedUserAudio(false);
                     return;
@@ -102,7 +102,7 @@ const AudioSelect = ({setAudioData}: AudioSelectProps) => {
                                     })
                                     :
                                     <div className={classes.libraryError}>
-                                        {"error" in serverAudio && serverAudio.error}
+                                        {"errorMsg" in serverAudio && serverAudio.errorMsg}
                                     </div>
                         }
                     </div>

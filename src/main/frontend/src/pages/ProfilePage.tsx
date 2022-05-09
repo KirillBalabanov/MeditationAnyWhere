@@ -26,7 +26,7 @@ const ProfilePage = () => {
 
     const fetched = useFetching<UserProfileI | null | ErrorI>("/user/profile/" + usernameUrl, setIsLoading, setProfile);
 
-    if(!fetched) return (<Error errorMsg={profile != null && "error" in profile && profile.error}/>);
+    if(!fetched) return (<Error errorMsg={profile != null && "errorMsg" in profile && profile.errorMsg}/>);
 
     return (
         <div>

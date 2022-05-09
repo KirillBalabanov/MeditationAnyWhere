@@ -28,7 +28,7 @@ const VerificationPage = () => {
                                         ?
                                         <p>{verificationData != null && "message" in verificationData && verificationData.message}</p>
                                         :
-                                        <p>{verificationData != null && "error" in verificationData && verificationData.error}</p>
+                                        <p>{verificationData != null && "errorMsg" in verificationData && verificationData.errorMsg}</p>
                                 }
                                 <Link to={"/login"} className={classes.verification__link}>Go to login page</Link>
                             </div>

@@ -62,8 +62,8 @@ const LoginPage = () => {
             })
         }).then((response) => response.json()).then((data: LoginI | ErrorI) => {
             let failed: boolean = false;
-            if("error" in data) {
-                errorText.textContent = data["error"];
+            if("errorMsg" in data) {
+                errorText.textContent = data["errorMsg"];
                 failed = true;
             }
             else {

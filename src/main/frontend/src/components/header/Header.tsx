@@ -31,7 +31,7 @@ const Header = () => {
     useEffect(() => {
         if (authContext.auth) {
             fetch("/user/profile/avatar/get").then((response) => response.json()).then((data: AvatarI | ErrorI) => {
-                if ("error" in data) {
+                if ("errorMsg" in data) {
                     setAvatarError(data);
                     return;
                 }
@@ -73,7 +73,7 @@ const Header = () => {
                             {
                                 avatarError != null
                                     ?
-                                    <div>{avatarError.error}</div>
+                                    <div>{avatarError.errorMsg}</div>
                                     :
                                     <div className={classes.header__user} onClick={() => setShowMenu(!showMenu)}>
                                         <img src={avatarUrObj!.avatarUrl==="" ? defaultAvatar : avatarUrObj!.avatarUrl} alt="avatar" className={classes.header__userAvatar}/>

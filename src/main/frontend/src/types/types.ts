@@ -1,5 +1,5 @@
 export interface ErrorI {
-    error: string
+    errorMsg: string
 }
 
 export interface UserI {

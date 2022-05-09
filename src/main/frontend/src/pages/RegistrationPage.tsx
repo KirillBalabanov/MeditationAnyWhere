@@ -57,8 +57,8 @@ const RegistrationPage = () => {
             })
         }).then((response) => response.json()).then((data: UserI | ErrorI) => {
             let failed: boolean = false;
-            if("error" in data) {
-                setErrorMsg(data["error"]);
+            if("errorMsg" in data) {
+                setErrorMsg(data["errorMsg"]);
                 failed = true;
             }
             else {
