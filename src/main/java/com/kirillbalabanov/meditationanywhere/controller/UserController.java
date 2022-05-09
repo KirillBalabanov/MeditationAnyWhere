@@ -98,7 +98,7 @@ public class UserController {
         try {
             userService.verifyUserByActivationCode(activationCode);
         } catch (NoUserFoundException e) {
-            hashMap.put("message", e.getMessage());
+            hashMap.put("error", e.getMessage());
             return ResponseEntity.ok().body(hashMap);
         }
         hashMap.put("message", "Account is successfully activated!");

@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import {useNavigate, useParams} from "react-router-dom";
-import Header from "../components/header/Header";
 import {useFetching} from "../hooks/useFetching";
 import Error from "./Error";
 import Loader from "../components/loader/Loader";

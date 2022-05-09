@@ -1,14 +1,14 @@
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import {ErrorI} from "../types/types";
 
-export const useFetching = (fetchRequest: string, setData: (obj: any) => void, setIsLoading: (loading: boolean) => void) => {
-    let [errorMsg, setErrorMsg] = useState("");
-    let [fetched, setFetched] = useState(true);
+
+export const useFetching = <T>(fetchRequest: string, setIsLoading: (loading: boolean) => void, setData: (el: T) => void) => {
+    let fetched = true;
     useEffect(() => {
         fetch(fetchRequest).then((response) => response.json()).then((data: any | ErrorI) => {
             if("error" in data) {
-                setFetched(false);
-                setErrorMsg(data["error"]);
+                fetched = false;
+                setData(data);
             }
             else {
                 setData(data);
@@ -16,5 +16,5 @@ export const useFetching = (fetchRequest: string, setData: (obj: any) => void, s
             setIsLoading(false);
         });
     }, []);
-    return [fetched, errorMsg];
+    return fetched;
 };

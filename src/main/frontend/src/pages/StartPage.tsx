@@ -1,4 +1,4 @@
-import React, {FC, MouseEventHandler, useContext, useEffect, useRef, useState} from 'react';
+import React, {FC, useContext, useEffect, useState} from 'react';
 import {Link} from "react-router-dom";
 
 import classes from "../styles/StartPage.module.css";

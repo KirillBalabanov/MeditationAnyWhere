@@ -28,7 +28,7 @@ const privateRoutes = (auth: boolean) => [
     {path: "/settings/:setting", component: auth ? <Settings></Settings> : <Navigate to={"/login"}/>},
 ]
 
-export const AppRoutes = (auth: boolean) =>  [
+export const appRoutes = (auth: boolean) =>  [
     ...publicRoutes,
     ...privateRoutes(auth)
 ]

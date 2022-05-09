@@ -3,7 +3,7 @@ import './styles/App.css';
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {AuthContext, AuthContextI} from "./context/AuthContext";
 import {CsrfContext, CsrfContextI} from "./context/CsrfContext";
-import {AppRoutes} from "./routes/Routes";
+import {appRoutes} from "./routes/Routes";
 import {useAuth} from "./hooks/useAuth";
 import {useToken} from "./hooks/useToken";
 import Loader from "./components/loader/Loader";
@@ -48,7 +48,7 @@ const App: FC = () => {
                     <BrowserRouter>
                         <Header></Header>
                         <Routes>
-                            {AppRoutes(AuthContextImp.auth).map(route =>
+                            {appRoutes(AuthContextImp.auth).map(route =>
                                 <Route path={route.path} element={route.component} key={route.path}></Route>)
                             }
                         </Routes>

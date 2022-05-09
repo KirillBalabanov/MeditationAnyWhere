@@ -49,3 +49,7 @@ export interface AvatarI {
 export interface CsrfI {
     csrf: string,
 }
+
+export interface VerificationI {
+    message: string
+}
