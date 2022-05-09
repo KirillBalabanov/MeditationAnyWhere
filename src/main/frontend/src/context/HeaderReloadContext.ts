@@ -1,8 +1,4 @@
 import {createContext} from "react";
-
-export interface HeaderReloadContextI {
-    reload: boolean,
-    setReload(b: boolean): void
-}
+import {HeaderReloadContextI} from "../types/types";
 
 export const HeaderReloadContext = createContext<HeaderReloadContextI | null>(null);

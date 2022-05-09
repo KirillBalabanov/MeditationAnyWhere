@@ -1,4 +1,5 @@
-import {AuthContextI} from "../context/AuthContext";
+import {AuthContextI} from "../types/types";
+
 
 export const useAuth = (AuthContextImp: AuthContextI, setIsLoading: (loading: boolean) => void) => {
     fetch("/server/principal").then((response) => response.json()).then((obj) => {

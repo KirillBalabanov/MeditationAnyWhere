@@ -32,7 +32,6 @@ const LibraryItem = ({url, title, isPlayingLibrary, setIsPlayingLibrary, setAudi
         });
     }, []);
 
-
     function togglePlay() {
         if(isPlayingLibrary && !isPlaying) return;
         if (isPlaying) {
@@ -49,7 +48,7 @@ const LibraryItem = ({url, title, isPlayingLibrary, setIsPlayingLibrary, setAudi
         audioElement.current!.play();
         setAudioData({stopPlay: stopPlay, decrementVolumeByPercents: decrementVolumeByPercents});
     }
-    console.log(isPlaying);
+
     function stopPlay() {
 
         if(isPlayingLibrary && !isPlaying) return;

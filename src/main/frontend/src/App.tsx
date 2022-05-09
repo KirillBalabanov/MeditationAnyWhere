@@ -1,13 +1,14 @@
 import React, {FC, useState} from 'react';
 import './styles/App.css';
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import {AuthContext, AuthContextI} from "./context/AuthContext";
-import {CsrfContext, CsrfContextI} from "./context/CsrfContext";
+import {AuthContext} from "./context/AuthContext";
+import {CsrfContext} from "./context/CsrfContext";
 import {AppRoutes} from "./routes/Routes";
 import {useAuth} from "./hooks/useAuth";
 import {useToken} from "./hooks/useToken";
 import Loader from "./components/loader/Loader";
-import {HeaderReloadContext, HeaderReloadContextI} from "./context/HeaderReloadContext";
+import {HeaderReloadContext} from "./context/HeaderReloadContext";
+import {AuthContextI, CsrfContextI, HeaderReloadContextI} from "./types/types";
 
 
 const App:FC = () => {
@@ -16,14 +17,14 @@ const App:FC = () => {
     const [auth, setAuth] = useState(false);
     const [username, setUsername] = useState("$anonymous");
     let AuthContextImp: AuthContextI = {
-        auth,
-        setAuth,
-        username,
-        setUsername
+        auth: auth,
+        setAuth: setAuth,
+        username: username,
+        setUsername: setUsername
     }
     const [token, setToken] = useState("$token");
     const CsrfContextImp: CsrfContextI = {
-        "csrfToken": token,
+        csrfToken: token,
         setToken: setToken
     }
     const [reloadHeader, setReloadHeader] = useState(false);

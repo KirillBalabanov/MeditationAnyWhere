@@ -1,5 +1,5 @@
 import {useEffect} from "react";
-import {CsrfContextI} from "../context/CsrfContext";
+import {CsrfContextI} from "../types/types";
 
 export const useToken = (CsrfContextImp: CsrfContextI) => {
     useEffect(() => {
