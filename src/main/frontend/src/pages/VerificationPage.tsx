@@ -11,7 +11,7 @@ const VerificationPage = () => {
 
     const [verificationData, setVerificationData] = useState<VerificationI | null | ErrorI>(null);
 
-    const fetched = useFetching<VerificationI | ErrorI | null>("/user/auth/verification/" + activationCode, setIsLoading, setVerificationData);
+    useFetching<VerificationI | ErrorI | null>("/user/auth/verification/" + activationCode, setIsLoading, setVerificationData);
 
     return (
         <div className={classes.verification}>
@@ -24,11 +24,12 @@ const VerificationPage = () => {
                             :
                             <div className={classes.verification__box}>
                                 {
-                                    fetched
+                                        verificationData != null && (
+                                        "message" in verificationData
                                         ?
-                                        <p>{verificationData != null && "message" in verificationData && verificationData.message}</p>
+                                        <p>{verificationData.message}</p>
                                         :
-                                        <p>{verificationData != null && "errorMsg" in verificationData && verificationData.errorMsg}</p>
+                                        <p>{verificationData.errorMsg}</p> )
                                 }
                                 <Link to={"/login"} className={classes.verification__link}>Go to login page</Link>
                             </div>

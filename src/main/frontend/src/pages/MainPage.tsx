@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import classes from "../components/timer/Timer.module.css";
 import TimerSelectItem from "../components/timer/TimerSelectItem";
 import TimerService from "../components/timer/TimerService";
@@ -7,6 +7,10 @@ import {useTimer} from "../components/timer/useTimer";
 import Timer from "../components/timer/Timer";
 import TimerSelect from "../components/timer/TimerSelect";
 import TimerStartButton from "../components/timer/TimerStartButton";
+import AudioSelect from "../components/select/audio/AudioSelect";
+import {useFetching} from "../hooks/useFetching";
+import {AudioI} from "../types/types";
+import AudioSource from "../components/audio/components/AudioSource";
 
 let timerRunning = false;
 let minListened = 0;
@@ -21,12 +25,20 @@ const MainPage = () => {
     const {timerValue, setTimerValue, timerLen, setTimerLen, isPlayingState, setIsPlayingState, popupContent, setPopupContent, showPopup,
         setShowPopup, authContext, csrfContext} = useTimer();
 
+    const [isLoading, setIsLoading] = useState(true);
+    const [audioToggleModel, setAudiOToggleModel] = useState<AudioI | null>(null);
+    const audioToggle = useRef<HTMLAudioElement>(null);
+    const [audioPlaying, setAudioPlaying] = useState<React.RefObject<HTMLAudioElement> | null>(null);
+
+    useFetching<AudioI>("/server/audio/toggle", setIsLoading, setAudiOToggleModel)
+
     useEffect(() => {
         const keyListener = (e: KeyboardEvent) => {
             if(e.code == "Space")  {
                 toggleTimer();
             }
         }
+
         window.addEventListener("keyup", keyListener);
         return () => {
             window.removeEventListener("keyup", keyListener);
@@ -40,11 +52,9 @@ const MainPage = () => {
     }
 
     function timerRunFunc() {
-        if(min == 0 && sec <= 10) { // audio volume decrement
-
-        }
 
         if (min === 0 && sec === 0) { // timer stop
+            if(audioToggle != null) audioToggle.current!.play();
             setTimerValue(TimerService.formatToMinSecStr(0));
             timerLenCur = 0;
             setTimerLen(timerLenCur);
@@ -65,7 +75,6 @@ const MainPage = () => {
             return;
         }
 
-
         if(sec == 0) {
             min--;
             sec = 60;
@@ -79,12 +88,15 @@ const MainPage = () => {
     }
 
     function runTimer() {
+        if(minListened - min == 0 && audioToggle != null) {
+            audioToggle.current!.play();
+        }
         timerRunning = true;
         setIsPlayingState(true);
 
         interval = setInterval(() => {
             timerRunFunc();
-        }, 100);
+        }, 30);
     }
 
     function toggleTimer() {
@@ -127,8 +139,13 @@ const MainPage = () => {
                     <TimerSelectItem timerValue={50} />
                     <TimerSelectItem timerValue={60} />
                 </TimerSelect>
-
+            <AudioSelect setAudioPlaying={setAudioPlaying}></AudioSelect>
             <TimerStartButton toggleTimerCallback={toggleTimer} isPlayingState={isPlayingState}/>
+            {
+                audioToggleModel != null && "audioUrl" in audioToggleModel
+                &&
+                <AudioSource url={audioToggleModel?.audioUrl} audioElement={audioToggle}/>
+            }
             <Popup popupInfo={popupContent} popupConfirm={"Ok"} shown={showPopup} setShown={setShowPopup}></Popup>
         </div>
     );

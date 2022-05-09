@@ -9,15 +9,14 @@ interface LibraryItemProps {
     title: string,
     isPlayingLibrary: boolean,
     setIsPlayingLibrary: (b: boolean) => void,
-    setAudioData: (audioData: any) => void
+    setAudioPlaying: (el: React.RefObject<HTMLAudioElement>) => void
 }
 
-const AudioSelectItem = ({url, title, isPlayingLibrary, setIsPlayingLibrary, setAudioData}: LibraryItemProps) => {
+const AudioSelectItem = ({url, title, isPlayingLibrary, setIsPlayingLibrary, setAudioPlaying}: LibraryItemProps) => {
     const audioElement = useRef<HTMLAudioElement>(null);
 
     const [isPlaying, setIsPlaying] = useState(false);
 
-    let audioData: any = {stopAudio: () => {}, decrementAudioVolumeByPercent: () => {}};
     const [err, setErr] = useState(false);
     const [errMsg, setErrMsg] = useState("");
 
@@ -28,8 +27,6 @@ const AudioSelectItem = ({url, title, isPlayingLibrary, setIsPlayingLibrary, set
                 setErrMsg("Audio not found.");
             }
         });
-        audioData!.stopAudio = stopPlay;
-
     }, []);
 
     function togglePlay() {
@@ -46,11 +43,10 @@ const AudioSelectItem = ({url, title, isPlayingLibrary, setIsPlayingLibrary, set
         setIsPlayingLibrary(true);
         setIsPlaying(true);
         audioElement.current!.play();
-        setAudioData(audioData!);
+        setAudioPlaying(audioElement);
     }
 
     function stopPlay() {
-
         if(isPlayingLibrary && !isPlaying) return;
         if (isPlaying) {
             audioElement.current!.pause();
@@ -74,7 +70,7 @@ const AudioSelectItem = ({url, title, isPlayingLibrary, setIsPlayingLibrary, set
                 }
             </div>
             <AudioSelectItemControls selected={isPlaying}>
-                <AudioSelectItemVolume setAudioDataCallback={(callback) => audioData!.decrementAudioVolumeByPercent = callback} audioElement={audioElement}></AudioSelectItemVolume>
+                <AudioSelectItemVolume audioElement={audioElement}></AudioSelectItemVolume>
             </AudioSelectItemControls>
         </div>
     );

@@ -24,9 +24,9 @@ const ProfilePage = () => {
 
     const [profile, setProfile] = useState<UserProfileI | null | ErrorI>(null);
 
-    const fetched = useFetching<UserProfileI | null | ErrorI>("/user/profile/" + usernameUrl, setIsLoading, setProfile);
+    useFetching<UserProfileI | null | ErrorI>("/user/profile/" + usernameUrl, setIsLoading, setProfile);
 
-    if(!fetched) return (<Error errorMsg={profile != null && "errorMsg" in profile && profile.errorMsg}/>);
+    if(profile != null && "errorMsg" in profile) return (<Error errorMsg={profile.errorMsg}/>);
 
     return (
         <div>

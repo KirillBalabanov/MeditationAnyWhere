@@ -1,45 +1,31 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useState} from 'react';
 import classes from "./AudioSelect.module.css";
 import selectAudioIcon from "../../../images/selectAudioIcon.svg";
 import Slider from "../../slider/Slider";
 import AudioSelectItem from "./AudioSelectItem";
 import {AuthContext} from "../../../context/AuthContext";
-import {useFetching} from "../../../hooks/useFetching";
+import {useFetching, useFetchingOnCondition} from "../../../hooks/useFetching";
 import Loader from "../../loader/Loader";
 import {AudioI, ErrorI} from "../../../types/types";
+import {Link} from "react-router-dom";
 
 interface AudioSelectProps {
-    setAudioData: (el: any) => void
+    setAudioPlaying: (el: React.RefObject<HTMLAudioElement>) => void
 }
 
-const AudioSelect = ({setAudioData}: AudioSelectProps) => {
+const AudioSelect = ({setAudioPlaying}: AudioSelectProps) => {
     const [isToggled, setIsToggled] = useState(false);
     const authContext = useContext(AuthContext);
 
     const [isLoadingServer, setIsLoadingServer] = useState(true);
     const [serverAudio, setServerAudio] = useState<AudioI[] | null | ErrorI>(null);
-    const fetchedServerAudio = useFetching("/server/audio/default", setIsLoadingServer, setServerAudio);
+    useFetching("/server/audio/default", setIsLoadingServer, setServerAudio);
 
-    const [userAudio, setUserAudio] = useState([{audioUrl: "", audioTitle: ""}]);
+    const [userAudio, setUserAudio] = useState<AudioI[] | null | ErrorI>(null);
     const [isLoadingUser, setIsLoadingUser] = useState(true);
-    const [fetchedUserAudio, setFetchedUserAudio] = useState(true);
-    const [errorMsgUserAudio, setErrorMsgUserAudio] = useState("");
+    useFetchingOnCondition("/user/audio/get", setIsLoadingUser, setUserAudio, authContext!.auth);
 
     const [isPlaying, setIsPlaying] = useState(false);
-
-    useEffect(() => {
-        if (authContext?.auth) {
-            fetch("/user/audio/get").then((response) => response.json()).then((data) => {
-                if ("errorMsg" in data) {
-                    setErrorMsgUserAudio(data["error"]);
-                    setFetchedUserAudio(false);
-                    return;
-                }
-                setUserAudio(data);
-                setIsLoadingUser(false);
-            });
-        }
-    }, []);
 
     return (
         <div className={isToggled ? classes.select + " " + classes.selectToggled : classes.select}>
@@ -59,21 +45,28 @@ const AudioSelect = ({setAudioData}: AudioSelectProps) => {
                             ?
                             <Loader/>
                             :
-                            fetchedUserAudio
+                            !authContext?.auth
                                 ?
-                                userAudio.map((el) => {
-                                    return (
-                                        <AudioSelectItem isPlayingLibrary={isPlaying}
-                                                         setIsPlayingLibrary={setIsPlaying}
-                                                         url={el.audioUrl} title={el.audioTitle}
-                                                         setAudioData={setAudioData}
-                                                         key={el.audioUrl}></AudioSelectItem>
-                                    )
-                                })
-                                :
-                                <div className={classes.libraryError}>
-                                    {errorMsgUserAudio}
+                                <div className={classes.libraryLogin}>
+                                    <Link to={"/login"} className={classes.libraryLoginLink}>login to have your own library.</Link>
                                 </div>
+                                :
+                                    (
+                                        userAudio != null && Array.isArray(userAudio)
+                                            ?
+                                            userAudio.map((el) => {
+                                                return (
+                                                    <AudioSelectItem isPlayingLibrary={isPlaying}
+                                                                     setIsPlayingLibrary={setIsPlaying}
+                                                                     url={el.audioUrl} title={el.audioTitle}
+                                                                     setAudioPlaying={setAudioPlaying}
+                                                                     key={el.audioUrl}></AudioSelectItem>
+                                                )
+                                            })
+                                            :
+                                            <div className={classes.libraryError}>
+                                                {userAudio?.errorMsg}
+                                            </div>)
                     }
                 </div>
                 {
@@ -88,21 +81,20 @@ const AudioSelect = ({setAudioData}: AudioSelectProps) => {
                                 ?
                                 <Loader/>
                                 :
-
-                                fetchedServerAudio
+                                Array.isArray(serverAudio)
                                     ?
                                     Array.isArray(serverAudio) && serverAudio.length != 0 && "audioTitle" in serverAudio[0] && serverAudio.map((el) => {
                                         return (
                                             <AudioSelectItem isPlayingLibrary={isPlaying}
                                                              setIsPlayingLibrary={setIsPlaying}
                                                              url={el.audioUrl} title={el.audioTitle}
-                                                             setAudioData={setAudioData}
+                                                             setAudioPlaying={setAudioPlaying}
                                                              key={el.audioUrl}></AudioSelectItem>
                                         )
                                     })
                                     :
                                     <div className={classes.libraryError}>
-                                        {"errorMsg" in serverAudio && serverAudio.errorMsg}
+                                        {serverAudio.errorMsg}
                                     </div>
                         }
                     </div>
