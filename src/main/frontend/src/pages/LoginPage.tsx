@@ -10,6 +10,7 @@ import FormTitle from "../components/form/FormTitle";
 import FormInput from "../components/form/FormInput";
 import FormService, {ValidFormValidator} from "../components/form/FormService";
 import {ErrorI, LoginI} from "../types/types";
+import {HeaderContext} from "../context/HeaderContext";
 
 const LoginPage = () => {
     const csrfContext = useContext(CsrfContext)!;
@@ -18,10 +19,10 @@ const LoginPage = () => {
     // animation states
     const [isLoading, setIsLoading] = useState(false);
     const [formClasses, setFormClasses] = useState<FormStyles[]>([]);
-    const [redirect, setRedirect] = useState(false);
 
     const [errorMsg, setErrorMsg] = useState("");
 
+    const headerContext = useContext(HeaderContext);
     useAuthRedirect(authContext);
 
     const postLogin = useCallback((e: FormEvent) => {
@@ -57,10 +58,13 @@ const LoginPage = () => {
                 errorText.textContent = data["errorMsg"];
                 failed = true;
             } else {
-                authContext.setAuth(data["authenticated"]);
-                authContext.setUsername(data["username"]);
-                csrfContext.setToken(data["csrf"]);
-                setRedirect(true);
+                setTimeout(() => {
+                    authContext.setAuth(data["authenticated"]);
+                    authContext.setUsername(data["username"]);
+                    csrfContext.setToken(data["csrf"]);
+                    headerContext?.setReload(true);
+                }, 200); // for animation
+
             }
             // animation
             FormService.animateFetchRequest(setIsLoading, setFormClasses, failed)

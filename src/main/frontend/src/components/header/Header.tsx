@@ -24,16 +24,16 @@ const Header = () => {
         redirect(path);
     };
 
-    const [avatarUrObj, setAvatarUrlObj] = useState<AvatarI | null>(null);
-    const [avatarError, setAvatarError] = useState<ErrorI | null>(null);
+    const [avatarUrObj, setAvatarUrlObj] = useState<AvatarI | null | ErrorI>(null);
     const [isLoading, setIsLoading] = useState(true);
 
     // fetch on reload and on page load
     useEffect(() => {
         if (authContext.auth) {
+            setShowMenu(false);
             fetch("/user/profile/avatar/get").then((response) => response.json()).then((data: AvatarI | ErrorI) => {
                 if ("errorMsg" in data) {
-                    setAvatarError(data);
+                    setAvatarUrlObj(data);
                     return;
                 }
                 setAvatarUrlObj(data);
@@ -72,14 +72,19 @@ const Header = () => {
                         :
                         <div className={classes.header__box}>
                             {
-                                avatarError != null
+                                authContext.auth && avatarUrObj != null &&(
+                                    "errorMsg" in avatarUrObj
                                     ?
-                                    <div>{avatarError.errorMsg}</div>
+                                    <div>{avatarUrObj.errorMsg}</div>
                                     :
-                                    <div className={classes.header__user} onClick={() => setShowMenu(!showMenu)}>
+                                    <div className={classes.header__user} onClick={() => {
+                                        console.log("set")
+                                        setShowMenu(!showMenu)
+                                    }}>
                                         <img src={avatarUrObj!.avatarUrl==="" ? defaultAvatar : avatarUrObj!.avatarUrl} alt="avatar" className={classes.header__userAvatar}/>
                                         <img src={polygon} alt="polygon"/>
                                     </div>
+                                )
                             }
                             <ul className={showMenu ? classes.user__menu + " " + classes.active : classes.user__menu}>
                                 <img src={polygonOnRectangle} alt="polygon" className={classes.user__menuPolygon}/>
