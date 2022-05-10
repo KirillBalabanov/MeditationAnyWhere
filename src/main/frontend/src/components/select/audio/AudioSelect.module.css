@@ -7,7 +7,7 @@
     margin: 0 auto 50px;
     transition: all .7s ease;
 }
-.selectToggled {
+.selectShown {
     height: 206px;
     width: 350px;
 }

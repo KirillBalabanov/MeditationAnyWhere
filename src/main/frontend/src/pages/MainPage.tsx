@@ -5,7 +5,7 @@ import TimerOuter from "../components/timer/TimerOuter";
 import TimerSelect from "../components/timer/TimerSelect";
 import TimerSelectItem from "../components/timer/TimerSelectItem";
 import TimerButton from "../components/timer/TimerButton";
-
+import AudioSelect from "../components/select/audio/AudioSelect";
 
 const MainPage = () => {
 
@@ -28,6 +28,7 @@ const MainPage = () => {
                     <TimerSelectItem timerValue={50}></TimerSelectItem>
                     <TimerSelectItem timerValue={60}></TimerSelectItem>
                 </TimerSelect>
+                <AudioSelect></AudioSelect>
                 <TimerButton></TimerButton>
             </TimerOuter>
 

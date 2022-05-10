@@ -1,4 +1,4 @@
-import {createContext} from "react";
+import React, {createContext} from "react";
 
 export interface TimerContextI {
     isPlaying: boolean,
@@ -11,6 +11,8 @@ export interface TimerContextI {
     setMinListened: (n: number) => void,
     timerInterval: NodeJS.Timer | null,
     setTimerInterval: (s: NodeJS.Timer | null) => void,
+    audioPlaying: React.RefObject<HTMLAudioElement> | null,
+    setAudioPlaying: (obj: React.RefObject<HTMLAudioElement> | null) => void,
 }
 
 export const TimerContext = createContext<TimerContextI | null>(null);

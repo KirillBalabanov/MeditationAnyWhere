@@ -11,6 +11,7 @@ const TimerOuter: FC<TimerOuterProps> = React.memo(({children}) => {
     const [timerLenCurrent, setTimerLenCurrent] = useState(0);
     const [minListened, setMinListened] = useState(0);
     const [timerInterval, setTimerInterval] = useState<NodeJS.Timer | null>(null);
+    const [audioPlaying, setAudioPlaying] = useState<React.RefObject<HTMLAudioElement> | null>(null);
     const TimerContextImp: TimerContextI = {
         isPlaying: isPlaying,
         setIsPlaying: setIsPlaying,
@@ -22,6 +23,8 @@ const TimerOuter: FC<TimerOuterProps> = React.memo(({children}) => {
         setMinListened: setMinListened,
         timerInterval: timerInterval,
         setTimerInterval: setTimerInterval,
+        audioPlaying: audioPlaying,
+        setAudioPlaying: setAudioPlaying,
     }
 
     return (
