@@ -26,13 +26,6 @@ const Timer:FC = React.memo(() => {
         return timerLenDefault / (timerContext?.minListened! * 60);
     }, [timerContext?.minListened]);
 
-    useEffect(() => {
-        if (!timerContext?.isPlaying) {
-            stopTimer(timerContext?.timerInterval!);
-        } else {
-            startTimer(timerContext.minListened * 60,timerContext?.timerValue!, timerContext.timerLenCurrent);
-        }
-    }, [timerContext?.isPlaying]);
 
     useEffect(() => {
         fetch("/server/audio/toggle").then((response) => response.json()).then((data: ErrorI | AudioI) => {
@@ -40,52 +33,87 @@ const Timer:FC = React.memo(() => {
         });
     }, []);
 
-    const stopTimer = useCallback((interval: NodeJS.Timer | null)  => {
-        if(interval == null) return;
-        clearInterval(interval);
+    useEffect(() => {
+        if (timerContext?.sessionEnded) {
+            if(audioSelectContext != null && audioSelectContext.isLibraryAudioOnPlay) { // smooth audio volume decrease
+                let counter = 0;
+                let interval = setInterval(() => {
+
+                    if(audioSelectContext != null && audioSelectContext.isLibraryAudioOnPlay) {
+                        if(audioSelectContext.currentAudioElement!.volume - 0.1 > 0){
+                            audioSelectContext.currentAudioElement!.volume -= 0.1;
+                        }
+                    }
+
+                    if (counter == 9) {
+                        if(audioSelectContext != null && audioSelectContext.isLibraryAudioOnPlay) {
+                            audioSelectContext?.currentAudioElement?.pause();
+                            audioSelectContext.setIsLibraryAudioOnPlay(false);
+                        }
+                        clearInterval(interval);
+                    }
+                    counter++;
+                }, 500);
+            }
+            setPopupContent("Listened " + timerContext?.minListened + " min");
+            setShowPopup(true);
+            if (toggleAudioData != null) {
+                toggleAudioElement.current?.play();
+            }
+            if (authContext?.auth) { // update user stats
+                fetch("/user/stats/updateStats", {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-XSRF-TOKEN": csrfContext?.csrfToken!
+                    },
+                    body: JSON.stringify({minListened: timerContext?.minListened})
+                });
+            }
+            timerContext.setSessionEnded(false);
+        }
+    }, [timerContext?.sessionEnded]);
+
+    useEffect(() => {
+        if (!timerContext?.isPlaying) {
+            stopTimer();
+        } else {
+            startTimer();
+        }
+    }, [timerContext?.isPlaying]);
+
+    const stopTimer = useCallback(()  => {
+        if(timerContext?.timerInterval == null) return;
+        clearInterval(timerContext.timerInterval);
         timerContext?.setTimerInterval(null);
-    }, []);
+    }, [timerContext?.timerInterval]);
 
-    const startTimer = useCallback((timerStartValue: number, timerValue: number, currentTimerLen: number) => {
-
-        if(timerStartValue == timerValue && toggleAudioElement != null) {
+    const startTimer = () => {
+        if(timerContext?.minListened! * 60 === timerContext?.timerValue && toggleAudioElement != null) {
             toggleAudioElement.current?.play();
         }
 
         let interval = setInterval(() => {
-            if (timerValue == 0) { // session end
-                clearInterval(interval);
-                if(audioSelectContext != null && audioSelectContext.isLibraryAudioOnPlay) {
-                    audioSelectContext?.currentAudioElement?.pause();
+
+            timerContext?.setTimerValue(prev => {
+                if (prev == 0) { // session end
+                    clearInterval(interval);
+                    timerContext?.setIsPlaying(false);
+                    timerContext?.setTimerLenCurrent(0);
+                    timerContext?.setSessionEnded(true);
+                    return 0;
                 }
-                timerContext?.setIsPlaying(false);
-                timerContext?.setTimerLenCurrent(0);
-                setPopupContent("Listened " + timerStartValue + " min");
-                setShowPopup(true);
-                if (toggleAudioData != null) {
-                    toggleAudioElement.current?.play();
-                }
-                if (authContext?.auth) { // update user stats
-                    fetch("/user/stats/updateStats", {
-                        method: "PUT",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "X-XSRF-TOKEN": csrfContext?.csrfToken!
-                        },
-                        body: JSON.stringify({minListened: timerStartValue})
-                    });
-                }
-                return;
-            }
-            timerValue--;
-            currentTimerLen -= timerLenDecrement;
-            if(currentTimerLen <= 0) currentTimerLen = 0;
-            timerContext?.setTimerValue(timerValue);
-            timerContext?.setTimerLenCurrent(currentTimerLen);
-        }, 1000);
+
+                return prev - 1;
+            });
+            timerContext?.setTimerLenCurrent(prev => {
+                if(prev - timerLenDecrement <= 0) return 0;
+                return prev - timerLenDecrement;
+            });
+        }, 100);
 
         timerContext?.setTimerInterval(interval);
-    }, [timerLenDecrement]);
+    }
 
     return (
         <div>

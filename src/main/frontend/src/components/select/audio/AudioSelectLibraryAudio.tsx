@@ -50,6 +50,10 @@ const AudioSelectLibraryAudio: FC<AudioSelectLibraryAudioProps> = React.memo(({u
 
     const togglePlay = () => {
         if (canPlay()) {
+            if (audioSelectContext?.currentAudioElement != null) {
+                audioSelectContext?.currentAudioElement?.pause(); // reset played element.
+                if(audioSelectContext.currentAudioElement.played) audioSelectContext.currentAudioElement.currentTime = 0;
+            }
             audioElement.current?.play();
         }
         if (canPause()) {
@@ -59,7 +63,7 @@ const AudioSelectLibraryAudio: FC<AudioSelectLibraryAudioProps> = React.memo(({u
 
     const canPause = () => {
         if(audioElement == null) return;
-        if (isAudioPlaying && audioSelectContext?.isLibraryAudioOnPlay) {
+        if (isAudioPlaying) {
             return true;
         }
         return false;
@@ -67,7 +71,7 @@ const AudioSelectLibraryAudio: FC<AudioSelectLibraryAudioProps> = React.memo(({u
 
     const canPlay = () => {
         if(audioElement == null) return;
-        if(!audioSelectContext?.isLibraryAudioOnPlay && !isAudioPlaying){
+        if(!isAudioPlaying){
             return true;
         }
         return false;

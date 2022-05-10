@@ -1,5 +1,5 @@
-import React, {FC, useRef, useState} from 'react';
-import {AudioSelectContextI, AudioSelectContext} from "./AudioSelectContext";
+import React, {FC, useState} from 'react';
+import {AudioSelectContext, AudioSelectContextI} from "./AudioSelectContext";
 
 interface AudioSelectContextWrapProps {
     children: React.ReactNode

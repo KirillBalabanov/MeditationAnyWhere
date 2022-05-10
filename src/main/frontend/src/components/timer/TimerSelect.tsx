@@ -19,7 +19,7 @@ const TimerSelect: FC<TimerSelectProps> = React.memo(({children}) => {
         timerContext?.setMinListened(min);
         timerContext?.setTimerLenCurrent(timerLenDefault);
         timerContext?.setTimerValue(min * 60);
-    }, []);
+    }, [timerContext?.isPlaying]);
 
     return (
         <div className={classes.timer__select} onClick={selectCallback}>
