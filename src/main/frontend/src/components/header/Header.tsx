@@ -78,7 +78,6 @@ const Header = () => {
                                     <div>{avatarUrObj.errorMsg}</div>
                                     :
                                     <div className={classes.header__user} onClick={() => {
-                                        console.log("set")
                                         setShowMenu(!showMenu)
                                     }}>
                                         <img src={avatarUrObj!.avatarUrl==="" ? defaultAvatar : avatarUrObj!.avatarUrl} alt="avatar" className={classes.header__userAvatar}/>

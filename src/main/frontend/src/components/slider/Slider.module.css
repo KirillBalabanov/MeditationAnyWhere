@@ -1,6 +1,9 @@
 .slider {
     overflow: hidden;
+    display: flex;
     cursor: grabbing;
+    position: relative;
+    padding-bottom: 30px;
 }
 .sliderInner {
     display: flex;
@@ -15,6 +18,10 @@
     height: auto;
     padding-bottom: 10px;
     margin-top: 10px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
 .dot {
     width: 10px;

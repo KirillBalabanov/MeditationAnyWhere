@@ -31,7 +31,7 @@
 
 
 .library {
-    overflow: auto;
+
     height: 130px;
     width: 350px;
     margin-top: 10px;
@@ -43,7 +43,7 @@
     margin: 0 0 10px;
 }
 
-.libraryItem {
+.libraryAudio {
     font-size: 14px;
     width: 100%;
     background: #0A121C;
@@ -55,13 +55,13 @@
     margin: 5px 0;
     transition: all .3s ease;
 }
-.libraryItemActive {
+.libraryAudioActive {
     background: #0D091F;
 }
-.libraryItem:hover {
+.libraryAudio:hover {
     background: #0D091F;
 }
-.libraryText {
+.libraryAudioTitle {
     padding-left: 10px;
 }
 .libraryControls {

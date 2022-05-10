@@ -1,11 +1,26 @@
-import React, {FC, useCallback, useState} from 'react';
+import React, {FC, useCallback, useContext, useState} from 'react';
 import selectAudioIcon from "../../../images/selectAudioIcon.svg";
 import classes from "./AudioSelect.module.css";
 import Slider from "../../slider/Slider";
-import AudioSelectItem from "./AudioSelectItem";
+import AudioSelectLibrary from "./AudioSelectLibrary";
+import {useFetching} from "../../../hooks/useFetching";
+import {AudioI, ErrorI} from "../../../types/types";
+import AudioSelectLibraryAudio from "./AudioSelectLibraryAudio";
+import {AuthContext} from "../../../context/AuthContext";
+import {Link} from "react-router-dom";
 
-const AudioSelect: FC = React.memo(() => {
+const AudioSelect: FC = () => {
     const [selectShown, setSelectShown] = useState(false);
+
+    const authContext = useContext(AuthContext);
+
+    const [serverAudioIsLoading, setServerAudioIsLoading] = useState(true);
+    const [serverAudioData, setServerAudioData] = useState<AudioI[] | null | ErrorI>(null);
+    useFetching("/server/audio/default", setServerAudioIsLoading, setServerAudioData);
+
+    const [userAudioIsLoading, setUserAudioIsLoading] = useState(true);
+    const [userAudioData, setUserAudioData] = useState<AudioI[] | null | ErrorI>(null);
+    useFetching("/user/audio/get", setUserAudioIsLoading, setUserAudioData);
 
     const selectShownToggle = useCallback(() => {
         setSelectShown(!selectShown);
@@ -19,18 +34,69 @@ const AudioSelect: FC = React.memo(() => {
                     <p className={classes.titleText}>Select your audio</p>
                 </div>
             </div>
-            <Slider elementWidth={350} amountOfElements={2}>
-                <AudioSelectItem title={"Your library"}>
-                    hey
-                </AudioSelectItem>
-                <div className={classes.library}>
-                    <div className={classes.libraryTitle}>
-                        Default library
-                    </div>
-                </div>
+            <Slider>
+                <AudioSelectLibrary title={"Your library"}>
+                    {
+                        authContext?.auth
+                            ?
+                            (
+                                Array.isArray(userAudioData)
+                                    ?
+                                    userAudioData.map(data => {
+                                        return (
+                                            <AudioSelectLibraryAudio title={data.audioTitle} url={data.audioUrl}
+                                            key={data.audioUrl}
+                                            ></AudioSelectLibraryAudio>
+                                        )
+                                    })
+                                    :
+                                    <div className={classes.libraryError}>
+                                        {userAudioData?.errorMsg}
+                                    </div>
+                            )
+                            :
+                            <div className={classes.libraryLogin}>
+                                <Link to={"/login"} className={classes.libraryLoginLink}>login to have your own library.</Link>
+                            </div>
+                    }
+                </AudioSelectLibrary>
+                <AudioSelectLibrary title={"Default library"}>
+                    {
+                        Array.isArray(serverAudioData)
+                            ?
+                            serverAudioData.map(data => {
+                                return (
+                                    <AudioSelectLibraryAudio title={data.audioTitle} url={data.audioUrl}
+                                                             key={data.audioUrl}
+                                    ></AudioSelectLibraryAudio>
+                                )
+                            })
+                            :
+                            <div className={classes.libraryError}>
+                                {serverAudioData?.errorMsg}
+                            </div>
+                    }
+                </AudioSelectLibrary>
+                <AudioSelectLibrary title={"Default library"}>
+                    {
+                        Array.isArray(serverAudioData)
+                            ?
+                            serverAudioData.map(data => {
+                                return (
+                                    <AudioSelectLibraryAudio title={data.audioTitle} url={data.audioUrl}
+                                                             key={data.audioUrl}
+                                    ></AudioSelectLibraryAudio>
+                                )
+                            })
+                            :
+                            <div className={classes.libraryError}>
+                                {serverAudioData?.errorMsg}
+                            </div>
+                    }
+                </AudioSelectLibrary>
             </Slider>
         </div>
     );
-});
+};
 
 export default AudioSelect;
