@@ -18,6 +18,35 @@ const Slider: FC<SliderProps> = React.memo(({children, amountOfElements, element
     const leftBoundary = useMemo(() => (elementWidth / 2) - 1, []);
     const rightBoundary = useMemo(() => (-(elementWidth*(amountOfElements-1) + elementWidth/2)) + 1, []);
 
+    const sliderDiv = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const mouseDownHandler = (e: MouseEvent) => {
+            e.preventDefault()
+            setIsMouseDragging(true)
+            setStartPosition(e.pageX);
+        }
+
+        const touchStartHandler = (e: TouchEvent) => setStartPosition(e.touches[0].pageX);
+
+        sliderDiv.current!.addEventListener("mousedown", mouseDownHandler);
+        sliderDiv.current!.addEventListener("touchstart", touchStartHandler);
+
+        return () => {
+            sliderDiv.current!.removeEventListener("mousedown", mouseDownHandler);
+            sliderDiv.current!.removeEventListener("touchstart", touchStartHandler);
+        };
+    }, []);
+
+    useEffect(() => {
+        const mouseUpHandler =(e: MouseEvent) => {
+            setIsMouseDragging(false);
+            draggingStop();
+        }
+        window.addEventListener("mouseup", mouseUpHandler);
+        return () => window.removeEventListener("mouseup", mouseUpHandler);
+    }, [currentTranslate]);
+
     const currentSlideTranslate = useMemo(() => {
         return currentSlide * -elementWidth;
     }, [currentSlide]);
@@ -26,6 +55,10 @@ const Slider: FC<SliderProps> = React.memo(({children, amountOfElements, element
         if (!isMouseDragging) {
             return;
         }
+        moveSlider(newMousePosition);
+    }, [isMouseDragging, currentSlideTranslate]);
+
+    const moveSlider = useCallback((newMousePosition: number) => {
         let newTrans = currentSlideTranslate + newMousePosition - startPosition;
         if(newTrans > leftBoundary) return;
         if(newTrans < rightBoundary) return;
@@ -48,32 +81,24 @@ const Slider: FC<SliderProps> = React.memo(({children, amountOfElements, element
 
     }, [currentTranslate]);
 
-    useEffect(() => {
-        const mouseUpHandler =(e: MouseEvent) => {
-            setIsMouseDragging(false);
-            draggingStop();
-        }
-        window.addEventListener("mouseup", mouseUpHandler);
-        return () => window.removeEventListener("mouseup", mouseUpHandler);
-    }, [currentTranslate]);
-
     return (
-        <div className={classes.slider} style={{width: elementWidth  + "px"}}
-             onMouseDown={(e) => {
-                 e.preventDefault()
-                 setIsMouseDragging(true)
-                 setStartPosition(e.pageX);
-             }}
+        <div className={classes.slider} style={{width: elementWidth + "px"}} ref={sliderDiv}
+             onTouchEnd={draggingStop}
              onMouseMove={(e) => mouseMove(e.pageX)}
+             onTouchMove={(e) => moveSlider(e.touches[0].pageX)}
         >
             <div className={classes.sliderInner}
-                 style={{width: elementWidth * amountOfElements + "px", transform: "translateX(" + currentTranslate + "px)"}}
+                 style={{
+                     width: elementWidth * amountOfElements + "px",
+                     transform: "translateX(" + currentTranslate + "px)"
+                 }}
                  ref={sliderRef}>
                 {children}
             </div>
             <div className={classes.dots}>
                 {Array.from({length: amountOfElements}, (a, index) =>
-                    <div className={index === currentSlide ? classes.dot + " " + classes.dotCur : classes.dot} key={index}
+                    <div className={index === currentSlide ? classes.dot + " " + classes.dotCur : classes.dot}
+                         key={index}
                          onClick={() => {
                              setCurrentTranslate(-elementWidth * index);
                              setCurrentSlide(index)

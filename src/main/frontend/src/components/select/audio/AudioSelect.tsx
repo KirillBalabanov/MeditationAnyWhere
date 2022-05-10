@@ -2,6 +2,7 @@ import React, {FC, useCallback, useState} from 'react';
 import selectAudioIcon from "../../../images/selectAudioIcon.svg";
 import classes from "./AudioSelect.module.css";
 import Slider from "../../slider/Slider";
+import AudioSelectItem from "./AudioSelectItem";
 
 const AudioSelect: FC = React.memo(() => {
     const [selectShown, setSelectShown] = useState(false);
@@ -19,11 +20,9 @@ const AudioSelect: FC = React.memo(() => {
                 </div>
             </div>
             <Slider elementWidth={350} amountOfElements={2}>
-                <div className={classes.library}>
-                    <div className={classes.libraryTitle}>
-                        Your library
-                    </div>
-                </div>
+                <AudioSelectItem title={"Your library"}>
+                    hey
+                </AudioSelectItem>
                 <div className={classes.library}>
                     <div className={classes.libraryTitle}>
                         Default library
