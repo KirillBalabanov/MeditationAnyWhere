@@ -17,7 +17,7 @@ export enum FormStyles {
     failed = classes.failed
 }
 
-const Form: FC<FormProps> = (
+const Form: FC<FormProps> = React.memo((
     {
         children,
         submitCallback,
@@ -43,6 +43,6 @@ const Form: FC<FormProps> = (
             </div>
         </form>
     );
-};
+});
 
 export default Form;

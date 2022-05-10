@@ -1,4 +1,4 @@
-import React, {FormEvent, useContext, useEffect, useState} from 'react';
+import React, {FormEvent, useCallback, useContext, useEffect, useState} from 'react';
 import classes from "../styles/AuthPage.module.css";
 import {Link, useNavigate} from "react-router-dom";
 import {AuthContext} from "../context/AuthContext";
@@ -22,19 +22,9 @@ const LoginPage = () => {
 
     const [errorMsg, setErrorMsg] = useState("");
 
-    useAuthRedirect(authContext.auth);
+    useAuthRedirect(authContext);
 
-    // navigate on successful log in
-    let navigateFunction = useNavigate();
-    useEffect(() => {
-        if(redirect) {
-            setTimeout(() => {
-                navigateFunction("/");
-            }, 1200);
-        }
-    }, [redirect]);
-
-    function postLogin(e: FormEvent) {
+    const postLogin = useCallback((e: FormEvent) => {
         e.preventDefault();
         let children = (e.target as Element).children;
         let username = (children[1] as HTMLInputElement).value;
@@ -45,14 +35,15 @@ const LoginPage = () => {
             UserValidator.isValidPassword(password);
             errorText.textContent = "";
         } catch (e) {
-            if(e instanceof Error){
+            if (e instanceof Error) {
                 errorText.textContent = e.message;
             }
             return;
         }
         setFormClasses([FormStyles.loading]);
         setIsLoading(true);
-        fetch("/user/auth/login", { method: "POST", headers: {
+        fetch("/user/auth/login", {
+            method: "POST", headers: {
                 'Content-Type': 'application/json',
                 'X-XSRF-TOKEN': csrfContext.csrfToken
             },
@@ -62,11 +53,10 @@ const LoginPage = () => {
             })
         }).then((response) => response.json()).then((data: LoginI | ErrorI) => {
             let failed: boolean = false;
-            if("errorMsg" in data) {
+            if ("errorMsg" in data) {
                 errorText.textContent = data["errorMsg"];
                 failed = true;
-            }
-            else {
+            } else {
                 authContext.setAuth(data["authenticated"]);
                 authContext.setUsername(data["username"]);
                 csrfContext.setToken(data["csrf"]);
@@ -75,7 +65,7 @@ const LoginPage = () => {
             // animation
             FormService.animateFetchRequest(setIsLoading, setFormClasses, failed)
         });
-    }
+    }, []);
 
     return (
         <div>

@@ -6,7 +6,7 @@ interface EditProfileBtnProps {
     show: boolean
 }
 
-const EditProfileBtn: FC<EditProfileBtnProps> = ({show}) => {
+const EditProfileBtn: FC<EditProfileBtnProps> = React.memo(({show}) => {
     let navigateFunction = useNavigate();
     return (
         <div className={classes.profile__button} onClick={() => navigateFunction("/settings/profile")}
@@ -15,6 +15,6 @@ const EditProfileBtn: FC<EditProfileBtnProps> = ({show}) => {
             Edit Profile
         </div>
     );
-};
+});
 
 export default EditProfileBtn;

@@ -9,5 +9,5 @@ export const useAuth = (AuthContextImp: AuthContextI, setIsLoading: (loading: bo
             AuthContextImp.setUsername(obj["username"]);
             setIsLoading(false);
         });
-    }, []);
+    }, [AuthContextImp.auth]);
 };

@@ -1,4 +1,4 @@
-import React, {FormEvent, useContext, useState} from 'react';
+import React, {FormEvent, useCallback, useContext, useState} from 'react';
 import classes from "../styles/AuthPage.module.css";
 import {Link} from "react-router-dom";
 import {CsrfContext, CsrfContextI} from "../context/CsrfContext";
@@ -22,9 +22,9 @@ const RegistrationPage = () => {
     const [errorMsg, setErrorMsg] = useState("");
 
     // redirect in case user is logged in and trying to reach this page
-    useAuthRedirect(authContext!.auth);
+    useAuthRedirect(authContext!);
 
-    function postRegister(e: FormEvent) {
+    const postRegister = useCallback((e: FormEvent) => {
         e.preventDefault();
         let children = (e.target as Element).children;
 
@@ -70,7 +70,8 @@ const RegistrationPage = () => {
             }
             FormService.animateFetchRequest(setIsLoading, setFormClasses, failed);
         });
-    }
+    }, []);
+
 
     return (
         <div>

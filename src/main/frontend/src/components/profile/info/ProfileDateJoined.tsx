@@ -7,7 +7,7 @@ interface ProfileDateJoinedProps {
     registrationDate: string
 }
 
-const ProfileDateJoined: FC<ProfileDateJoinedProps> = ({registrationDate}) => {
+const ProfileDateJoined: FC<ProfileDateJoinedProps> = React.memo(({registrationDate}) => {
     return (
         <div className={classes.profile__time}>
             <div className={classes.profile__timeInner}>
@@ -23,6 +23,6 @@ const ProfileDateJoined: FC<ProfileDateJoinedProps> = ({registrationDate}) => {
             </div>
         </div>
     );
-};
+});
 
 export default ProfileDateJoined;

@@ -36,7 +36,6 @@ const App: FC = () => {
         showHeader: showHeader,
         setShowHeader: setShowHeader
     }
-
     useToken(CsrfContextImp);
     useAuth(AuthContextImp, setIsLoading);
 

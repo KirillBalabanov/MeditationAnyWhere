@@ -1,10 +1,11 @@
 import {useNavigate} from "react-router-dom";
-import {useEffect} from "react";
+import {useContext, useEffect} from "react";
+import {AuthContext, AuthContextI} from "../context/AuthContext";
 
-export const useAuthRedirect = (auth: boolean) => {
+export const useAuthRedirect = (authContext: AuthContextI) => {
     // if user is logged in, redirect to /
     let navigateFunction = useNavigate();
     useEffect(() => {
-        if(auth) navigateFunction("/");
-    }, []);
+        if(authContext?.auth) navigateFunction("/");
+    }, [authContext?.auth]);
 };

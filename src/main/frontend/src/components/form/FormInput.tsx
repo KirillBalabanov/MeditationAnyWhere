@@ -9,7 +9,7 @@ interface FormInputProps {
     onInput?: (e: React.FormEvent<HTMLInputElement>) => void
 }
 
-const FormInput: FC<FormInputProps> = (
+const FormInput: FC<FormInputProps> = React.memo((
     {
         setErrorMsg,
         placeholder,
@@ -23,6 +23,6 @@ const FormInput: FC<FormInputProps> = (
         <input type={type} name={name} className={classes.form__input} placeholder={placeholder}
                onInput={onInput}/>
     );
-};
+});
 
 export default FormInput;

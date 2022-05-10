@@ -10,7 +10,7 @@ interface ProfileAvatarProps {
     username: string
 }
 
-const ProfileAvatar: FC<ProfileAvatarProps> = ({avatarUrl, username}) => {
+const ProfileAvatar: FC<ProfileAvatarProps> = React.memo(({avatarUrl, username}) => {
     let navigateFunction = useNavigate();
     const [popupShown, setPopupShown] = useState(false);
     const authContext = useContext(AuthContext);
@@ -34,6 +34,6 @@ const ProfileAvatar: FC<ProfileAvatarProps> = ({avatarUrl, username}) => {
             <PopupRectangle popupShown={popupShown} popupText={"change your avatar"} top={300} left={85}></PopupRectangle>
         </div>
     );
-};
+});
 
 export default ProfileAvatar;

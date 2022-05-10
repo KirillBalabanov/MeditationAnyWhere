@@ -5,12 +5,12 @@ interface ProfileProps {
     children: React.ReactNode
 }
 
-const Profile: FC<ProfileProps> = ({children}) => {
+const Profile: FC<ProfileProps> = React.memo(({children}) => {
     return (
         <div className={classes.profile}>
             {children}
         </div>
     );
-};
+});
 
 export default Profile;

@@ -5,12 +5,12 @@ interface FormTitleProps {
     title: string
 }
 
-const FormTitle: FC<FormTitleProps> = ({title}) => {
+const FormTitle: FC<FormTitleProps> = React.memo(({title}) => {
     return (
         <h2 className={classes.form__title}>
             {title}
         </h2>
     );
-};
+});
 
 export default FormTitle;
