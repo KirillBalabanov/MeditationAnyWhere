@@ -6,10 +6,11 @@ interface AudioSelectContextWrapProps {
 }
 
 const AudioSelectContextWrap: FC<AudioSelectContextWrapProps> = ({children}) => {
-    let ref = useRef<HTMLAudioElement | null>(null);
+    let [currentAudioElement, setCurrentAudioElement] = useState<HTMLAudioElement | null>(null);
     const [isLibraryAudioOnPlay, setIsLibraryAudioOnPlay] = useState(false);
     let AudioSelectContextImp: AudioSelectContextI = {
-        currentAudioElement: ref,
+        currentAudioElement: currentAudioElement,
+        setCurrentAudioElement: setCurrentAudioElement,
         isLibraryAudioOnPlay: isLibraryAudioOnPlay,
         setIsLibraryAudioOnPlay: setIsLibraryAudioOnPlay ,
     }

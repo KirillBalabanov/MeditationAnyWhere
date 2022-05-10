@@ -8,6 +8,7 @@ import {CsrfContext} from "../../context/CsrfContext";
 import Popup from "../popup/Popup";
 import {AudioI, ErrorI} from "../../types/types";
 import AudioSource from "../audio/components/AudioSource";
+import {AudioSelectContext} from "../select/audio/AudioSelectContext";
 
 const Timer:FC = React.memo(() => {
     const timerContext = useContext(TimerContext);
@@ -18,6 +19,8 @@ const Timer:FC = React.memo(() => {
 
     const [toggleAudioData, setToggleAudioData] = useState<AudioI | null | ErrorI>(null);
     const toggleAudioElement = useRef<HTMLAudioElement | null>(null);
+
+    const audioSelectContext = useContext(AudioSelectContext);
 
     let timerLenDecrement = useMemo(() => {
         return timerLenDefault / (timerContext?.minListened! * 60);
@@ -52,6 +55,9 @@ const Timer:FC = React.memo(() => {
         let interval = setInterval(() => {
             if (timerValue == 0) { // session end
                 clearInterval(interval);
+                if(audioSelectContext != null && audioSelectContext.isLibraryAudioOnPlay) {
+                    audioSelectContext?.currentAudioElement?.pause();
+                }
                 timerContext?.setIsPlaying(false);
                 timerContext?.setTimerLenCurrent(0);
                 setPopupContent("Listened " + timerStartValue + " min");

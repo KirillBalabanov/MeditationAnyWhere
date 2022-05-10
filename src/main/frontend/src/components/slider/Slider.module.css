@@ -4,6 +4,7 @@
     cursor: grabbing;
     position: relative;
     padding-bottom: 30px;
+    user-select: none;
 }
 .sliderInner {
     display: flex;

@@ -23,7 +23,6 @@ const Slider: FC<SliderProps> = React.memo(({children}) => {
 
     useEffect(() => {
         const mouseDownHandler = (e: MouseEvent) => {
-
             setIsMouseDragging(true)
             setStartPosition(e.pageX);
         }

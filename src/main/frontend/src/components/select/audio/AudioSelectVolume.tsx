@@ -30,7 +30,7 @@ const AudioSelectVolume: FC<AudioSelectVolumeProps> = React.memo(({audioElement}
             </div>
             <input className={classes.libraryVolumeInput} value={audioVolumeInPercents} type="range"
                    onChange={(e) => {
-                       e.stopPropagation();
+                        e.stopPropagation()
                        let vol = Number(e.target.value);
                        setIsMuted(false);
                        setAudioVolumeInPercents(vol);
