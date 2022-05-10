@@ -3,7 +3,7 @@ import selectAudioIcon from "../../../images/selectAudioIcon.svg";
 import classes from "./AudioSelect.module.css";
 import Slider from "../../slider/Slider";
 import AudioSelectLibrary from "./AudioSelectLibrary";
-import {useFetching} from "../../../hooks/useFetching";
+import {useFetching, useFetchingOnCondition} from "../../../hooks/useFetching";
 import {AudioI, ErrorI} from "../../../types/types";
 import AudioSelectLibraryAudio from "./AudioSelectLibraryAudio";
 import {AuthContext} from "../../../context/AuthContext";
@@ -20,7 +20,7 @@ const AudioSelect: FC = () => {
 
     const [userAudioIsLoading, setUserAudioIsLoading] = useState(true);
     const [userAudioData, setUserAudioData] = useState<AudioI[] | null | ErrorI>(null);
-    useFetching("/user/audio/get", setUserAudioIsLoading, setUserAudioData);
+    useFetchingOnCondition("/user/audio/get", setUserAudioIsLoading, setUserAudioData, authContext?.auth!);
 
     const selectShownToggle = useCallback(() => {
         setSelectShown(!selectShown);
@@ -57,23 +57,6 @@ const AudioSelect: FC = () => {
                             :
                             <div className={classes.libraryLogin}>
                                 <Link to={"/login"} className={classes.libraryLoginLink}>login to have your own library.</Link>
-                            </div>
-                    }
-                </AudioSelectLibrary>
-                <AudioSelectLibrary title={"Default library"}>
-                    {
-                        Array.isArray(serverAudioData)
-                            ?
-                            serverAudioData.map(data => {
-                                return (
-                                    <AudioSelectLibraryAudio title={data.audioTitle} url={data.audioUrl}
-                                                             key={data.audioUrl}
-                                    ></AudioSelectLibraryAudio>
-                                )
-                            })
-                            :
-                            <div className={classes.libraryError}>
-                                {serverAudioData?.errorMsg}
                             </div>
                     }
                 </AudioSelectLibrary>

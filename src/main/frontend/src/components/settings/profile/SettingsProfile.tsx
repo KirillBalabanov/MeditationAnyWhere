@@ -72,7 +72,7 @@ const SettingsProfile = () => {
             return;
         }
 
-        if(bioForm == bio && deleteAvatar && avatarUrl === "") return;
+        if(bioForm === bio && deleteAvatar && avatarUrl === "") return;
         if(imageUploadFailed) return;
 
         let formData = new FormData();

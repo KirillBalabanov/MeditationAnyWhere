@@ -17,13 +17,14 @@ const Slider: FC<SliderProps> = React.memo(({children}) => {
     const [elementWidth, setElementWidth] = useState(0);
 
     const leftBoundary = useMemo(() => (elementWidth / 2) - 1, [elementWidth]);
-    const rightBoundary = useMemo(() => (-(elementWidth*(amountOfElements-1) + elementWidth/2)) + 1, [elementWidth]);
+    const rightBoundary = useMemo(() => (-(elementWidth*(amountOfElements-1) + elementWidth/2)) + 1, [elementWidth, amountOfElements]);
 
     const sliderDiv = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const mouseDownHandler = (e: MouseEvent) => {
             e.preventDefault()
+
             setIsMouseDragging(true)
             setStartPosition(e.pageX);
         }
@@ -45,10 +46,28 @@ const Slider: FC<SliderProps> = React.memo(({children}) => {
         };
     }, []);
 
+    const draggingStop = useCallback(() => {
+        const moved = Math.abs(currentTranslate - currentSlideTranslate);
+        if (moved < elementWidth / 2) { // don't flip
+            setCurrentTranslate(currentSlideTranslate);
+            return;
+        }
+        if(currentTranslate < currentSlideTranslate)  { // flip to next
+            setCurrentSlide(currentSlide => currentSlide + 1);
+            setCurrentTranslate((currentSlide + 1) * -elementWidth);
+            return;
+        }
+        setCurrentSlide(currentSlide => currentSlide - 1); // flip to prev
+        setCurrentTranslate((currentSlide - 1) * -elementWidth);
+
+    }, [currentTranslate, elementWidth]);
+
     useEffect(() => {
         const mouseUpHandler = () => {
-            setIsMouseDragging(false);
-            draggingStop();
+            if (isMouseDragging) {
+                setIsMouseDragging(false);
+                draggingStop();
+            }
         }
         const mouseMoveHandler = (e: MouseEvent) => mouseMove(e.pageX)
         window.addEventListener("mousemove", mouseMoveHandler);
@@ -57,18 +76,11 @@ const Slider: FC<SliderProps> = React.memo(({children}) => {
             window.removeEventListener("mousemove", mouseMoveHandler);
             window.removeEventListener("mouseup", mouseUpHandler);
         }
-    }, [currentTranslate, isMouseDragging]);
+    }, [currentTranslate, isMouseDragging, draggingStop]);
 
     const currentSlideTranslate = useMemo(() => {
-        return currentSlide * -elementWidth;
-    }, [currentSlide]);
-
-    const mouseMove = useCallback((newMousePosition: number) => {
-        if (!isMouseDragging) {
-            return;
-        }
-        moveSlider(newMousePosition);
-    }, [isMouseDragging, currentSlideTranslate]);
+        return currentSlide * (-elementWidth);
+    }, [currentSlide, elementWidth]);
 
     const moveSlider = useCallback((newMousePosition: number) => {
         let newTrans = currentSlideTranslate + newMousePosition - startPosition;
@@ -76,23 +88,15 @@ const Slider: FC<SliderProps> = React.memo(({children}) => {
         if(newTrans < rightBoundary) return;
         if(Math.abs(newTrans) > Math.abs(currentSlideTranslate) + elementWidth) return;
         setCurrentTranslate(newTrans);
-    }, [isMouseDragging, currentSlideTranslate]);
+    }, [isMouseDragging, currentSlideTranslate, elementWidth]);
 
-    const draggingStop = useCallback(() => {
-        const moved = Math.abs(currentTranslate - currentSlideTranslate);
-        if (moved < elementWidth / 2) { // don't flip
-            setCurrentTranslate(currentSlideTranslate);
+    const mouseMove = useCallback((newMousePosition: number) => {
+        if (!isMouseDragging) {
             return;
         }
-        if(currentTranslate < currentSlideTranslate)  { // flip to next
-            setCurrentSlide(currentSlide + 1);
-            setCurrentTranslate((currentSlide + 1) * -elementWidth);
-            return;
-        }
-        setCurrentSlide(currentSlide - 1); // flip to prev
-        setCurrentTranslate((currentSlide - 1) * -elementWidth);
+        moveSlider(newMousePosition);
+    }, [isMouseDragging, moveSlider]);
 
-    }, [currentTranslate]);
 
     return (
         <div className={classes.slider} style={{width: elementWidth != 0 ? elementWidth + "px" : "auto"}} ref={sliderDiv}
