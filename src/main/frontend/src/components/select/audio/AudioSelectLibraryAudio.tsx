@@ -1,4 +1,4 @@
-import React, {FC, useCallback, useEffect, useRef, useState} from 'react';
+import React, {FC, useEffect, useRef, useState} from 'react';
 import classes from "./AudioSelect.module.css";
 import AudioSource from "../../audio/components/AudioSource";
 import selectedIcon from "../../../images/selectedIcon.svg";
@@ -21,11 +21,22 @@ const AudioSelectLibraryAudio: FC<AudioSelectLibraryAudioProps> = React.memo(({u
                 setAudioNotFoundError("Audio not found");
             }
         });
-    }, []);
+    }, [url]);
 
     const togglePlay = () => {
         if(audioNotFoundError != null) return;
-        setIsAudioPlaying(!isAudioPlaying);
+        setIsAudioPlaying(prev => {
+
+            if (audioElement != null) {
+                if (prev) { // stop
+                    audioElement.current?.pause();
+                } else { // start
+                    audioElement.current?.play();
+                }
+            }
+
+            return !prev;
+        });
     }
 
 
@@ -43,7 +54,7 @@ const AudioSelectLibraryAudio: FC<AudioSelectLibraryAudioProps> = React.memo(({u
                 }
             </div>
             <div className={classes.libraryControls} onClick={(e) => e.preventDefault()}>
-                <AudioSelectVolume/>
+                <AudioSelectVolume audioElement={audioElement}/>
                 {
                     isAudioPlaying
                     &&

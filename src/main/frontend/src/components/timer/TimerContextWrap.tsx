@@ -5,7 +5,7 @@ interface TimerOuterProps {
     children: React.ReactNode
 }
 
-const TimerOuter: FC<TimerOuterProps> = React.memo(({children}) => {
+const TimerContextWrap: FC<TimerOuterProps> = React.memo(({children}) => {
     const [isPlaying, setIsPlaying] = useState(false);
     const [timerValue, setTimerValue] = useState(0);
     const [timerLenCurrent, setTimerLenCurrent] = useState(0);
@@ -34,4 +34,4 @@ const TimerOuter: FC<TimerOuterProps> = React.memo(({children}) => {
     );
 });
 
-export default TimerOuter;
+export default TimerContextWrap;

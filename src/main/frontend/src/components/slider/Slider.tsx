@@ -23,7 +23,6 @@ const Slider: FC<SliderProps> = React.memo(({children}) => {
 
     useEffect(() => {
         const mouseDownHandler = (e: MouseEvent) => {
-            e.preventDefault()
 
             setIsMouseDragging(true)
             setStartPosition(e.pageX);
@@ -46,6 +45,10 @@ const Slider: FC<SliderProps> = React.memo(({children}) => {
         };
     }, []);
 
+    const currentSlideTranslate = useMemo(() => {
+        return currentSlide * (-elementWidth);
+    }, [currentSlide, elementWidth]);
+
     const draggingStop = useCallback(() => {
         const moved = Math.abs(currentTranslate - currentSlideTranslate);
         if (moved < elementWidth / 2) { // don't flip
@@ -60,7 +63,23 @@ const Slider: FC<SliderProps> = React.memo(({children}) => {
         setCurrentSlide(currentSlide => currentSlide - 1); // flip to prev
         setCurrentTranslate((currentSlide - 1) * -elementWidth);
 
-    }, [currentTranslate, elementWidth]);
+    }, [currentTranslate, elementWidth, currentSlide, currentSlideTranslate]);
+
+    const moveSlider = useCallback((newMousePosition: number) => {
+        let newTrans = currentSlideTranslate + newMousePosition - startPosition;
+        if(newTrans > leftBoundary) return;
+        if(newTrans < rightBoundary) return;
+        if(Math.abs(newTrans) > Math.abs(currentSlideTranslate) + elementWidth) return;
+        setCurrentTranslate(newTrans);
+    }, [currentSlideTranslate, elementWidth, leftBoundary, rightBoundary, startPosition]);
+
+
+    const mouseMove = useCallback((newMousePosition: number) => {
+        if (!isMouseDragging) {
+            return;
+        }
+        moveSlider(newMousePosition);
+    }, [isMouseDragging, moveSlider]);
 
     useEffect(() => {
         const mouseUpHandler = () => {
@@ -76,36 +95,17 @@ const Slider: FC<SliderProps> = React.memo(({children}) => {
             window.removeEventListener("mousemove", mouseMoveHandler);
             window.removeEventListener("mouseup", mouseUpHandler);
         }
-    }, [currentTranslate, isMouseDragging, draggingStop]);
-
-    const currentSlideTranslate = useMemo(() => {
-        return currentSlide * (-elementWidth);
-    }, [currentSlide, elementWidth]);
-
-    const moveSlider = useCallback((newMousePosition: number) => {
-        let newTrans = currentSlideTranslate + newMousePosition - startPosition;
-        if(newTrans > leftBoundary) return;
-        if(newTrans < rightBoundary) return;
-        if(Math.abs(newTrans) > Math.abs(currentSlideTranslate) + elementWidth) return;
-        setCurrentTranslate(newTrans);
-    }, [isMouseDragging, currentSlideTranslate, elementWidth]);
-
-    const mouseMove = useCallback((newMousePosition: number) => {
-        if (!isMouseDragging) {
-            return;
-        }
-        moveSlider(newMousePosition);
-    }, [isMouseDragging, moveSlider]);
+    }, [currentTranslate, isMouseDragging, draggingStop, mouseMove]);
 
 
     return (
-        <div className={classes.slider} style={{width: elementWidth != 0 ? elementWidth + "px" : "auto"}} ref={sliderDiv}
+        <div className={classes.slider} style={{width: elementWidth !== 0 ? elementWidth + "px" : "auto"}} ref={sliderDiv}
              onTouchEnd={draggingStop}
              onTouchMove={(e) => moveSlider(e.touches[0].pageX)}
         >
             <div className={classes.sliderInner}
                  style={{
-                     width: elementWidth != 0 ? elementWidth * amountOfElements + "px" : "auto",
+                     width: elementWidth !== 0 ? elementWidth * amountOfElements + "px" : "auto",
                      transform: "translateX(" + currentTranslate + "px)"
                  }}
                  ref={sliderInner}>
@@ -113,7 +113,7 @@ const Slider: FC<SliderProps> = React.memo(({children}) => {
             </div>
             <div className={classes.dots}>
                 {
-                    amountOfElements!=0&&Array.from({length: amountOfElements}, (a, index) =>
+                    amountOfElements!==0&&Array.from({length: amountOfElements}, (a, index) =>
                     <div className={index === currentSlide ? classes.dot + " " + classes.dotCur : classes.dot}
                          key={index}
                          onClick={() => {

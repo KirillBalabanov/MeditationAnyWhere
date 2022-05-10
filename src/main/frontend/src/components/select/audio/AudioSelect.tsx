@@ -8,6 +8,7 @@ import {AudioI, ErrorI} from "../../../types/types";
 import AudioSelectLibraryAudio from "./AudioSelectLibraryAudio";
 import {AuthContext} from "../../../context/AuthContext";
 import {Link} from "react-router-dom";
+import AudioSelectVolume from "./AudioSelectVolume";
 
 const AudioSelect: FC = () => {
     const [selectShown, setSelectShown] = useState(false);
@@ -23,8 +24,8 @@ const AudioSelect: FC = () => {
     useFetchingOnCondition("/user/audio/get", setUserAudioIsLoading, setUserAudioData, authContext?.auth!);
 
     const selectShownToggle = useCallback(() => {
-        setSelectShown(!selectShown);
-    }, [selectShown]);
+        setSelectShown(prev => !prev);
+    }, []);
 
     return (
         <div className={selectShown ? classes.select + " " + classes.selectShown : classes.select}>
@@ -45,7 +46,7 @@ const AudioSelect: FC = () => {
                                     userAudioData.map(data => {
                                         return (
                                             <AudioSelectLibraryAudio title={data.audioTitle} url={data.audioUrl}
-                                            key={data.audioUrl}
+                                                                     key={data.audioUrl}
                                             ></AudioSelectLibraryAudio>
                                         )
                                     })
@@ -56,7 +57,8 @@ const AudioSelect: FC = () => {
                             )
                             :
                             <div className={classes.libraryLogin}>
-                                <Link to={"/login"} className={classes.libraryLoginLink}>login to have your own library.</Link>
+                                <Link to={"/login"} className={classes.libraryLoginLink}>login to have your own
+                                    library.</Link>
                             </div>
                     }
                 </AudioSelectLibrary>
