@@ -1,4 +1,4 @@
-import React, {FC, useCallback, useContext, useEffect, useMemo, useState} from 'react';
+import React, {FC, useCallback, useContext, useEffect, useMemo, useRef, useState} from 'react';
 import classes from "./Timer.module.css";
 import {TimerContext} from "./TimerContext";
 import {formatToMinSecStr} from "./TimerService/formatToMinSecStr";
@@ -6,6 +6,8 @@ import {timerLenDefault} from "./TimerService/timerLenDefault";
 import {AuthContext} from "../../context/AuthContext";
 import {CsrfContext} from "../../context/CsrfContext";
 import Popup from "../popup/Popup";
+import {AudioI, ErrorI} from "../../types/types";
+import AudioSource from "../audio/components/AudioSource";
 
 const Timer:FC = React.memo(() => {
     const timerContext = useContext(TimerContext);
@@ -13,6 +15,9 @@ const Timer:FC = React.memo(() => {
     const csrfContext = useContext(CsrfContext);
     const [showPopup, setShowPopup] = useState(false);
     const [popupContent, setPopupContent] = useState("");
+
+    const [toggleAudioData, setToggleAudioData] = useState<AudioI | null | ErrorI>(null);
+    const toggleAudioElement = useRef<HTMLAudioElement | null>(null);
 
     let timerLenDecrement = useMemo(() => {
         return timerLenDefault / (timerContext?.minListened! * 60);
@@ -22,10 +27,15 @@ const Timer:FC = React.memo(() => {
         if (!timerContext?.isPlaying) {
             stopTimer(timerContext?.timerInterval!);
         } else {
-            startTimer(timerContext?.timerValue!, timerContext.timerLenCurrent);
+            startTimer(timerContext.minListened * 60,timerContext?.timerValue!, timerContext.timerLenCurrent);
         }
     }, [timerContext?.isPlaying]);
 
+    useEffect(() => {
+        fetch("/server/audio/toggle").then((response) => response.json()).then((data: ErrorI | AudioI) => {
+            setToggleAudioData(data);
+        });
+    }, []);
 
     const stopTimer = useCallback((interval: NodeJS.Timer | null)  => {
         if(interval == null) return;
@@ -33,15 +43,22 @@ const Timer:FC = React.memo(() => {
         timerContext?.setTimerInterval(null);
     }, []);
 
-    const startTimer = useCallback((timerValue: number, currentTimerLen: number) => {
+    const startTimer = useCallback((timerStartValue: number, timerValue: number, currentTimerLen: number) => {
+
+        if(timerStartValue == timerValue && toggleAudioElement != null) {
+            toggleAudioElement.current?.play();
+        }
 
         let interval = setInterval(() => {
             if (timerValue == 0) { // session end
                 clearInterval(interval);
                 timerContext?.setIsPlaying(false);
                 timerContext?.setTimerLenCurrent(0);
-                setPopupContent("Listened " + timerContext?.minListened + " min");
+                setPopupContent("Listened " + timerStartValue + " min");
                 setShowPopup(true);
+                if (toggleAudioData != null) {
+                    toggleAudioElement.current?.play();
+                }
                 if (authContext?.auth) { // update user stats
                     fetch("/user/stats/updateStats", {
                         method: "PUT",
@@ -49,8 +66,8 @@ const Timer:FC = React.memo(() => {
                             "Content-Type": "application/json",
                             "X-XSRF-TOKEN": csrfContext?.csrfToken!
                         },
-                        body: JSON.stringify({minListened: timerContext?.minListened})
-                    })
+                        body: JSON.stringify({minListened: timerStartValue})
+                    });
                 }
                 return;
             }
@@ -59,7 +76,7 @@ const Timer:FC = React.memo(() => {
             if(currentTimerLen <= 0) currentTimerLen = 0;
             timerContext?.setTimerValue(timerValue);
             timerContext?.setTimerLenCurrent(currentTimerLen);
-        }, 10);
+        }, 1000);
 
         timerContext?.setTimerInterval(interval);
     }, [timerLenDecrement]);
@@ -81,6 +98,10 @@ const Timer:FC = React.memo(() => {
                 </svg>
                 <p>{formatToMinSecStr(timerContext?.timerValue!)}</p>
             </div>
+            {
+                toggleAudioData != null && "audioUrl" in toggleAudioData &&
+                <AudioSource url={toggleAudioData.audioUrl} audioElement={toggleAudioElement}/>
+            }
             <Popup popupInfo={popupContent} shown={showPopup} setShown={setShowPopup} popupConfirm={"Ok"}></Popup>
         </div>
     );
