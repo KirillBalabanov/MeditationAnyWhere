@@ -1,11 +1,8 @@
 import React, {FC, useState} from 'react';
-import {TimerContext, TimerContextI} from "./TimerContext";
+import {TimerContext, TimerContextI} from "../context/TimerContext";
+import {WrapperInterface} from "./WrapperInterface";
 
-interface TimerOuterProps {
-    children: React.ReactNode
-}
-
-const TimerContextWrap: FC<TimerOuterProps> = React.memo(({children}) => {
+const TimerWrapper: FC<WrapperInterface> = React.memo(({children}) => {
     const [isPlaying, setIsPlaying] = useState(false);
     const [timerValue, setTimerValue] = useState(0);
     const [timerLenCurrent, setTimerLenCurrent] = useState(0);
@@ -37,4 +34,4 @@ const TimerContextWrap: FC<TimerOuterProps> = React.memo(({children}) => {
     );
 });
 
-export default TimerContextWrap;
+export default TimerWrapper;

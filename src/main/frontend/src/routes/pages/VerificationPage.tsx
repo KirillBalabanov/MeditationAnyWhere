@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
 import {Link, useParams} from "react-router-dom";
 import classes from "../styles/VerificationPage.module.css";
-import {useFetching} from "../hooks/useFetching";
-import Loader from "../components/loader/Loader";
-import {ErrorI, VerificationI} from "../types/types";
+import {useFetching} from "../../hooks/useFetching";
+import Loader from "../../components/loader/Loader";
+import {ErrorI, VerificationI} from "../../types/types";
 
 const VerificationPage = () => {
     let activationCode: string = useParams()["activationCode"]!;

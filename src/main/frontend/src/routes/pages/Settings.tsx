@@ -1,10 +1,10 @@
 import React from 'react';
 import {useNavigate, useParams} from "react-router-dom";
-import Header from "../components/header/Header";
+import Header from "../../components/header/Header";
 import classes from "../styles/Settings.module.css";
-import SettingsProfile from "../components/settings/profile/SettingsProfile";
-import SettingsAccount from "../components/settings/account/SettingsAccount";
-import SettingsLibrary from "../components/settings/library/SettingsLibrary";
+import SettingsProfile from "../../components/settings/profile/SettingsProfile";
+import SettingsAccount from "../../components/settings/account/SettingsAccount";
+import SettingsLibrary from "../../components/settings/library/SettingsLibrary";
 
 const Settings = () => {
     const setting = useParams()["setting"];

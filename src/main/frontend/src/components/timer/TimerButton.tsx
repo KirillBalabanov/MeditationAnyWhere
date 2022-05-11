@@ -1,7 +1,7 @@
 import React, {FC, useCallback, useContext, useEffect} from 'react';
 import btnStop from "../../images/stopIcon.svg";
 import btnStart from "../../images/startIcon.svg";
-import {TimerContext} from "./TimerContext";
+import {TimerContext} from "../../context/TimerContext";
 
 import classes from "./Timer.module.css";
 

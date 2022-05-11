@@ -1,20 +1,20 @@
 import React, {useContext, useState} from 'react';
 import {useParams} from "react-router-dom";
-import {useFetching} from "../hooks/useFetching";
+import {useFetching} from "../../hooks/useFetching";
 import Error from "./Error";
-import Loader from "../components/loader/Loader";
+import Loader from "../../components/loader/Loader";
 import classes from "../styles/ProfilePage.module.css";
-import {ErrorI, UserProfileI} from "../types/types";
-import Profile from "../components/profile/Profile";
-import ProfileInfo from "../components/profile/info/ProfileInfo";
-import ProfileStats from "../components/profile/stats/ProfileStats";
-import ProfileAvatar from "../components/profile/info/ProfileAvatar";
-import ProfileUsername from "../components/profile/info/ProfileUsername";
-import ProfileBio from "../components/profile/info/ProfileBio";
-import EditProfileBtn from "../components/profile/info/EditProfileBtn";
-import ProfileDateJoined from "../components/profile/info/ProfileDateJoined";
-import ProfileStatBox from "../components/profile/stats/ProfileStatBox";
-import {AuthContext} from "../context/AuthContext";
+import {ErrorI, UserProfileI} from "../../types/types";
+import Profile from "../../components/profile/Profile";
+import ProfileInfo from "../../components/profile/info/ProfileInfo";
+import ProfileStats from "../../components/profile/stats/ProfileStats";
+import ProfileAvatar from "../../components/profile/info/ProfileAvatar";
+import ProfileUsername from "../../components/profile/info/ProfileUsername";
+import ProfileBio from "../../components/profile/info/ProfileBio";
+import EditProfileBtn from "../../components/profile/info/EditProfileBtn";
+import ProfileDateJoined from "../../components/profile/info/ProfileDateJoined";
+import ProfileStatBox from "../../components/profile/stats/ProfileStatBox";
+import {AuthContext} from "../../context/AuthContext";
 
 const ProfilePage = () => {
     const [isLoading, setIsLoading] = useState(true);

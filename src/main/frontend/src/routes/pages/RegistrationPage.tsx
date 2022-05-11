@@ -1,15 +1,15 @@
 import React, {FormEvent, useCallback, useContext, useState} from 'react';
 import classes from "../styles/AuthPage.module.css";
 import {Link} from "react-router-dom";
-import {CsrfContext, CsrfContextI} from "../context/CsrfContext";
-import {AuthContext, AuthContextI} from "../context/AuthContext";
-import {useAuthRedirect} from "../hooks/useAuthRedirect";
-import Form, {FormStyles} from "../components/form/Form";
-import FormTitle from "../components/form/FormTitle";
-import FormInput from "../components/form/FormInput";
-import UserValidator from "../util/UserValidator";
-import {ErrorI, UserI} from "../types/types";
-import FormService, {ValidFormValidator} from "../components/form/FormService";
+import {CsrfContext, CsrfContextI} from "../../context/CsrfContext";
+import {AuthContext, AuthContextI} from "../../context/AuthContext";
+import {useAuthRedirect} from "../../hooks/useAuthRedirect";
+import Form, {FormStyles} from "../../components/form/Form";
+import FormTitle from "../../components/form/FormTitle";
+import FormInput from "../../components/form/FormInput";
+import UserValidator from "../../util/UserValidator";
+import {ErrorI, UserI} from "../../types/types";
+import FormService, {ValidFormValidator} from "../../components/form/FormService";
 
 
 const RegistrationPage = () => {

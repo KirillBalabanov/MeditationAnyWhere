@@ -1,16 +1,16 @@
 import React, {FormEvent, useCallback, useContext, useEffect, useState} from 'react';
 import classes from "../styles/AuthPage.module.css";
 import {Link, useNavigate} from "react-router-dom";
-import {AuthContext} from "../context/AuthContext";
-import {CsrfContext} from "../context/CsrfContext";
-import {useAuthRedirect} from "../hooks/useAuthRedirect";
-import UserValidator from "../util/UserValidator";
-import Form, {FormStyles} from "../components/form/Form";
-import FormTitle from "../components/form/FormTitle";
-import FormInput from "../components/form/FormInput";
-import FormService, {ValidFormValidator} from "../components/form/FormService";
-import {ErrorI, LoginI} from "../types/types";
-import {HeaderContext} from "../context/HeaderContext";
+import {AuthContext} from "../../context/AuthContext";
+import {CsrfContext} from "../../context/CsrfContext";
+import {useAuthRedirect} from "../../hooks/useAuthRedirect";
+import UserValidator from "../../util/UserValidator";
+import Form, {FormStyles} from "../../components/form/Form";
+import FormTitle from "../../components/form/FormTitle";
+import FormInput from "../../components/form/FormInput";
+import FormService, {ValidFormValidator} from "../../components/form/FormService";
+import {ErrorI, LoginI} from "../../types/types";
+import {HeaderContext} from "../../context/HeaderContext";
 
 const LoginPage = () => {
     const csrfContext = useContext(CsrfContext)!;

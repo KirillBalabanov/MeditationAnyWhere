@@ -2,7 +2,7 @@ import React, {FC, useCallback, useContext, useEffect, useState} from 'react';
 import {Link} from "react-router-dom";
 
 import classes from "../styles/StartPage.module.css";
-import {HeaderContext, HeaderContextI} from "../context/HeaderContext";
+import {HeaderContext, HeaderContextI} from "../../context/HeaderContext";
 
 const StartPage: FC = () => {
     const headerContext = useContext<HeaderContextI | null>(HeaderContext);

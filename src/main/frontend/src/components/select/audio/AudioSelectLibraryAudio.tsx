@@ -3,7 +3,7 @@ import classes from "./AudioSelect.module.css";
 import AudioSource from "../../audio/components/AudioSource";
 import selectedIcon from "../../../images/selectedIcon.svg";
 import AudioSelectVolume from "./AudioSelectVolume";
-import {AudioSelectContext} from "./AudioSelectContext";
+import {AudioSelectContext} from "../../../context/AudioSelectContext";
 
 interface AudioSelectLibraryAudioProps {
     title: string,

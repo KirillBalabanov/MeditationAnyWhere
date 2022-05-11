@@ -1,6 +1,6 @@
 import React, {FC, useCallback, useContext} from 'react';
 import classes from "./Timer.module.css";
-import {TimerContext} from "./TimerContext";
+import {TimerContext} from "../../context/TimerContext";
 import {timerLenDefault} from "./TimerService/timerLenDefault";
 
 interface TimerSelectProps {

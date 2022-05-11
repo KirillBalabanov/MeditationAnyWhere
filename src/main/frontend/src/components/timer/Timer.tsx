@@ -1,6 +1,6 @@
 import React, {FC, useContext, useEffect, useMemo, useRef, useState} from 'react';
 import classes from "./Timer.module.css";
-import {TimerContext} from "./TimerContext";
+import {TimerContext} from "../../context/TimerContext";
 import {formatToMinSecStr} from "./TimerService/formatToMinSecStr";
 import {timerLenDefault} from "./TimerService/timerLenDefault";
 import {AuthContext} from "../../context/AuthContext";
@@ -8,7 +8,7 @@ import {CsrfContext} from "../../context/CsrfContext";
 import Popup from "../popup/Popup";
 import {AudioI, ErrorI} from "../../types/types";
 import AudioSource from "../audio/components/AudioSource";
-import {AudioSelectContext} from "../select/audio/AudioSelectContext";
+import {AudioSelectContext} from "../../context/AudioSelectContext";
 
 const Timer:FC = React.memo(() => {
     const timerContext = useContext(TimerContext);
