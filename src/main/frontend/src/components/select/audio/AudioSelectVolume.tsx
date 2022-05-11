@@ -1,5 +1,4 @@
 import React, {FC, useEffect, useState} from 'react';
-import volumeMuted from "../../../images/volumeMuted.svg";
 import volume from "../../../images/volume.svg";
 import classes from "./AudioSelect.module.css";
 
@@ -15,12 +14,14 @@ const AudioSelectVolume: FC<AudioSelectVolumeProps> = React.memo(({audioElement}
             setAudioVolumeInPercents(audioElement.current!.volume * 100);
         }
 
-        audioElement.current!.addEventListener("volumechange", volumeChangeHandler);
+        let ref = audioElement.current!;
+
+        ref.addEventListener("volumechange", volumeChangeHandler);
 
         return () => {
-            audioElement.current!.removeEventListener("volumechange", volumeChangeHandler);
+            ref.removeEventListener("volumechange", volumeChangeHandler);
         };
-    }, []);
+    }, [audioElement]);
 
     return (
         <div className={classes.libraryVolume} onClick={(e) => e.stopPropagation()}>

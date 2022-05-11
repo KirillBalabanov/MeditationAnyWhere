@@ -1,4 +1,4 @@
-import React, {FC, useCallback, useContext, useEffect, useMemo, useRef, useState} from 'react';
+import React, {FC, useContext, useEffect, useMemo, useRef, useState} from 'react';
 import classes from "./Timer.module.css";
 import {TimerContext} from "./TimerContext";
 import {formatToMinSecStr} from "./TimerService/formatToMinSecStr";
@@ -40,12 +40,14 @@ const Timer:FC = React.memo(() => {
                 let interval = setInterval(() => {
 
                     if(audioSelectContext != null && audioSelectContext.isLibraryAudioOnPlay) {
-                        if(audioSelectContext.currentAudioElement!.volume - 0.1 > 0){
+                        if (audioSelectContext.currentAudioElement!.volume - 0.1 > 0) {
                             audioSelectContext.currentAudioElement!.volume -= 0.1;
+                        } else {
+                            counter = 9;
                         }
                     }
 
-                    if (counter == 9) {
+                    if (counter === 9) {
                         if(audioSelectContext != null && audioSelectContext.isLibraryAudioOnPlay) {
                             audioSelectContext?.currentAudioElement?.pause();
                             audioSelectContext.setIsLibraryAudioOnPlay(false);
@@ -72,48 +74,50 @@ const Timer:FC = React.memo(() => {
             }
             timerContext.setSessionEnded(false);
         }
-    }, [timerContext?.sessionEnded]);
+    }, [timerContext, audioSelectContext, toggleAudioData, authContext?.auth, csrfContext?.csrfToken]);
+
 
     useEffect(() => {
+        const stopTimer = ()  => {
+            if(timerContext?.timerInterval == null) return;
+            clearInterval(timerContext.timerInterval);
+            timerContext?.setTimerInterval(null);
+        };
+
+        const startTimer = () => {
+            if(timerContext?.minListened! * 60 === timerContext?.timerValue && toggleAudioElement != null) {
+                toggleAudioElement.current?.play();
+            }
+
+            let interval = setInterval(() => {
+
+                timerContext?.setTimerValue(prev => {
+                    if (prev === 0) { // session end
+                        clearInterval(interval);
+                        timerContext?.setIsPlaying(false);
+                        timerContext?.setTimerLenCurrent(0);
+                        timerContext?.setSessionEnded(true);
+                        return 0;
+                    }
+
+                    return prev - 1;
+                });
+                timerContext?.setTimerLenCurrent(prev => {
+                    if(prev - timerLenDecrement <= 0) return 0;
+                    return prev - timerLenDecrement;
+                });
+            }, 100);
+
+            timerContext?.setTimerInterval(interval);
+        };
+
         if (!timerContext?.isPlaying) {
             stopTimer();
         } else {
             startTimer();
         }
-    }, [timerContext?.isPlaying]);
+    }, [timerContext?.isPlaying]); // eslint-disable-line react-hooks/exhaustive-deps
 
-    const stopTimer = useCallback(()  => {
-        if(timerContext?.timerInterval == null) return;
-        clearInterval(timerContext.timerInterval);
-        timerContext?.setTimerInterval(null);
-    }, [timerContext?.timerInterval]);
-
-    const startTimer = () => {
-        if(timerContext?.minListened! * 60 === timerContext?.timerValue && toggleAudioElement != null) {
-            toggleAudioElement.current?.play();
-        }
-
-        let interval = setInterval(() => {
-
-            timerContext?.setTimerValue(prev => {
-                if (prev == 0) { // session end
-                    clearInterval(interval);
-                    timerContext?.setIsPlaying(false);
-                    timerContext?.setTimerLenCurrent(0);
-                    timerContext?.setSessionEnded(true);
-                    return 0;
-                }
-
-                return prev - 1;
-            });
-            timerContext?.setTimerLenCurrent(prev => {
-                if(prev - timerLenDecrement <= 0) return 0;
-                return prev - timerLenDecrement;
-            });
-        }, 100);
-
-        timerContext?.setTimerInterval(interval);
-    }
 
     return (
         <div>

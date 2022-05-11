@@ -37,15 +37,16 @@ const AudioSelectLibraryAudio: FC<AudioSelectLibraryAudioProps> = React.memo(({u
             audioSelectContext?.setIsLibraryAudioOnPlay(false);
             setIsAudioPlaying(false);
         }
+        let ref = audioElement.current!;
 
-        audioElement.current?.addEventListener("play", playHandler);
-        audioElement.current?.addEventListener("pause", pauseHandler);
+        ref.addEventListener("play", playHandler);
+        ref.addEventListener("pause", pauseHandler);
 
         return () => {
-            audioElement.current?.removeEventListener("play", playHandler);
-            audioElement.current?.removeEventListener("pause", pauseHandler);
+            ref.removeEventListener("play", playHandler);
+            ref.removeEventListener("pause", pauseHandler);
         };
-    }, []);
+    }, [audioSelectContext]);
 
 
     const togglePlay = () => {
