@@ -1,11 +1,11 @@
-import React, {useState} from 'react';
+import React, {FC, useState} from 'react';
 import {Link, useParams} from "react-router-dom";
 import classes from "../styles/VerificationPage.module.css";
 import {useFetching} from "../../hooks/useFetching";
 import Loader from "../../components/loader/Loader";
 import {ErrorI, VerificationI} from "../../types/types";
 
-const VerificationPage = () => {
+const VerificationPage: FC = () => {
     let activationCode: string = useParams()["activationCode"]!;
     const [isLoading, setIsLoading] = useState(true);
 

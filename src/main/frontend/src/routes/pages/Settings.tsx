@@ -1,22 +1,21 @@
-import React from 'react';
+import React, {FC} from 'react';
 import {useNavigate, useParams} from "react-router-dom";
-import Header from "../../components/header/Header";
 import classes from "../styles/Settings.module.css";
 import SettingsProfile from "../../components/settings/profile/SettingsProfile";
 import SettingsAccount from "../../components/settings/account/SettingsAccount";
 import SettingsLibrary from "../../components/settings/library/SettingsLibrary";
 
-const Settings = () => {
+const Settings: FC = () => {
     const setting = useParams()["setting"];
     let navigateFunction = useNavigate();
 
     const navigate = (to: string) => {
         navigateFunction(to);
     };
+    console.log("here");
 
     return (
         <div>
-            <Header></Header>
             <div className="container">
                 <div className={classes.settings__outer}>
                     <div className={classes.settings}>

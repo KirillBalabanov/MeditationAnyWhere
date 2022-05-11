@@ -1,4 +1,4 @@
-import React, {FormEvent, useCallback, useContext, useState} from 'react';
+import React, {FC, FormEvent, useCallback, useContext, useState} from 'react';
 import classes from "../styles/AuthPage.module.css";
 import {Link} from "react-router-dom";
 import {AuthContext} from "../../context/AuthContext";
@@ -14,7 +14,7 @@ import {animateFetchRequest} from "../../components/form/FormService/animateFetc
 import {isValidUsername} from "../../util/UserValidator/isValidUsername";
 import {isValidPassword} from "../../util/UserValidator/isValidPassword";
 
-const LoginPage = () => {
+const LoginPage: FC = () => {
     const csrfContext = useContext(CsrfContext)!;
     let authContext = useContext(AuthContext)!;
 

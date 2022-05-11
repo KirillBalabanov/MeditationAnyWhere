@@ -1,4 +1,4 @@
-import React, {FormEvent, useCallback, useContext, useState} from 'react';
+import React, {FC, FormEvent, useCallback, useContext, useState} from 'react';
 import classes from "../styles/AuthPage.module.css";
 import {Link} from "react-router-dom";
 import {CsrfContext, CsrfContextI} from "../../context/CsrfContext";
@@ -15,7 +15,7 @@ import {isValidUsername} from "../../util/UserValidator/isValidUsername";
 import {isValidPassword} from "../../util/UserValidator/isValidPassword";
 
 
-const RegistrationPage = () => {
+const RegistrationPage: FC = () => {
     const csrfContext = useContext<CsrfContextI | null>(CsrfContext);
     const authContext = useContext<AuthContextI | null>(AuthContext);
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {FC} from 'react';
 import classes from "../styles/MainPage.module.css";
 import Timer from "../../components/timer/Timer";
 import TimerWrapper from "../../wrappers/TimerWrapper";
@@ -8,8 +8,8 @@ import TimerButton from "../../components/timer/TimerButton";
 import AudioSelect from "../../components/select/audio/AudioSelect";
 import AudioSelectWrapper from "../../wrappers/AudioSelectWrapper";
 
-const MainPage = () => {
-    
+const MainPage: FC = () => {
+
     return (
         <div className={classes.main}>
             <TimerWrapper>

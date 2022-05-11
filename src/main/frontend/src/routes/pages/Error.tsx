@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {FC} from 'react';
 import sadSmile from "../../images/sadSmile.svg";
 import {Link} from "react-router-dom";
 
@@ -6,7 +6,7 @@ interface Error404Props {
     errorMsg?: any
 }
 
-const Error = ({errorMsg} : Error404Props) => {
+const Error: FC<Error404Props> = ({errorMsg}) => {
     return (
         <div className="error404">
             <div className="error404__text">
