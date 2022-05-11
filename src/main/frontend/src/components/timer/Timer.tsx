@@ -16,7 +16,7 @@ const Timer:FC = React.memo(() => {
     const csrfContext = useContext(CsrfContext);
     const [showPopup, setShowPopup] = useState(false);
     const [popupContent, setPopupContent] = useState("");
-    console.log(authContext);
+
     const [toggleAudioData, setToggleAudioData] = useState<AudioI | null | ErrorI>(null);
     const toggleAudioElement = useRef<HTMLAudioElement | null>(null);
 
