@@ -4,6 +4,7 @@ import defaultAvatar from "../../../images/defaultAvatar.svg";
 import PopupRectangle from "../../popup/PopupRectangle";
 import {useNavigate} from "react-router-dom";
 import {AuthContext} from "../../../context/AuthContext";
+import {AbsolutePositionX, AbsolutePositionY} from "../../../types/componentTypes";
 
 interface ProfileAvatarProps {
     avatarUrl: string,
@@ -15,13 +16,13 @@ const ProfileAvatar: FC<ProfileAvatarProps> = React.memo(({avatarUrl, username})
     const [popupShown, setPopupShown] = useState(false);
     const authContext = useContext(AuthContext);
 
-    let isAuthUserPage: boolean = username == authContext?.username;
+    let isAuthUserPage: boolean = username === authContext?.username;
 
     return (
         <div className={classes.profile__infoAvatarOuter}>
             <img src={avatarUrl==="" ? defaultAvatar : avatarUrl} alt="avatar"
                  className={classes.profile__infoAvatar} onMouseOver={() => {
-                    if(!isAuthUserPage) return; // avatar of other user
+                    if(!isAuthUserPage) return;
                     setPopupShown(true)
                  }}
                  onMouseLeave={() => setPopupShown(false)}
@@ -31,7 +32,7 @@ const ProfileAvatar: FC<ProfileAvatarProps> = React.memo(({avatarUrl, username})
                  }}
                  style={{cursor: isAuthUserPage ? "pointer" : "auto"}}
             />
-            <PopupRectangle popupShown={popupShown} popupText={"change your avatar"} top={300} left={85}></PopupRectangle>
+            <PopupRectangle popupShown={popupShown} popupText={"change your avatar"} positionY={AbsolutePositionY.BOTTOM} positionX={AbsolutePositionX.MIDDLE}></PopupRectangle>
         </div>
     );
 });

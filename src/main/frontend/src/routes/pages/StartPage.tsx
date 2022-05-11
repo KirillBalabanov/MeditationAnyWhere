@@ -1,24 +1,23 @@
-import React, {FC, useCallback, useContext, useEffect, useState} from 'react';
+import React, {FC, useContext, useEffect, useState} from 'react';
 import {Link} from "react-router-dom";
 
 import classes from "../styles/StartPage.module.css";
 import {HeaderContext, HeaderContextI} from "../../context/HeaderContext";
 
+const speed = 0.003;
+
 const StartPage: FC = () => {
     const headerContext = useContext<HeaderContextI | null>(HeaderContext);
-    const speed = 0.003;
-    const windowSizeX = window.innerWidth;
-    const windowSizeY = window.innerHeight;
-    const startPositionX = windowSizeX / 2;
-    const startPositionY = windowSizeY / 2;
 
     const [x, setX] = useState(0);
     const [y, setY] = useState(0);
 
-    const mouseMoveHandler = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const mouseMoveHandler = (e: React.MouseEvent<HTMLDivElement>) => {
+        const startPositionX = window.innerWidth / 2;
+        const startPositionY = window.innerHeight / 2;
         setX((e.pageX - startPositionX) * speed);
         setY((e.pageY - startPositionY) * speed);
-    }, []);
+    };
 
     useEffect(() => {
         headerContext?.setShowHeader(false);
@@ -26,7 +25,7 @@ const StartPage: FC = () => {
         return () => {
             headerContext?.setShowHeader(true);
         };
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
         <div className={classes.body} onMouseMove={mouseMoveHandler}>

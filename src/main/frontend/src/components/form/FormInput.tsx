@@ -2,7 +2,6 @@ import React, {FC, HTMLInputTypeAttribute} from 'react';
 import classes from "./Form.module.css";
 
 interface FormInputProps {
-    setErrorMsg: (errMsg: string) => void,
     placeholder: string,
     type: HTMLInputTypeAttribute,
     name: string,
@@ -11,7 +10,6 @@ interface FormInputProps {
 
 const FormInput: FC<FormInputProps> = React.memo((
     {
-        setErrorMsg,
         placeholder,
         type,
         name,

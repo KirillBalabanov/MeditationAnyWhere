@@ -8,6 +8,7 @@ import Loader from "../../loader/Loader";
 import {HeaderContext, HeaderContextI} from "../../../context/HeaderContext";
 import PopupRectangle from "../../popup/PopupRectangle";
 import Popup from "../../popup/Popup";
+import {AbsolutePositionX, AbsolutePositionY} from "../../../types/componentTypes";
 
 const SettingsProfile = () => {
     const csrfContext = useContext(CsrfContext)!;
@@ -110,7 +111,7 @@ const SettingsProfile = () => {
                                     <img className={classes.avatar}
                                          src={avatarUrl==="" ? defaultAvatar : avatarUrl}
                                          alt="avatar"/>
-                                    <PopupRectangle popupShown={rectangleShown} popupText={"change avatar"} left={40} top={250}></PopupRectangle>
+                                    <PopupRectangle popupShown={rectangleShown} popupText={"change avatar"} positionX={AbsolutePositionX.MIDDLE} positionY={AbsolutePositionY.BOTTOM}></PopupRectangle>
                                     <input style={{display: "none"}} type={"file"} name={"image"}
                                            key={inputKey} onChange={imagePreview}/>
                                 </label>

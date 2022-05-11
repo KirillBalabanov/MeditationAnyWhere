@@ -1,16 +1,18 @@
-import React, {FormEvent, useCallback, useContext, useEffect, useState} from 'react';
+import React, {FormEvent, useCallback, useContext, useState} from 'react';
 import classes from "../styles/AuthPage.module.css";
-import {Link, useNavigate} from "react-router-dom";
+import {Link} from "react-router-dom";
 import {AuthContext} from "../../context/AuthContext";
 import {CsrfContext} from "../../context/CsrfContext";
 import {useAuthRedirect} from "../../hooks/useAuthRedirect";
-import UserValidator from "../../util/UserValidator";
 import Form, {FormStyles} from "../../components/form/Form";
 import FormTitle from "../../components/form/FormTitle";
 import FormInput from "../../components/form/FormInput";
-import FormService, {ValidFormValidator} from "../../components/form/FormService";
 import {ErrorI, LoginI} from "../../types/types";
 import {HeaderContext} from "../../context/HeaderContext";
+import {validFormInput, ValidFormValidator} from "../../components/form/FormService/validFormInput";
+import {animateFetchRequest} from "../../components/form/FormService/animateFetchRequest";
+import {isValidUsername} from "../../util/UserValidator/isValidUsername";
+import {isValidPassword} from "../../util/UserValidator/isValidPassword";
 
 const LoginPage = () => {
     const csrfContext = useContext(CsrfContext)!;
@@ -32,8 +34,8 @@ const LoginPage = () => {
         let password = (children[2] as HTMLInputElement).value;
         let errorText = children[3] as HTMLParagraphElement;
         try {
-            UserValidator.isValidUsername(username);
-            UserValidator.isValidPassword(password);
+            isValidUsername(username);
+            isValidPassword(password);
             errorText.textContent = "";
         } catch (e) {
             if (e instanceof Error) {
@@ -67,9 +69,9 @@ const LoginPage = () => {
 
             }
             // animation
-            FormService.animateFetchRequest(setIsLoading, setFormClasses, failed)
+            animateFetchRequest(setIsLoading, setFormClasses, failed)
         });
-    }, []);
+    }, [authContext, csrfContext, headerContext]);
 
     return (
         <div>
@@ -78,11 +80,11 @@ const LoginPage = () => {
                       errorMsg={errorMsg} buttonTitle={"Log in"}>
 
                     <FormTitle title={"Create account"}></FormTitle>
-                    <FormInput setErrorMsg={setErrorMsg} placeholder={"Input username"} type={"text"} name={"username"}
-                               onInput={(e) => FormService.validFormInput(e, ValidFormValidator.username, setErrorMsg)}
+                    <FormInput placeholder={"Input username"} type={"text"} name={"username"}
+                               onInput={(e) => validFormInput(e, ValidFormValidator.username, setErrorMsg)}
                     />
-                    <FormInput setErrorMsg={setErrorMsg} placeholder={"Input password"} type={"password"} name={"password"}
-                               onInput={(e) => FormService.validFormInput(e, ValidFormValidator.password, setErrorMsg)}
+                    <FormInput placeholder={"Input password"} type={"password"} name={"password"}
+                               onInput={(e) => validFormInput(e, ValidFormValidator.password, setErrorMsg)}
                     />
                 </Form>
                 <Link to={"/registration"} className={classes.auth__link}>register</Link>

@@ -7,9 +7,12 @@ import {useAuthRedirect} from "../../hooks/useAuthRedirect";
 import Form, {FormStyles} from "../../components/form/Form";
 import FormTitle from "../../components/form/FormTitle";
 import FormInput from "../../components/form/FormInput";
-import UserValidator from "../../util/UserValidator";
 import {ErrorI, UserI} from "../../types/types";
-import FormService, {ValidFormValidator} from "../../components/form/FormService";
+import {validFormInput, ValidFormValidator} from "../../components/form/FormService/validFormInput";
+import {animateFetchRequest} from "../../components/form/FormService/animateFetchRequest";
+import {isValidEmail} from "../../util/UserValidator/isValidEmail";
+import {isValidUsername} from "../../util/UserValidator/isValidUsername";
+import {isValidPassword} from "../../util/UserValidator/isValidPassword";
 
 
 const RegistrationPage = () => {
@@ -32,9 +35,9 @@ const RegistrationPage = () => {
         let email = (children[2] as HTMLInputElement).value;
         let password = (children[3] as HTMLInputElement).value;
         try {
-            UserValidator.isValidUsername(username);
-            UserValidator.isValidEmail(email)
-            UserValidator.isValidPassword(password);
+            isValidUsername(username);
+            isValidEmail(email)
+            isValidPassword(password);
             setErrorMsg("");
         } catch (e) {
             if(e instanceof Error){
@@ -68,9 +71,9 @@ const RegistrationPage = () => {
                 (children[2] as HTMLInputElement).value = "";
                 (children[3] as HTMLInputElement).value = "";
             }
-            FormService.animateFetchRequest(setIsLoading, setFormClasses, failed);
+            animateFetchRequest(setIsLoading, setFormClasses, failed);
         });
-    }, []);
+    }, [csrfContext?.csrfToken]);
 
 
     return (
@@ -80,14 +83,14 @@ const RegistrationPage = () => {
                       errorMsg={errorMsg} buttonTitle={"Register"}>
 
                     <FormTitle title={"Create account"}></FormTitle>
-                    <FormInput setErrorMsg={setErrorMsg} placeholder={"Input username"} type={"text"} name={"username"}
-                               onInput={(e) => FormService.validFormInput(e, ValidFormValidator.username, setErrorMsg)}
+                    <FormInput placeholder={"Input username"} type={"text"} name={"username"}
+                               onInput={(e) => validFormInput(e, ValidFormValidator.username, setErrorMsg)}
                     />
-                    <FormInput setErrorMsg={setErrorMsg} placeholder={"Input email"} type={"email"} name={"email"}
-                               onInput={(e) => FormService.validFormInput(e, ValidFormValidator.email, setErrorMsg)}
+                    <FormInput placeholder={"Input email"} type={"email"} name={"email"}
+                               onInput={(e) => validFormInput(e, ValidFormValidator.email, setErrorMsg)}
                     />
-                    <FormInput setErrorMsg={setErrorMsg} placeholder={"Input password"} type={"password"} name={"password"}
-                               onInput={(e) => FormService.validFormInput(e, ValidFormValidator.password, setErrorMsg)}
+                    <FormInput placeholder={"Input password"} type={"password"} name={"password"}
+                               onInput={(e) => validFormInput(e, ValidFormValidator.password, setErrorMsg)}
                     />
                 </Form>
                 <Link to={"/login"} className={classes.auth__link}>log in</Link>
