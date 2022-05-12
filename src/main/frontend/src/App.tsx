@@ -14,7 +14,7 @@ const App: FC = () => {
         <AuthContextProvider>
             <CsrfContextProvider>
                 <HeaderContextProvider>
-                <BrowserRouter>
+                    <BrowserRouter>
                         <Header/>
                         <Routes>
                             {appRoutes.map((route) => {
@@ -22,7 +22,6 @@ const App: FC = () => {
                                     <Route path={route.path} element={route.component} key={route.path}/>
                                 )
                             })}
-
                         </Routes>
                     </BrowserRouter>
                 </HeaderContextProvider>

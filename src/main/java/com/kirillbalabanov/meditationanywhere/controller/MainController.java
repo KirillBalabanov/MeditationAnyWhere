@@ -1,8 +1,6 @@
 package com.kirillbalabanov.meditationanywhere.controller;
 
 import com.kirillbalabanov.meditationanywhere.config.UserDet;
-import com.kirillbalabanov.meditationanywhere.exception.audio.AudioNotFoundException;
-import com.kirillbalabanov.meditationanywhere.exception.file.FolderNotExistsException;
 import com.kirillbalabanov.meditationanywhere.model.AudioModel;
 import com.kirillbalabanov.meditationanywhere.model.ErrorModel;
 import com.kirillbalabanov.meditationanywhere.service.FileService;
@@ -17,7 +15,7 @@ import java.util.HashMap;
 @RestController
 @RequestMapping(value = "/server")
 public class MainController {
-    private FileService fileService;
+    private final FileService fileService;
 
     public MainController(FileService fileService) {
         this.fileService = fileService;

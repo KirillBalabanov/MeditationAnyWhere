@@ -9,11 +9,14 @@ import Loader from "../../loader/Loader";
 import AudioValidator from "../../../util/AudioValidator";
 import Popup from "../../popup/Popup";
 import {useCsrfContext} from "../../../context/CsrfContext";
+import {AudioI} from "../../../types/types";
 
 
 const SettingsLibrary = () => {
+
     let csrfContext = useCsrfContext()!;
-    const [audioFetched, setAudioFetched] = useState([{audioTitle: "", audioUrl: ""}]);
+
+    const [audioFetched, setAudioFetched] = useState<AudioI[]>([{audioTitle: "", audioUrl: ""}]);
     const [isLoading, setIsLoading] = useState(true);
 
     const [inputErrorMsg, setInputErrorMsg] = useState("");
@@ -31,9 +34,10 @@ const SettingsLibrary = () => {
     const [errorUpdateMsg, setErrorUpdateMsg] = useState("");
 
     useEffect(() => { // fetch user's audio from server
-        fetch("/user/audio/get").then((json) => json.json()).then((data) => setAudioFetched(data)).catch(() => setAudioFetched([])).then(() => setIsLoading(false));
+        fetch("/user/audio/get").then((json) => json.json()).then((data: AudioI[]) => {
+            setAudioFetched(data)
+        }).catch(() => setAudioFetched([])).then(() => setIsLoading(false));
     }, []);
-
 
     const audioPreview = (e: ChangeEvent) => {
         setAudioFile(null);

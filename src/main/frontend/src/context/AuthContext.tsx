@@ -16,7 +16,6 @@ export const useAuthContext = () => {
 };
 
 export const AuthContextProvider: FC<ContextProviderInterface> = ({children}) => {
-
     const [isLoading, setIsLoading] = useState(true);
 
     const [auth, setAuth] = useState(false);
@@ -29,7 +28,9 @@ export const AuthContextProvider: FC<ContextProviderInterface> = ({children}) =>
     }
 
     useEffect(() => {
-        fetch("/server/principal").then((response) => response.json()).then((obj) => {
+        fetch("/server/principal").then((response) => {
+            return response.json()
+        }).then((obj) => {
             AuthContextImp.setAuth(obj["authenticated"]);
             AuthContextImp.setUsername(obj["username"]);
             setIsLoading(false);
