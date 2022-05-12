@@ -1,5 +1,5 @@
 import React from "react";
 
-export interface WrapperInterface {
+export interface ContextProviderInterface {
     children: React.ReactNode
 }

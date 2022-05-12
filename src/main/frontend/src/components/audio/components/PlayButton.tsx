@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {FC} from 'react';
 import classes from "./AudioComponents.module.css";
 import startBtn from "../../../images/startButton.svg";
 
@@ -8,11 +8,11 @@ export interface ButtonProps {
     audioElement: React.RefObject<HTMLAudioElement>
 }
 
-const PlayButton = ({isPlaying, setIsPlaying, audioElement}: ButtonProps) => {
+const PlayButton: FC<ButtonProps> = React.memo(({isPlaying, setIsPlaying, audioElement}) => {
     return (
         <button type={"button"}
                 className={isPlaying ? classes.playBtn + " " + classes.playHide : classes.playBtn + " " + classes.playShown}
-                onClick={(e) => {
+                onClick={() => {
                     audioElement.current!.play();
                     setIsPlaying(true);
                 }}
@@ -20,6 +20,6 @@ const PlayButton = ({isPlaying, setIsPlaying, audioElement}: ButtonProps) => {
             <img src={startBtn} alt="start"/>
         </button>
     );
-};
+});
 
 export default PlayButton;

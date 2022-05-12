@@ -1,22 +1,22 @@
-import React, {FC, useContext, useEffect, useRef, useState} from 'react';
+import React, {FC, useEffect, useRef, useState} from 'react';
 import classes from "./AudioSelect.module.css";
 import AudioSource from "../../audio/components/AudioSource";
 import selectedIcon from "../../../images/selectedIcon.svg";
 import AudioSelectVolume from "./AudioSelectVolume";
-import {AudioSelectContext} from "../../../context/AudioSelectContext";
+import {useAudioSelectContext} from "../../../context/AudioSelectContext";
 
 interface AudioSelectLibraryAudioProps {
     title: string,
     url: string,
 }
 
-const AudioSelectLibraryAudio: FC<AudioSelectLibraryAudioProps> = React.memo(({url, title}) => {
+const AudioSelectLibraryAudio: FC<AudioSelectLibraryAudioProps> = ({url, title}) => {
     const [audioNotFoundError, setAudioNotFoundError] = useState<string | null>(null);
 
     const [isAudioPlaying, setIsAudioPlaying] = useState(false);
     const audioElement = useRef<HTMLAudioElement | null>(null);
 
-    const audioSelectContext = useContext(AudioSelectContext);
+    const audioSelectContext = useAudioSelectContext();
 
     useEffect(() => {
         fetch(url).then((resp) => {
@@ -64,18 +64,14 @@ const AudioSelectLibraryAudio: FC<AudioSelectLibraryAudioProps> = React.memo(({u
 
     const canPause = () => {
         if(audioElement == null) return;
-        if (isAudioPlaying) {
-            return true;
-        }
-        return false;
+        return isAudioPlaying;
+
     };
 
     const canPlay = () => {
         if(audioElement == null) return;
-        if(!isAudioPlaying){
-            return true;
-        }
-        return false;
+        return !isAudioPlaying;
+
     };
 
     return (
@@ -103,6 +99,6 @@ const AudioSelectLibraryAudio: FC<AudioSelectLibraryAudioProps> = React.memo(({u
             </div>
         </div>
     );
-});
+};
 
 export default AudioSelectLibraryAudio;

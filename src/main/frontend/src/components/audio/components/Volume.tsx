@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {FC, useState} from 'react';
 import classes from "./AudioComponents.module.css";
 import volume from "../../../images/volume.svg";
 import volumeMuted from "../../../images/volumeMuted.svg";
@@ -11,7 +11,7 @@ interface VolumeProps {
     audioElement: React.RefObject<HTMLAudioElement>,
 }
 
-const Volume = ({audioShown, setAudioShown, audioVolume, setAudioVolume, audioElement}: VolumeProps) => {
+const Volume: FC<VolumeProps> = React.memo(({audioShown, setAudioShown, audioVolume, setAudioVolume, audioElement}) => {
     const [muted, setMuted] = useState(false);
     return (
         <div className={audioShown ? classes.volumeOuter + " " + classes.volumeOuterFull : classes.volumeOuter}
@@ -44,6 +44,6 @@ const Volume = ({audioShown, setAudioShown, audioVolume, setAudioVolume, audioEl
             />
         </div>
     );
-};
+});
 
 export default Volume;

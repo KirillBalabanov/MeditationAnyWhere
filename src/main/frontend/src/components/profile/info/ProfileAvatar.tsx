@@ -1,9 +1,9 @@
-import React, {FC, useContext, useState} from 'react';
+import React, {FC, useState} from 'react';
 import classes from "../Profile.module.css";
 import defaultAvatar from "../../../images/defaultAvatar.svg";
 import PopupRectangle from "../../popup/PopupRectangle";
 import {useNavigate} from "react-router-dom";
-import {AuthContext} from "../../../context/AuthContext";
+import {useAuthContext} from "../../../context/AuthContext";
 import {AbsolutePositionX, AbsolutePositionY} from "../../../types/componentTypes";
 
 interface ProfileAvatarProps {
@@ -11,10 +11,10 @@ interface ProfileAvatarProps {
     username: string
 }
 
-const ProfileAvatar: FC<ProfileAvatarProps> = React.memo(({avatarUrl, username}) => {
+const ProfileAvatar: FC<ProfileAvatarProps> = ({avatarUrl, username}) => {
     let navigateFunction = useNavigate();
     const [popupShown, setPopupShown] = useState(false);
-    const authContext = useContext(AuthContext);
+    const authContext = useAuthContext()!;
 
     let isAuthUserPage: boolean = username === authContext?.username;
 
@@ -35,6 +35,6 @@ const ProfileAvatar: FC<ProfileAvatarProps> = React.memo(({avatarUrl, username})
             <PopupRectangle popupShown={popupShown} popupText={"change your avatar"} positionY={AbsolutePositionY.BOTTOM} positionX={AbsolutePositionX.MIDDLE}></PopupRectangle>
         </div>
     );
-});
+};
 
 export default ProfileAvatar;

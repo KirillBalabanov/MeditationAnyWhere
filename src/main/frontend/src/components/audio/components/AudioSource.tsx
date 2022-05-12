@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {FC} from 'react';
 import classes from "./AudioComponents.module.css";
 
 interface AudioSourceProps {
@@ -7,7 +7,7 @@ interface AudioSourceProps {
     looped?: boolean
 }
 
-const AudioSource = ({url, audioElement, looped}: AudioSourceProps) => {
+const AudioSource: FC<AudioSourceProps> = React.memo(({url, audioElement, looped}) => {
 
     return (
         <div className={classes.audioSrc}>
@@ -16,6 +16,6 @@ const AudioSource = ({url, audioElement, looped}: AudioSourceProps) => {
             </audio>
         </div>
     );
-};
+});
 
 export default AudioSource;

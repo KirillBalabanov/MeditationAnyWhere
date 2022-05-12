@@ -1,7 +1,7 @@
-import React from 'react';
+import React, {FC} from 'react';
 import classes from "./Loader.module.css";
 
-const Loader = () => {
+const Loader: FC = React.memo(() => {
     return (
         <div className={classes.loaderOuter}>
             <div className={classes.loader}>
@@ -20,6 +20,6 @@ const Loader = () => {
             </div>
         </div>
     );
-};
+});
 
 export default Loader;

@@ -1,19 +1,19 @@
 import React, {FC} from 'react';
 import classes from "../styles/MainPage.module.css";
 import Timer from "../../components/timer/Timer";
-import TimerWrapper from "../../wrappers/TimerWrapper";
 import TimerSelect from "../../components/timer/TimerSelect";
 import TimerSelectItem from "../../components/timer/TimerSelectItem";
 import TimerButton from "../../components/timer/TimerButton";
 import AudioSelect from "../../components/select/audio/AudioSelect";
-import AudioSelectWrapper from "../../wrappers/AudioSelectWrapper";
+import {TimerContextProvider} from "../../context/TimerContext";
+import {AudioSelectContextProvider} from "../../context/AudioSelectContext";
 
 const MainPage: FC = () => {
 
     return (
         <div className={classes.main}>
-            <TimerWrapper>
-                <AudioSelectWrapper>
+            <TimerContextProvider>
+                <AudioSelectContextProvider>
                     <Timer/>
                     <TimerSelect>
                         <TimerSelectItem timerValue={1}></TimerSelectItem>
@@ -30,10 +30,9 @@ const MainPage: FC = () => {
                         <TimerSelectItem timerValue={60}></TimerSelectItem>
                     </TimerSelect>
                     <AudioSelect></AudioSelect>
-                </AudioSelectWrapper>
+                </AudioSelectContextProvider>
                 <TimerButton></TimerButton>
-            </TimerWrapper>
-
+            </TimerContextProvider>
         </div>
     );
 };

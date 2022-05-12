@@ -1,13 +1,13 @@
-import React, {FC, useContext, useEffect, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import {Link} from "react-router-dom";
 
 import classes from "../styles/StartPage.module.css";
-import {HeaderContext, HeaderContextI} from "../../context/HeaderContext";
+import {useHeaderContext} from "../../context/HeaderContext";
 
 const speed = 0.003;
 
 const StartPage: FC = () => {
-    const headerContext = useContext<HeaderContextI | null>(HeaderContext);
+    const headerContext = useHeaderContext();
 
     const [x, setX] = useState(0);
     const [y, setY] = useState(0);

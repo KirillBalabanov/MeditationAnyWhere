@@ -1,21 +1,20 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Link, useNavigate} from "react-router-dom";
 import logo from "../../images/logo.svg";
-import {AuthContext} from "../../context/AuthContext";
+import {useAuthContext} from "../../context/AuthContext";
 
 import defaultAvatar from "../../images/defaultAvatar.svg";
 import polygon from "../../images/polygon.svg";
 import polygonOnRectangle from "../../images/polygonOnRectangle.svg"
-import {CsrfContext} from "../../context/CsrfContext";
+import {useCsrfContext} from "../../context/CsrfContext";
 import {AvatarI, CsrfI, ErrorI} from "../../types/types";
-import {HeaderContext, HeaderContextI} from "../../context/HeaderContext";
+import {useHeaderContext} from "../../context/HeaderContext";
 import classes from "./Header.module.css";
 
 const Header = () => {
-    const headerContext = useContext<HeaderContextI | null>(HeaderContext)!;
-
-    const authContext = useContext(AuthContext)!;
-    const csrfContext = useContext(CsrfContext);
+    const headerContext = useHeaderContext()!;
+    const authContext = useAuthContext()!;
+    const csrfContext = useCsrfContext()!;
     const [showMenu, setShowMenu] = useState(false);
 
     let redirect = useNavigate();
@@ -27,7 +26,7 @@ const Header = () => {
     const [avatarUrObj, setAvatarUrlObj] = useState<AvatarI | null | ErrorI>(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    // fetch on reload and on page load
+
     useEffect(() => {
         if (authContext.auth) {
             setShowMenu(false);

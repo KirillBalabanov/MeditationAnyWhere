@@ -1,8 +1,29 @@
-import React, {FC, useState} from 'react';
-import {TimerContext, TimerContextI} from "../context/TimerContext";
-import {WrapperInterface} from "./WrapperInterface";
+import React, {createContext, FC, SetStateAction, useContext, useState} from "react";
+import {ContextProviderInterface} from "./ContextProviderInterface";
 
-const TimerWrapper: FC<WrapperInterface> = React.memo(({children}) => {
+export interface TimerContextI {
+    isPlaying: boolean,
+    setIsPlaying: React.Dispatch<SetStateAction<boolean>>
+    timerValue: number,
+    setTimerValue: React.Dispatch<SetStateAction<number>>
+    timerLenCurrent: number,
+    setTimerLenCurrent: React.Dispatch<SetStateAction<number>>
+    minListened: number,
+    setMinListened: React.Dispatch<SetStateAction<number>>
+    timerInterval: NodeJS.Timer | null,
+    setTimerInterval: React.Dispatch<SetStateAction<NodeJS.Timer | null>>
+    audioPlaying: React.RefObject<HTMLAudioElement> | null,
+    setAudioPlaying: React.Dispatch<SetStateAction<React.RefObject<HTMLAudioElement> | null>>,
+    sessionEnded: boolean,
+    setSessionEnded: React.Dispatch<SetStateAction<boolean>>,
+}
+
+const TimerContext = createContext<TimerContextI | null>(null);
+
+export const useTimerContext = () => useContext(TimerContext);
+
+export const TimerContextProvider: FC<ContextProviderInterface> = ({children}) => {
+
     const [isPlaying, setIsPlaying] = useState(false);
     const [timerValue, setTimerValue] = useState(0);
     const [timerLenCurrent, setTimerLenCurrent] = useState(0);
@@ -31,7 +52,5 @@ const TimerWrapper: FC<WrapperInterface> = React.memo(({children}) => {
         <TimerContext.Provider value={TimerContextImp}>
             {children}
         </TimerContext.Provider>
-    );
-});
-
-export default TimerWrapper;
+    )
+};

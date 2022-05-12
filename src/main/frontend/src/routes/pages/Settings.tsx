@@ -1,18 +1,24 @@
-import React, {FC} from 'react';
+import React, {FC, useEffect} from 'react';
 import {useNavigate, useParams} from "react-router-dom";
 import classes from "../styles/Settings.module.css";
 import SettingsProfile from "../../components/settings/profile/SettingsProfile";
 import SettingsAccount from "../../components/settings/account/SettingsAccount";
 import SettingsLibrary from "../../components/settings/library/SettingsLibrary";
+import {useAuthContext} from "../../context/AuthContext";
 
 const Settings: FC = () => {
     const setting = useParams()["setting"];
     let navigateFunction = useNavigate();
 
+    let authContext = useAuthContext();
+
+    useEffect(() => {
+        if(!authContext?.auth) navigate("/login");
+    }, []);
+
     const navigate = (to: string) => {
         navigateFunction(to);
     };
-    console.log("here");
 
     return (
         <div>

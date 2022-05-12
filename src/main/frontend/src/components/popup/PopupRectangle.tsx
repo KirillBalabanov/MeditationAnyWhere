@@ -10,7 +10,7 @@ interface PopupRectangleI {
     positionY: AbsolutePositionY,
 }
 
-const PopupRectangle = ({popupShown, popupText, positionX, positionY}: PopupRectangleI) => {
+const PopupRectangle = React.memo(({popupShown, popupText, positionX, positionY}: PopupRectangleI) => {
 
     const [top, setTop] = useState(0);
     const [left, setLeft] = useState(0);
@@ -62,6 +62,6 @@ const PopupRectangle = ({popupShown, popupText, positionX, positionY}: PopupRect
             </div>
         </div>
     );
-};
+});
 
 export default PopupRectangle;

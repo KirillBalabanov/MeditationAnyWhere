@@ -1,18 +1,18 @@
-import React, {ChangeEvent, FormEvent, useContext, useEffect, useState} from 'react';
+import React, {ChangeEvent, FC, FormEvent, useEffect, useState} from 'react';
 import defaultAvatar from "../../../images/defaultAvatar.svg";
 import classes from "./SettingsProfile.module.css";
 import Section from "../section/Section";
-import {CsrfContext} from "../../../context/CsrfContext";
+import {useCsrfContext} from "../../../context/CsrfContext";
 import {useFetching} from "../../../hooks/useFetching";
 import Loader from "../../loader/Loader";
-import {HeaderContext, HeaderContextI} from "../../../context/HeaderContext";
+import {useHeaderContext} from "../../../context/HeaderContext";
 import PopupRectangle from "../../popup/PopupRectangle";
 import Popup from "../../popup/Popup";
 import {AbsolutePositionX, AbsolutePositionY} from "../../../types/componentTypes";
 
-const SettingsProfile = () => {
-    const csrfContext = useContext(CsrfContext)!;
-    const headerContext = useContext<HeaderContextI | null>(HeaderContext);
+const SettingsProfile: FC = () => {
+    const csrfContext = useCsrfContext()!;
+    const headerContext = useHeaderContext()!;
 
     const [bio, setBio] = useState("");
     const [avatarUrl, setAvatarUrl] = useState("");

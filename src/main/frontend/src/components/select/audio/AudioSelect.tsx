@@ -1,4 +1,4 @@
-import React, {FC, useCallback, useContext, useState} from 'react';
+import React, {FC, useCallback, useState} from 'react';
 import selectAudioIcon from "../../../images/selectAudioIcon.svg";
 import classes from "./AudioSelect.module.css";
 import Slider from "../../slider/Slider";
@@ -6,14 +6,14 @@ import AudioSelectLibrary from "./AudioSelectLibrary";
 import {useFetching, useFetchingOnCondition} from "../../../hooks/useFetching";
 import {AudioI, ErrorI} from "../../../types/types";
 import AudioSelectLibraryAudio from "./AudioSelectLibraryAudio";
-import {AuthContext} from "../../../context/AuthContext";
+import {useAuthContext} from "../../../context/AuthContext";
 import {Link} from "react-router-dom";
-import AudioSelectVolume from "./AudioSelectVolume";
+import Loader from "../../loader/Loader";
 
 const AudioSelect: FC = () => {
     const [selectShown, setSelectShown] = useState(false);
 
-    const authContext = useContext(AuthContext);
+    const authContext = useAuthContext();
 
     const [serverAudioIsLoading, setServerAudioIsLoading] = useState(true);
     const [serverAudioData, setServerAudioData] = useState<AudioI[] | null | ErrorI>(null);
@@ -51,9 +51,15 @@ const AudioSelect: FC = () => {
                                         )
                                     })
                                     :
-                                    <div className={classes.libraryError}>
-                                        {userAudioData?.errorMsg}
-                                    </div>
+                                    (
+                                        userAudioIsLoading
+                                            ?
+                                        <Loader></Loader>
+                                            :
+                                            <div className={classes.libraryError}>
+                                                {userAudioData?.errorMsg}
+                                            </div>
+                                    )
                             )
                             :
                             <div className={classes.libraryLogin}>
@@ -74,9 +80,15 @@ const AudioSelect: FC = () => {
                                 )
                             })
                             :
-                            <div className={classes.libraryError}>
-                                {serverAudioData?.errorMsg}
-                            </div>
+                            (
+                                serverAudioIsLoading
+                                    ?
+                                    <Loader/>
+                                    :
+                                    <div className={classes.libraryError}>
+                                        {serverAudioData?.errorMsg}
+                                    </div>
+                            )
                     }
                 </AudioSelectLibrary>
             </Slider>

@@ -1,26 +1,28 @@
-import React, {FC, useContext, useEffect, useMemo, useRef, useState} from 'react';
+import React, {FC, useEffect, useMemo, useRef, useState} from 'react';
 import classes from "./Timer.module.css";
-import {TimerContext} from "../../context/TimerContext";
+import {useTimerContext} from "../../context/TimerContext";
 import {formatToMinSecStr} from "./TimerService/formatToMinSecStr";
 import {timerLenDefault} from "./TimerService/timerLenDefault";
-import {AuthContext} from "../../context/AuthContext";
-import {CsrfContext} from "../../context/CsrfContext";
+import {useAuthContext} from "../../context/AuthContext";
+import {useCsrfContext} from "../../context/CsrfContext";
 import Popup from "../popup/Popup";
 import {AudioI, ErrorI} from "../../types/types";
 import AudioSource from "../audio/components/AudioSource";
-import {AudioSelectContext} from "../../context/AudioSelectContext";
+import {useAudioSelectContext} from "../../context/AudioSelectContext";
 
-const Timer:FC = React.memo(() => {
-    const timerContext = useContext(TimerContext);
-    const authContext = useContext(AuthContext);
-    const csrfContext = useContext(CsrfContext);
+const Timer:FC = () => {
+    const timerContext = useTimerContext();
+    const authContext = useAuthContext();
+    const csrfContext = useCsrfContext();
+    const audioSelectContext = useAudioSelectContext();
+
     const [showPopup, setShowPopup] = useState(false);
     const [popupContent, setPopupContent] = useState("");
 
     const [toggleAudioData, setToggleAudioData] = useState<AudioI | null | ErrorI>(null);
     const toggleAudioElement = useRef<HTMLAudioElement | null>(null);
 
-    const audioSelectContext = useContext(AudioSelectContext);
+
 
     let timerLenDecrement = useMemo(() => {
         return timerLenDefault / (timerContext?.minListened! * 60);
@@ -143,6 +145,6 @@ const Timer:FC = React.memo(() => {
             <Popup popupInfo={popupContent} shown={showPopup} setShown={setShowPopup} popupConfirm={"Ok"}></Popup>
         </div>
     );
-});
+};
 
 export default Timer;

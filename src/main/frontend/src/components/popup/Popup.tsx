@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {FC, useEffect} from 'react';
 import classes from "./Popup.module.css";
 
 interface PopupProps {
@@ -8,15 +8,15 @@ interface PopupProps {
     setShown(status: boolean): void
 }
 
-const Popup = (props: PopupProps) => {
+const Popup: FC<PopupProps> = React.memo(({popupConfirm, popupInfo, shown, setShown}) => {
     const popupClasses = [classes.popup];
-    if (props.shown) {
+    if (shown) {
         popupClasses.push(classes.active);
     }
 
     useEffect(() => {
         const keyListener = (e: KeyboardEvent) => {
-            if(e.code == "Escape") props.setShown(false);
+            if(e.code == "Escape") setShown(false);
         }
         window.addEventListener("keyup", keyListener);
         return () => {
@@ -25,17 +25,17 @@ const Popup = (props: PopupProps) => {
     }, []);
 
     return (
-        <div className={popupClasses.join(" ")} onClick={() => props.setShown(false)}>
+        <div className={popupClasses.join(" ")} onClick={() => setShown(false)}>
             <div className={classes.popup__box} onClick={(e) => e.stopPropagation()}>
                 <div className={classes.popup__info}>
-                    {props.popupInfo}
+                    {popupInfo}
                 </div>
-                <div className={classes.popup__confirm} onClick={() => props.setShown(false)}>
-                    {props.popupConfirm}
+                <div className={classes.popup__confirm} onClick={() => setShown(false)}>
+                    {popupConfirm}
                 </div>
             </div>
         </div>
     );
-};
+});
 
 export default Popup;

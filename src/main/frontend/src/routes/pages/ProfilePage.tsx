@@ -1,4 +1,4 @@
-import React, {FC, useContext, useState} from 'react';
+import React, {FC, useState} from 'react';
 import {useParams} from "react-router-dom";
 import {useFetching} from "../../hooks/useFetching";
 import Error from "./Error";
@@ -14,13 +14,13 @@ import ProfileBio from "../../components/profile/info/ProfileBio";
 import EditProfileBtn from "../../components/profile/info/EditProfileBtn";
 import ProfileDateJoined from "../../components/profile/info/ProfileDateJoined";
 import ProfileStatBox from "../../components/profile/stats/ProfileStatBox";
-import {AuthContext} from "../../context/AuthContext";
+import {useAuthContext} from "../../context/AuthContext";
 
 const ProfilePage: FC = () => {
     const [isLoading, setIsLoading] = useState(true);
 
     let usernameUrl = useParams()["username"];
-    let authContext = useContext(AuthContext);
+    let authContext = useAuthContext();
 
     const [profile, setProfile] = useState<UserProfileI | null | ErrorI>(null);
 

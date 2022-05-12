@@ -1,10 +1,10 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import Section from "../section/Section";
-import {AuthContext} from "../../../context/AuthContext";
+import {useAuthContext} from "../../../context/AuthContext";
 import classes from "./SettingsAccount.module.css";
 
 const SettingsAccount = () => {
-    const authContext = useContext(AuthContext);
+    const authContext = useAuthContext()!;
 
     return (
         <div>

@@ -1,31 +1,30 @@
-import React, {FC, FormEvent, useCallback, useContext, useState} from 'react';
+import React, {FC, FormEvent, useCallback, useState} from 'react';
 import classes from "../styles/AuthPage.module.css";
 import {Link} from "react-router-dom";
-import {AuthContext} from "../../context/AuthContext";
-import {CsrfContext} from "../../context/CsrfContext";
+import {useAuthContext} from "../../context/AuthContext";
+import {useCsrfContext} from "../../context/CsrfContext";
 import {useAuthRedirect} from "../../hooks/useAuthRedirect";
 import Form, {FormStyles} from "../../components/form/Form";
 import FormTitle from "../../components/form/FormTitle";
 import FormInput from "../../components/form/FormInput";
 import {ErrorI, LoginI} from "../../types/types";
-import {HeaderContext} from "../../context/HeaderContext";
 import {validFormInput, ValidFormValidator} from "../../components/form/FormService/validFormInput";
 import {animateFetchRequest} from "../../components/form/FormService/animateFetchRequest";
 import {isValidUsername} from "../../util/UserValidator/isValidUsername";
 import {isValidPassword} from "../../util/UserValidator/isValidPassword";
+import {useHeaderContext} from "../../context/HeaderContext";
 
 const LoginPage: FC = () => {
-    const csrfContext = useContext(CsrfContext)!;
-    let authContext = useContext(AuthContext)!;
+    const csrfContext = useCsrfContext()!;
+    let authContext = useAuthContext()!;
+    const headerContext = useHeaderContext()!;
 
-    // animation states
+    useAuthRedirect(authContext);
+
     const [isLoading, setIsLoading] = useState(false);
     const [formClasses, setFormClasses] = useState<FormStyles[]>([]);
 
     const [errorMsg, setErrorMsg] = useState("");
-
-    const headerContext = useContext(HeaderContext);
-    useAuthRedirect(authContext);
 
     const postLogin = useCallback((e: FormEvent) => {
         e.preventDefault();

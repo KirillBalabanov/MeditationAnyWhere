@@ -1,8 +1,7 @@
-import React, {FC, FormEvent, useCallback, useContext, useState} from 'react';
+import React, {FC, FormEvent, useCallback, useState} from 'react';
 import classes from "../styles/AuthPage.module.css";
 import {Link} from "react-router-dom";
-import {CsrfContext, CsrfContextI} from "../../context/CsrfContext";
-import {AuthContext, AuthContextI} from "../../context/AuthContext";
+import {useAuthContext} from "../../context/AuthContext";
 import {useAuthRedirect} from "../../hooks/useAuthRedirect";
 import Form, {FormStyles} from "../../components/form/Form";
 import FormTitle from "../../components/form/FormTitle";
@@ -13,19 +12,19 @@ import {animateFetchRequest} from "../../components/form/FormService/animateFetc
 import {isValidEmail} from "../../util/UserValidator/isValidEmail";
 import {isValidUsername} from "../../util/UserValidator/isValidUsername";
 import {isValidPassword} from "../../util/UserValidator/isValidPassword";
+import {useCsrfContext} from "../../context/CsrfContext";
 
 
 const RegistrationPage: FC = () => {
-    const csrfContext = useContext<CsrfContextI | null>(CsrfContext);
-    const authContext = useContext<AuthContextI | null>(AuthContext);
+    const csrfContext = useCsrfContext();
+    const authContext = useAuthContext();
+
+    useAuthRedirect(authContext!);
 
     const [isLoading, setIsLoading] = useState(false);
     const [formClasses, setFormClasses] = useState<FormStyles[]>([]);
 
     const [errorMsg, setErrorMsg] = useState("");
-
-    // redirect in case user is logged in and trying to reach this page
-    useAuthRedirect(authContext!);
 
     const postRegister = useCallback((e: FormEvent) => {
         e.preventDefault();

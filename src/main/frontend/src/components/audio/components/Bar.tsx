@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {FC} from 'react';
 import classes from "./AudioComponents.module.css";
 import AudioFormatter from "../formatter/AudioFormatter";
 
@@ -9,7 +9,7 @@ interface BarProps {
     setCurrentTime: (n: number) => void
 }
 
-const Bar = ({currentTime, duration, audioElement, setCurrentTime}: BarProps) => {
+const Bar: FC<BarProps> = React.memo(({currentTime, duration, audioElement, setCurrentTime}) => {
     return (
         <div className={classes.durationOuter}>
             <p className={classes.begin}>{AudioFormatter.format(Math.floor(currentTime))}</p>
@@ -20,6 +20,6 @@ const Bar = ({currentTime, duration, audioElement, setCurrentTime}: BarProps) =>
             <p className={classes.end}>{AudioFormatter.format(duration)}</p>
         </div>
     );
-};
+});
 
 export default Bar;

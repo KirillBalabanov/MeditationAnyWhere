@@ -6,7 +6,7 @@ interface SliderProps {
     children: React.ReactNode,
 }
 
-const Slider: FC<SliderProps> = React.memo(({children}) => {
+const Slider: FC<SliderProps> = ({children}) => {
     const sliderInner = useRef<HTMLDivElement>(null);
     const [currentSlide, setCurrentSlide] = useState(0);
     const [currentTranslate, setCurrentTranslate] = useState(0);
@@ -124,6 +124,6 @@ const Slider: FC<SliderProps> = React.memo(({children}) => {
             </div>
         </div>
     );
-});
+};
 
 export default Slider;

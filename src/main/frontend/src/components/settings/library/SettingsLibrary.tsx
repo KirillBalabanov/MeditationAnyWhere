@@ -2,17 +2,17 @@ import classes from "./SettingsLibrary.module.css";
 import Section from "../section/Section";
 import audioUploadIcon from "../../../images/audioUploadIcon.svg";
 import InlineAudio from "../../audio/inline/InlineAudio";
-import React, {ChangeEvent, useContext, useEffect, useState} from "react";
+import React, {ChangeEvent, useEffect, useState} from "react";
 import FormAudio from "../../audio/form/FormAudio";
 import removeIcon from "../../../images/removeIcon.svg";
 import Loader from "../../loader/Loader";
-import {CsrfContext} from "../../../context/CsrfContext";
 import AudioValidator from "../../../util/AudioValidator";
 import Popup from "../../popup/Popup";
+import {useCsrfContext} from "../../../context/CsrfContext";
 
 
 const SettingsLibrary = () => {
-    let csrfContext = useContext(CsrfContext)!;
+    let csrfContext = useCsrfContext()!;
     const [audioFetched, setAudioFetched] = useState([{audioTitle: "", audioUrl: ""}]);
     const [isLoading, setIsLoading] = useState(true);
 

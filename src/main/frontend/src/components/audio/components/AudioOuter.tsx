@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import classes from "./AudioComponents.module.css";
 import AudioSource from "./AudioSource";
 import PlayButton from "./PlayButton";
@@ -14,7 +14,7 @@ interface AudioOuterProps {
     looped?: boolean
 }
 
-const AudioOuter = ({url, audioElement, looped, children}: AudioOuterProps) => {
+const AudioOuter: FC<AudioOuterProps> = ({url, audioElement, looped, children}) => {
     const [err, setErr] = useState(false);
     const [errMsg, setErrMsg] = useState("");
 

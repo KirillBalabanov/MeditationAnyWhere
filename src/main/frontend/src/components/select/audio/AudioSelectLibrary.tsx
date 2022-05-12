@@ -6,7 +6,7 @@ interface AudioSelectItemProps {
     title: string
 }
 
-const AudioSelectLibrary: FC<AudioSelectItemProps> = React.memo(({children, title}) => {
+const AudioSelectLibrary: FC<AudioSelectItemProps> = ({children, title}) => {
 
     return (
         <div className={classes.library}>
@@ -16,6 +16,6 @@ const AudioSelectLibrary: FC<AudioSelectItemProps> = React.memo(({children, titl
             {children}
         </div>
     );
-});
+};
 
 export default AudioSelectLibrary;
