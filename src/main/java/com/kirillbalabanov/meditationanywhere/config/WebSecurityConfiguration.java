@@ -23,7 +23,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.headers().cacheControl().disable().and().authorizeRequests()
+        http.authorizeRequests()
                 .antMatchers("/upd").authenticated()
             .anyRequest().permitAll()
                 .and()

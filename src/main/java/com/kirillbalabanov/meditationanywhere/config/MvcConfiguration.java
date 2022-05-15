@@ -2,7 +2,11 @@ package com.kirillbalabanov.meditationanywhere.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.*;
+import org.springframework.http.CacheControl;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.concurrent.TimeUnit;
 
 @Configuration
 public class MvcConfiguration implements WebMvcConfigurer {
@@ -24,7 +28,7 @@ public class MvcConfiguration implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler(userFolderUrl + "/**").addResourceLocations("file:///" + userFolderPath + "/").
                 resourceChain(true).addResolver(new UrlResolver());
-        registry.addResourceHandler(serverFolderUrl + "/**").addResourceLocations("file:///" + serverFolderPath + "/").
+        registry.addResourceHandler(serverFolderUrl + "/**").setCacheControl(CacheControl.maxAge(100, TimeUnit.SECONDS)).addResourceLocations("file:///" + serverFolderPath + "/").
                 resourceChain(true).addResolver(new UrlResolver());
 
     }

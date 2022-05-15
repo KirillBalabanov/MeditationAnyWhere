@@ -5,15 +5,14 @@ import SettingsProfile from "../../components/settings/profile/SettingsProfile";
 import SettingsAccount from "../../components/settings/account/SettingsAccount";
 import SettingsLibrary from "../../components/settings/library/SettingsLibrary";
 import {useAuthContext} from "../../context/AuthContext";
-import {useAuthRedirect} from "../../hooks/useAuthRedirect";
+import {usePrivateRouteRedirect} from "../../hooks/usePrivateRouteRedirect";
 
 const Settings: FC = () => {
     const setting = useParams()["setting"];
     let navigateFunction = useNavigate();
 
     let authContext = useAuthContext();
-
-    useAuthRedirect(authContext!);
+    usePrivateRouteRedirect(authContext!);
 
     const navigate = (to: string) => {
         navigateFunction(to);

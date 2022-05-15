@@ -6,6 +6,7 @@ import com.kirillbalabanov.meditationanywhere.model.AudioModel;
 import com.kirillbalabanov.meditationanywhere.model.ErrorModel;
 import com.kirillbalabanov.meditationanywhere.service.AudioService;
 import com.kirillbalabanov.meditationanywhere.util.validator.ContentTypeValidator;
+import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping(value = "/user/audio")
@@ -49,7 +51,7 @@ public class AudioController {
         } catch (Exception e) {
             return ResponseEntity.ok().body(ErrorModel.fromMessage(e.getMessage()));
         }
-        return ResponseEntity.ok().body(audioModels);
+        return ResponseEntity.ok().cacheControl(CacheControl.noCache().sMaxAge(1, TimeUnit.MINUTES)).body(audioModels);
     }
 
     @PutMapping(value = "/update")
