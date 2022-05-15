@@ -1,4 +1,4 @@
-import React, {FC} from 'react';
+import React, {FC, useState} from 'react';
 import classes from "../styles/MainPage.module.css";
 import Timer from "../../components/timer/Timer";
 import TimerSelect from "../../components/timer/TimerSelect";
@@ -7,8 +7,16 @@ import TimerButton from "../../components/timer/TimerButton";
 import AudioSelect from "../../components/select/audio/AudioSelect";
 import {TimerContextProvider} from "../../context/TimerContext";
 import {AudioSelectContextProvider} from "../../context/AudioSelectContext";
+import {useAuthContext, useRefreshAuthContext} from "../../context/AuthContext";
+import Loader from "../../components/loader/Loader";
 
 const MainPage: FC = () => {
+
+    let authContext = useAuthContext();
+    const [refreshAuthLoading, setRefreshAuthLoading] = useState(true);
+    useRefreshAuthContext(authContext!, setRefreshAuthLoading);
+
+    if(refreshAuthLoading) return (<Loader></Loader>)
 
     return (
         <div className={classes.main}>

@@ -1,22 +1,23 @@
-import React, {FC} from 'react';
+import React, {FC, useState} from 'react';
 import {useNavigate, useParams} from "react-router-dom";
 import classes from "../styles/Settings.module.css";
 import SettingsProfile from "../../components/settings/profile/SettingsProfile";
 import SettingsAccount from "../../components/settings/account/SettingsAccount";
 import SettingsLibrary from "../../components/settings/library/SettingsLibrary";
-import {useAuthContext} from "../../context/AuthContext";
-import {usePrivateRouteRedirect} from "../../hooks/usePrivateRouteRedirect";
+import {useAuthContext, useRefreshAuthContext} from "../../context/AuthContext";
+import Loader from "../../components/loader/Loader";
 
 const Settings: FC = () => {
     const setting = useParams()["setting"];
     let navigateFunction = useNavigate();
 
     let authContext = useAuthContext();
-    usePrivateRouteRedirect(authContext!);
+    const [refreshAuthLoading, setRefreshAuthLoading] = useState(true);
+    useRefreshAuthContext(authContext!, setRefreshAuthLoading);
 
-    const navigate = (to: string) => {
-        navigateFunction(to);
-    };
+    if(refreshAuthLoading) return (<Loader></Loader>)
+
+    if(!authContext?.auth) navigateFunction("/login");
 
     return (
         <div>
@@ -25,7 +26,7 @@ const Settings: FC = () => {
                     <div className={classes.settings}>
                         <div className={classes.settings__option}>
                             <div className={setting==="profile" ? classes.settings__optionInner + " " + classes.active : classes.settings__optionInner}
-                                 onClick={() => navigate("/settings/profile")}>
+                                 onClick={() => navigateFunction("/settings/profile")}>
                                 <p className={classes.settings__optionText}>
                                     Profile
                                 </p>
@@ -33,7 +34,7 @@ const Settings: FC = () => {
                         </div>
                         <div className={classes.settings__option}>
                             <div className={setting==="account" ? classes.settings__optionInner + " " + classes.active : classes.settings__optionInner}
-                                 onClick={() => navigate("/settings/account")}>
+                                 onClick={() => navigateFunction("/settings/account")}>
                                 <p className={classes.settings__optionText}>
                                     Account
                                 </p>
@@ -41,7 +42,7 @@ const Settings: FC = () => {
                         </div>
                         <div className={classes.settings__option}>
                             <div className={setting==="library" ? classes.settings__optionInner + " " + classes.active : classes.settings__optionInner}
-                                 onClick={() => navigate("/settings/library")}>
+                                 onClick={() => navigateFunction("/settings/library")}>
                                 <p className={classes.settings__optionText}>
                                     Library
                                 </p>

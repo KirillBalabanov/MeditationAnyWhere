@@ -14,7 +14,7 @@ import ProfileBio from "../../components/profile/info/ProfileBio";
 import EditProfileBtn from "../../components/profile/info/EditProfileBtn";
 import ProfileDateJoined from "../../components/profile/info/ProfileDateJoined";
 import ProfileStatBox from "../../components/profile/stats/ProfileStatBox";
-import {useAuthContext} from "../../context/AuthContext";
+import {useAuthContext, useRefreshAuthContext} from "../../context/AuthContext";
 
 const ProfilePage: FC = () => {
     const [isLoading, setIsLoading] = useState(true);
@@ -22,11 +22,14 @@ const ProfilePage: FC = () => {
     let usernameUrl = useParams()["username"];
     let authContext = useAuthContext();
 
+    useRefreshAuthContext(authContext!);
+
     const [profile, setProfile] = useState<UserProfileI | null | ErrorI>(null);
 
     useFetching<UserProfileI | null | ErrorI>("/user/profile/" + usernameUrl, setIsLoading, setProfile);
 
     if(profile != null && "errorMsg" in profile) return (<Error errorMsg={profile.errorMsg}/>);
+
     return (
         <div>
             {
