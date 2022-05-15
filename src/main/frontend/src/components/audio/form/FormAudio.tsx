@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import classes from "./FormAudio.module.css";
 import InlineAudio from "../inline/InlineAudio";
-import AudioValidator from "../../../util/AudioValidator";
+import {isValidAudioName} from "../../../util/AudioValidator/isValidAudioName";
 
 interface FormAudioProps {
     audioUrl: string,
@@ -21,7 +21,7 @@ const FormAudio = ({audioUrl, audioTitle, setUpdateAllowed}: FormAudioProps) => 
         <div className={classes.audio}>
             <input className={classes.audioTitle} name={"audioTitle"} value={inputValue} data-url={audioUrl} data-changed={changed ? 1 : 0}
                    onChange={(e) => {
-                if(!AudioValidator.isValidAudioName(e.target.value)) {
+                if(!isValidAudioName(e.target.value)) {
                     setUpdateAllowed(false);
                     setErrorMsg("Invalid audio name");
                 }
@@ -38,7 +38,7 @@ const FormAudio = ({audioUrl, audioTitle, setUpdateAllowed}: FormAudioProps) => 
                 <InlineAudio url={audioUrl}></InlineAudio>
             </div>
             <button type={"button"} className={deleteAudio ? classes.audioDelete + " " + classes.deleteSelected : classes.audioDelete}
-                    onClick={(e) => {
+                    onClick={() => {
                         setDeleteAudio(!deleteAudio);
                         setUpdateAllowed(true);
                     }}
