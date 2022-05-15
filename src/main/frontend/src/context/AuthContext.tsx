@@ -1,4 +1,4 @@
-import React, {createContext, FC, useContext, useEffect, useState} from "react";
+import React, {createContext, FC, SetStateAction, useContext, useEffect, useState} from "react";
 import {ContextProviderInterface} from "./ContextProviderInterface";
 import Loader from "../components/loader/Loader";
 
@@ -15,6 +15,20 @@ export const useAuthContext = () => {
     return useContext(AuthContext);
 };
 
+export const useRefreshAuthContext = (context: AuthContextI, setIsLoading: React.Dispatch<SetStateAction<boolean>> | null = null) => {
+    useEffect(() => {
+        fetch("/server/principal").then((response) => {
+            return response.json()
+        }).then((obj) => {
+            context.setAuth(obj["authenticated"]);
+            context.setUsername(obj["username"]);
+            if (setIsLoading !== null) {
+                setIsLoading(false);
+            }
+        });
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+};
+
 export const AuthContextProvider: FC<ContextProviderInterface> = ({children}) => {
     const [isLoading, setIsLoading] = useState(true);
 
@@ -27,15 +41,7 @@ export const AuthContextProvider: FC<ContextProviderInterface> = ({children}) =>
         setUsername: setUsername
     }
 
-    useEffect(() => {
-        fetch("/server/principal").then((response) => {
-            return response.json()
-        }).then((obj) => {
-            AuthContextImp.setAuth(obj["authenticated"]);
-            AuthContextImp.setUsername(obj["username"]);
-            setIsLoading(false);
-        });
-    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    useRefreshAuthContext(AuthContextImp, setIsLoading);
 
     if(isLoading) return (<Loader></Loader>)
 
