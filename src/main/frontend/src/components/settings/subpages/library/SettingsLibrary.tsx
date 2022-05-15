@@ -2,7 +2,7 @@ import classes from "./SettingsLibrary.module.css";
 import Section from "../../components/SettingsContentSection";
 import audioUploadIcon from "../../../../images/audioUploadIcon.svg";
 import InlineAudio from "../../../audio/inline/InlineAudio";
-import React, {ChangeEvent, useEffect, useState} from "react";
+import React, {ChangeEvent, useState} from "react";
 import FormAudio from "../../../audio/form/FormAudio";
 import removeIcon from "../../../../images/removeIcon.svg";
 import Loader from "../../../loader/Loader";
@@ -10,6 +10,7 @@ import Popup from "../../../popup/Popup";
 import {useCsrfContext} from "../../../../context/CsrfContext";
 import {AudioI} from "../../../../types/types";
 import {isValidAudioName} from "../../../../util/AudioValidator/isValidAudioName";
+import {useFetching} from "../../../../hooks/useFetching";
 
 
 const SettingsLibrary = () => {
@@ -33,11 +34,7 @@ const SettingsLibrary = () => {
     const [updateAllowed, setUpdateAllowed] = useState(false);
     const [errorUpdateMsg, setErrorUpdateMsg] = useState("");
 
-    useEffect(() => { // fetch user's audio from server
-        fetch("/user/audio/get").then((json) => json.json()).then((data: AudioI[]) => {
-            setAudioFetched(data)
-        }).catch(() => setAudioFetched([])).then(() => setIsLoading(false));
-    }, []);
+    useFetching("/user/audio/get", setIsLoading, setAudioFetched);
 
     const audioPreview = (e: ChangeEvent) => {
         setAudioFile(null);

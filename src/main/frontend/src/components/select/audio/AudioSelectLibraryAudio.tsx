@@ -11,20 +11,12 @@ interface AudioSelectLibraryAudioProps {
 }
 
 const AudioSelectLibraryAudio: FC<AudioSelectLibraryAudioProps> = ({url, title}) => {
-    const [audioNotFoundError, setAudioNotFoundError] = useState<string | null>(null);
+    const [audioNotFoundError, setAudioNotFoundError] = useState<string>("");
 
     const [isAudioPlaying, setIsAudioPlaying] = useState(false);
     const audioElement = useRef<HTMLAudioElement | null>(null);
 
     const audioSelectContext = useAudioSelectContext();
-
-    useEffect(() => {
-        fetch(url).then((resp) => {
-            if(!resp.ok) {
-                setAudioNotFoundError("Audio not found");
-            }
-        });
-    }, [url]);
 
     useEffect(() => {
         const playHandler = () => {
@@ -79,13 +71,13 @@ const AudioSelectLibraryAudio: FC<AudioSelectLibraryAudioProps> = ({url, title})
              onClick={togglePlay}>
             <div className={classes.libraryAudioTitle}>
                 {
-                    audioNotFoundError != null
+                    audioNotFoundError !== ""
                         ?
                         <p style={{color: "red"}}>{audioNotFoundError}</p>
                         :
                         <div>
                             {title}
-                            <AudioSource url={url} audioElement={audioElement} looped={true}></AudioSource>
+                            <AudioSource url={url} audioElement={audioElement} looped={true} setAudioNotFoundError={setAudioNotFoundError}></AudioSource>
                         </div>
                 }
             </div>
