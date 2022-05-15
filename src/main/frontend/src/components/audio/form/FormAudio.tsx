@@ -37,7 +37,7 @@ const FormAudio = ({audioUrl, audioTitle, setUpdateAllowed}: FormAudioProps) => 
             <div className={classes.inlineAudio}>
                 <InlineAudio url={audioUrl}></InlineAudio>
             </div>
-            <button type={"button"} className={deleteAudio ? classes.audioDelete + " " + classes.deleteSelected : classes.audioDelete}
+            <button style={{display: errorMsg!=="" ? "block" : "flex"}} type={"button"} className={deleteAudio ? classes.audioDelete + " " + classes.deleteSelected : classes.audioDelete}
                     onClick={() => {
                         setDeleteAudio(!deleteAudio);
                         setUpdateAllowed(true);

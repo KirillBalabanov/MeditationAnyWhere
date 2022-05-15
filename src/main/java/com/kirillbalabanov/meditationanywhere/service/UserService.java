@@ -74,6 +74,7 @@ public class UserService {
         return optional.get();
     }
 
+    @Transactional
     public UserEntity findById(long id) throws NoUserFoundException {
         Optional<UserEntity> optional = userRepository.findById(id);
         if(optional.isEmpty()) throw new NoUserFoundException("No user found.");

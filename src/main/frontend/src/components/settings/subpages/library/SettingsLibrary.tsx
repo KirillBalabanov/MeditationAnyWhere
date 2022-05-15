@@ -2,7 +2,7 @@ import classes from "./SettingsLibrary.module.css";
 import Section from "../../components/SettingsContentSection";
 import audioUploadIcon from "../../../../images/audioUploadIcon.svg";
 import InlineAudio from "../../../audio/inline/InlineAudio";
-import React, {ChangeEvent, useState} from "react";
+import React, {ChangeEvent, useEffect, useState} from "react";
 import FormAudio from "../../../audio/form/FormAudio";
 import removeIcon from "../../../../images/removeIcon.svg";
 import Loader from "../../../loader/Loader";
@@ -10,14 +10,13 @@ import Popup from "../../../popup/Popup";
 import {useCsrfContext} from "../../../../context/CsrfContext";
 import {AudioI} from "../../../../types/types";
 import {isValidAudioName} from "../../../../util/AudioValidator/isValidAudioName";
-import {useFetching} from "../../../../hooks/useFetching";
 
 
 const SettingsLibrary = () => {
 
     let csrfContext = useCsrfContext()!;
 
-    const [audioFetched, setAudioFetched] = useState<AudioI[]>([{audioTitle: "", audioUrl: ""}]);
+    const [audioFetched, setAudioFetched] = useState<AudioI[] | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
     const [inputErrorMsg, setInputErrorMsg] = useState("");
@@ -34,15 +33,21 @@ const SettingsLibrary = () => {
     const [updateAllowed, setUpdateAllowed] = useState(false);
     const [errorUpdateMsg, setErrorUpdateMsg] = useState("");
 
-    useFetching("/user/audio/get", setIsLoading, setAudioFetched);
+    useEffect(() => {
+        fetch("/user/audio/get").then((response) => {
+            return response.json()
+        }).then((data) => setAudioFetched(data)).catch(() => {
+            setAudioFetched([])
+        }).then(() => setIsLoading(false));
+    }, []);
 
     const audioPreview = (e: ChangeEvent) => {
+        if(audioFetched === null) return;
         setAudioFile(null);
         setFileErrorMsg("");
         setAudioPreviewUrl("");
         setInputKey(Date.now());
         setAddAllowed(false);
-
         if (audioFetched.length >= 3) {
             setFileErrorMsg("You cannot have more than 3 tracks.");
             setInputKey(Date.now());
@@ -165,6 +170,7 @@ const SettingsLibrary = () => {
 
     function addAudioSubmit(e: React.FormEvent) {
         e.preventDefault();
+        if(audioFetched === null) return;
         if(audioFile === null) return;
 
         if(!addAllowed) return;
@@ -254,7 +260,7 @@ const SettingsLibrary = () => {
                                 }
                             </form>
                             {
-                                audioFetched.length > 0 &&
+                                audioFetched !== null && audioFetched.length > 0 &&
                                 <form onSubmit={updateLibrarySubmit}>
                                     {audioFetched.map(audio => <FormAudio audioUrl={audio.audioUrl}
                                                                      audioTitle={audio.audioTitle}
