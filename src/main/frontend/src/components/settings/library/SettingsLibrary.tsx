@@ -167,7 +167,7 @@ const SettingsLibrary = () => {
 
     function addAudioSubmit(e: React.FormEvent) {
         e.preventDefault();
-        if(audioFile == null) return;
+        if(audioFile === null) return;
 
         if(!addAllowed) return;
 
@@ -176,7 +176,7 @@ const SettingsLibrary = () => {
         let audioTitle = e.target[5].value;
 
         if(!AudioValidator.isValidAudioName(audioTitle)) return;
-        if(audioFetched.filter((el) => el.audioTitle === audioTitle).length != 0) {
+        if(audioFetched.filter((el) => el.audioTitle === audioTitle).length !== 0) {
             setInputErrorMsg("Title already taken.");
             return;
         }

@@ -44,7 +44,7 @@ const ProfilePage: FC = () => {
                                         <ProfileAvatar avatarUrl={profile.avatarUrl} username={usernameUrl!}/>
                                         <ProfileUsername username={profile.username}/>
                                         <ProfileBio bio={profile.bio}/>
-                                        <EditProfileBtn show={usernameUrl == authContext?.auth}/>
+                                        <EditProfileBtn show={usernameUrl === authContext?.auth}/>
                                         <ProfileDateJoined registrationDate={profile.registrationDate}/>
                                     </ProfileInfo>
 

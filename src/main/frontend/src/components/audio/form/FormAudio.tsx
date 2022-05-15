@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import classes from "./FormAudio.module.css";
 import InlineAudio from "../inline/InlineAudio";
 import AudioValidator from "../../../util/AudioValidator";
@@ -29,7 +29,7 @@ const FormAudio = ({audioUrl, audioTitle, setUpdateAllowed}: FormAudioProps) => 
                     setUpdateAllowed(true);
                     setErrorMsg("");
                 }
-                if(e.target.value != fetchedTitle) setChanged(true);
+                if(e.target.value !== fetchedTitle) setChanged(true);
                 else setChanged(false);
                 setInputValue(e.target.value)
             }}/>

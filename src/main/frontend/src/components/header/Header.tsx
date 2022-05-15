@@ -40,7 +40,7 @@ const Header = () => {
             });
         }
         headerContext.setReload(false);
-    }, [headerContext.reload]);
+    }, [headerContext.reload]); // eslint-disable-line react-hooks/exhaustive-deps
 
     function logout() {
         fetch("/user/auth/logout", {

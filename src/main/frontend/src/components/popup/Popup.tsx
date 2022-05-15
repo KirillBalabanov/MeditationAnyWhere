@@ -16,13 +16,13 @@ const Popup: FC<PopupProps> = React.memo(({popupConfirm, popupInfo, shown, setSh
 
     useEffect(() => {
         const keyListener = (e: KeyboardEvent) => {
-            if(e.code == "Escape") setShown(false);
+            if(e.code === "Escape") setShown(false);
         }
         window.addEventListener("keyup", keyListener);
         return () => {
             window.removeEventListener("keyup", keyListener);
         };
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
         <div className={popupClasses.join(" ")} onClick={() => setShown(false)}>

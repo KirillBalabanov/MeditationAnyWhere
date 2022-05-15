@@ -1,4 +1,4 @@
-import React, {FC, useCallback} from 'react';
+import React, {FC} from 'react';
 import btnStop from "../../images/stopIcon.svg";
 import btnStart from "../../images/startIcon.svg";
 import {useTimerContext} from "../../context/TimerContext";
@@ -8,11 +8,11 @@ import classes from "./Timer.module.css";
 const TimerButton: FC = () => {
     const timerContext = useTimerContext();
 
-    const toggleTimer = useCallback(() => {
-        if(timerContext?.timerValue == 0 && !timerContext.isPlaying) return;
+    const toggleTimer = () => {
+        if(timerContext?.timerValue === 0 && !timerContext.isPlaying) return;
 
         timerContext?.setIsPlaying(!timerContext?.isPlaying);
-    }, [timerContext?.timerValue, timerContext?.isPlaying]);
+    }
 
     return (
         <div className={classes.timer__btn} onClick={toggleTimer}>

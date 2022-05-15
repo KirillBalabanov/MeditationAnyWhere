@@ -21,7 +21,7 @@ export const CsrfContextProvider: FC<ContextProviderInterface> = ({children}) =>
     useEffect(() => {
         let s = document.cookie.replace("^XSRF-TOKEN", '');
         CsrfContextImp.setToken( s.replace("XSRF-TOKEN=", ""));
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
         <CsrfContext.Provider value={CsrfContextImp}>

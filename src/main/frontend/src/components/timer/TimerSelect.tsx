@@ -1,4 +1,4 @@
-import React, {FC, useCallback} from 'react';
+import React, {FC} from 'react';
 import classes from "./Timer.module.css";
 import {useTimerContext} from "../../context/TimerContext";
 import {timerLenDefault} from "./TimerService/timerLenDefault";
@@ -10,7 +10,7 @@ interface TimerSelectProps {
 const TimerSelect: FC<TimerSelectProps> = ({children}) => {
     const timerContext = useTimerContext();
 
-    const selectCallback = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
+    const selectCallback = (event: React.MouseEvent<HTMLDivElement>) => {
         if(timerContext?.isPlaying) return;
         let el = event.target as Element;
         if(el == null || !el.hasAttribute("timer-value")) return;
@@ -19,7 +19,7 @@ const TimerSelect: FC<TimerSelectProps> = ({children}) => {
         timerContext?.setMinListened(min);
         timerContext?.setTimerLenCurrent(timerLenDefault);
         timerContext?.setTimerValue(min * 60);
-    }, [timerContext?.isPlaying]);
+    }
 
     return (
         <div className={classes.timer__select} onClick={selectCallback}>

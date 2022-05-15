@@ -16,7 +16,7 @@ const Date: FC<DateProps> = ({date}) => {
         str += " " + d.day;
         str += ", " + d.year;
         return str;
-    }, [date]);
+    }, []);
 
     return (
         <span>

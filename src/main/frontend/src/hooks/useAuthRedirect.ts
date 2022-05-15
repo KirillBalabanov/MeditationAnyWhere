@@ -7,5 +7,5 @@ export const useAuthRedirect = (authContext: AuthContextI) => {
     let navigateFunction = useNavigate();
     useEffect(() => {
         if(authContext?.auth) navigateFunction("/");
-    }, [authContext?.auth]);
+    }, [authContext, navigateFunction]);
 };

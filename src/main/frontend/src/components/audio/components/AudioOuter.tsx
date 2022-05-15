@@ -1,11 +1,6 @@
 import React, {FC, useEffect, useState} from 'react';
 import classes from "./AudioComponents.module.css";
 import AudioSource from "./AudioSource";
-import PlayButton from "./PlayButton";
-import StopButton from "./StopButton";
-import Controls from "./Controls";
-import Bar from "./Bar";
-import Volume from "./Volume";
 
 interface AudioOuterProps {
     children: React.ReactNode,
@@ -26,7 +21,7 @@ const AudioOuter: FC<AudioOuterProps> = ({url, audioElement, looped, children}) 
             }
 
         });
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
         <div className={classes.audioOuter}>

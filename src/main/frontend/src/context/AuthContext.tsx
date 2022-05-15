@@ -35,7 +35,7 @@ export const AuthContextProvider: FC<ContextProviderInterface> = ({children}) =>
             AuthContextImp.setUsername(obj["username"]);
             setIsLoading(false);
         });
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     if(isLoading) return (<Loader></Loader>)
 

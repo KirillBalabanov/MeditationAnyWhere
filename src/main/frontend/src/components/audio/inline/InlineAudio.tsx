@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect} from 'react';
 import Bar from "../components/Bar";
 import Volume from "../components/Volume";
 import Controls from "../components/Controls";
@@ -16,17 +16,17 @@ const InlineAudio = ({url}: InlineAudioProps) => {
 
     useEffect(() => {
         let dur = 0;
-        audioElement.current!.addEventListener("loadedmetadata", (e) => {
+        audioElement.current!.addEventListener("loadedmetadata", () => {
             dur = audioElement.current!.duration;
             setDuration(Math.floor(dur));
         });
-        audioElement.current!.addEventListener("timeupdate", (e) => {
+        audioElement.current!.addEventListener("timeupdate", () => {
             let currentTime = audioElement.current!.currentTime;
             if(currentTime === dur) setIsPlaying(false);
             setCurrentTime(currentTime);
         })
 
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
         <AudioOuter url={url} audioElement={audioElement}>

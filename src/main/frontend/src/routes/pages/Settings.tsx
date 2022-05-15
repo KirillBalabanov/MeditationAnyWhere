@@ -1,10 +1,11 @@
-import React, {FC, useEffect} from 'react';
+import React, {FC} from 'react';
 import {useNavigate, useParams} from "react-router-dom";
 import classes from "../styles/Settings.module.css";
 import SettingsProfile from "../../components/settings/profile/SettingsProfile";
 import SettingsAccount from "../../components/settings/account/SettingsAccount";
 import SettingsLibrary from "../../components/settings/library/SettingsLibrary";
 import {useAuthContext} from "../../context/AuthContext";
+import {useAuthRedirect} from "../../hooks/useAuthRedirect";
 
 const Settings: FC = () => {
     const setting = useParams()["setting"];
@@ -12,9 +13,7 @@ const Settings: FC = () => {
 
     let authContext = useAuthContext();
 
-    useEffect(() => {
-        if(!authContext?.auth) navigate("/login");
-    }, []);
+    useAuthRedirect(authContext!);
 
     const navigate = (to: string) => {
         navigateFunction(to);
@@ -56,9 +55,9 @@ const Settings: FC = () => {
                             {setting==="account" && "Account"}
                             {setting==="library" && "Library"}
                         </h3>
-                        {setting=="profile" && <SettingsProfile></SettingsProfile>}
-                        {setting=="account" && <SettingsAccount></SettingsAccount>}
-                        {setting=="library" && <SettingsLibrary></SettingsLibrary>}
+                        {setting==="profile" && <SettingsProfile></SettingsProfile>}
+                        {setting==="account" && <SettingsAccount></SettingsAccount>}
+                        {setting==="library" && <SettingsLibrary></SettingsLibrary>}
                     </div>
                 </div>
             </div>

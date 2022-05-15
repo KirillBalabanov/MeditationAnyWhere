@@ -6,7 +6,7 @@ export const useFetching = <T>(fetchRequest: string, setIsLoading: (loading: boo
     useEffect(() => {
         fetchReq(fetchRequest, setIsLoading, setData);
         setIsLoading(false);
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 };
 
 export const useFetchingOnCondition = <T>(fetchRequest: string, setIsLoading: (loading: boolean) => void, setData: (el: T) => void, condition: boolean) => {
@@ -15,7 +15,7 @@ export const useFetchingOnCondition = <T>(fetchRequest: string, setIsLoading: (l
             fetchReq(fetchRequest, setIsLoading, setData)
         }
         setIsLoading(false);
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 }
 
 function fetchReq<T>(fetchRequest: string, setIsLoading: (loading: boolean) => void, setData: (el: T) => void) {

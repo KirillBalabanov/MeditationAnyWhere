@@ -48,7 +48,7 @@ const PopupRectangle = React.memo(({popupShown, popupText, positionX, positionY}
                     break
             }
         }
-    }, [outer.current]);
+    }, [outer.current, popup.current]); // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
         <div style={{width: "inherit", height: "inherit"}} ref={outer}>
