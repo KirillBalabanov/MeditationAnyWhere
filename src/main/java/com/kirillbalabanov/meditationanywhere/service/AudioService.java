@@ -76,7 +76,7 @@ public class AudioService {
         return optional.get();
     }
 
-    @Transactional(propagation = Propagation.NEVER)
+
     public void deleteUserAudioByUrl(long userId, String url) throws NoUserFoundException, AudioNotFoundException {
         UserEntity userEntity = userService.findById(userId);
         Optional<AudioEntity> optional = userEntity.getAudioEntityList().stream().filter((el) -> el.getAudioUrl().equals(url)).findFirst();

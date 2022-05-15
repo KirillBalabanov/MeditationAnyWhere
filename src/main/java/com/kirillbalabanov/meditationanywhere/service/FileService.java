@@ -47,7 +47,6 @@ public class FileService {
         return fileName;
     }
 
-    @Transactional
     public void deleteFileFromUserDirectory(String pathToFile) {
         new File(pathToFile).delete();
     }
