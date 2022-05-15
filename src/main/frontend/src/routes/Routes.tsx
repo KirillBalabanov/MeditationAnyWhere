@@ -7,6 +7,7 @@ import MainPage from "./pages/MainPage";
 import React from "react";
 import ProfilePage from "./pages/ProfilePage";
 import Settings from "./pages/Settings";
+import {Navigate} from "react-router-dom";
 
 export interface RouteI {
     path: string,
@@ -23,6 +24,7 @@ export const appRoutes: RouteI[] = [
 
     // private routes
     {path: "/settings/:setting", component: <Settings/>},
+    {path: "/settings", component: <Navigate to={"/settings/profile"}/>},
 
     // 404 handler
     {path: "/*", component: <Error></Error>}
