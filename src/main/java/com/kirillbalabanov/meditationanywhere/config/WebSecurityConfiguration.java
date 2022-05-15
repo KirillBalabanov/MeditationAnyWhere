@@ -24,14 +24,13 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/upd").authenticated()
+                .antMatchers("/user/settings/**").authenticated()
             .anyRequest().permitAll()
                 .and()
             .formLogin().disable()
             .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 .and()
-            .logout().disable()
-           .httpBasic();
+            .logout().disable();
     }
 
     @Bean
