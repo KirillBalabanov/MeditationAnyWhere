@@ -19,7 +19,7 @@ const FormAudio = ({audioUrl, audioTitle, setUpdateAllowed}: FormAudioProps) => 
 
     return (
         <div className={classes.audio}>
-            <input className={classes.audioTitle} name={"audioTitle"} value={inputValue} data-url={audioUrl} data-changed={changed ? 1 : 0}
+            <input className={classes.audioTitle} name={"audioTitle"} value={inputValue} maxLength={20} data-url={audioUrl} data-changed={changed ? 1 : 0}
                    onChange={(e) => {
                 if(!isValidAudioName(e.target.value)) {
                     setUpdateAllowed(false);

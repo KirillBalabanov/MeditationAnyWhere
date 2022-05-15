@@ -163,6 +163,7 @@ const SettingsLibrary = () => {
         setAudioFetched(audioChanged);
         setPopupContent("Library updated!");
         setShowPopup(true);
+        setUpdateAllowed(false);
     }
 
     function addAudioSubmit(e: React.FormEvent) {
