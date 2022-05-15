@@ -14,13 +14,12 @@ const PopupRectangle = React.memo(({popupShown, popupText, positionX, positionY}
 
     const [top, setTop] = useState(0);
     const [left, setLeft] = useState(0);
-    const outer = useRef<HTMLDivElement>(null);
     const popup = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        if (outer.current != null && popup.current != null) {
-            let width = outer.current!.offsetWidth;
-            let height = outer.current!.offsetHeight;
+        if (popup.current != null) {
+            let width = popup.current.parentElement!.offsetWidth;
+            let height = popup.current.parentElement!.offsetHeight;
             let popupWidth = popup.current!.offsetWidth;
             let popupHeight = popup.current!.offsetHeight;
 
@@ -48,18 +47,16 @@ const PopupRectangle = React.memo(({popupShown, popupText, positionX, positionY}
                     break
             }
         }
-    }, [outer.current, popup.current]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [popup.current]); // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
-        <div style={{width: "inherit", height: "inherit"}} ref={outer}>
-            <div className={popupShown ? classes.profile__popup + " " + classes.shown : classes.profile__popup} ref={popup}
-                 style={{
-                     top: top,
-                     left: left,
-            }}>
-                <div className={classes.profile__popupText}>{popupText}</div>
-                <img src={polygon} alt="polygon" className={classes.profile__popupIcon}/>
-            </div>
+        <div className={popupShown ? classes.popup + " " + classes.shown : classes.popup} ref={popup}
+             style={{
+                 top: top,
+                 left: left,
+             }}>
+            <div className={classes.popupText}>{popupText}</div>
+            <img src={polygon} alt="polygon" className={classes.popupIcon}/>
         </div>
     );
 });

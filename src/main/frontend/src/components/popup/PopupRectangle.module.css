@@ -1,13 +1,15 @@
-.profile__popup {
+.popup {
     position: absolute;
     width: 130px;
     opacity: 0;
     transition: opacity .2s ease;
+    background: none;
+    height: 29px;
 }
-.profile__popup.shown {
+.popup.shown {
     opacity: 1;
 }
-.profile__popupText {
+.popupText {
     background: #2D2E32;
     border: 1px solid #2D2E32;
     border-radius: 3px;
@@ -15,7 +17,7 @@
     text-align: center;
 
 }
-.profile__popupIcon{
+.popupIcon{
     position: absolute;
     top: -8px;
     left: 57px;

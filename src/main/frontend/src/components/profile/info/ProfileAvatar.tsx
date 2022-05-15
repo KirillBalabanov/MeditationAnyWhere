@@ -19,20 +19,22 @@ const ProfileAvatar: FC<ProfileAvatarProps> = ({avatarUrl, username}) => {
     let isAuthUserPage: boolean = username === authContext?.username;
 
     return (
-        <div className={classes.profile__infoAvatarOuter}>
-            <img src={avatarUrl==="" ? defaultAvatar : avatarUrl} alt="avatar"
-                 className={classes.profile__infoAvatar} onMouseOver={() => {
+        <div className={classes.profile__infoAvatarWrap}>
+            <div className={classes.profile__infoAvatarOuter}>
+                <img src={avatarUrl==="" ? defaultAvatar : avatarUrl} alt="avatar"
+                     className={classes.profile__infoAvatar} onMouseOver={() => {
                     if(!isAuthUserPage) return;
                     setPopupShown(true)
-                 }}
-                 onMouseLeave={() => setPopupShown(false)}
-                 onClick={() => {
-                     if(!isAuthUserPage) return;
-                     navigateFunction("/settings/profile")
-                 }}
-                 style={{cursor: isAuthUserPage ? "pointer" : "auto"}}
-            />
-            <PopupRectangle popupShown={popupShown} popupText={"change your avatar"} positionY={AbsolutePositionY.BOTTOM} positionX={AbsolutePositionX.MIDDLE}></PopupRectangle>
+                }}
+                     onMouseLeave={() => setPopupShown(false)}
+                     onClick={() => {
+                         if(!isAuthUserPage) return;
+                         navigateFunction("/settings/profile")
+                     }}
+                     style={{cursor: isAuthUserPage ? "pointer" : "auto"}}
+                />
+                <PopupRectangle popupShown={popupShown} popupText={"change your avatar"} positionY={AbsolutePositionY.BOTTOM} positionX={AbsolutePositionX.MIDDLE}></PopupRectangle>
+            </div>
         </div>
     );
 };
