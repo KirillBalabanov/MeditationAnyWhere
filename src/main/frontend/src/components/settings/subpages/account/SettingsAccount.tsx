@@ -1,6 +1,6 @@
 import React from 'react';
-import Section from "../section/Section";
-import {useAuthContext} from "../../../context/AuthContext";
+import Section from "../../components/SettingsContentSection";
+import {useAuthContext} from "../../../../context/AuthContext";
 import classes from "./SettingsAccount.module.css";
 
 const SettingsAccount = () => {

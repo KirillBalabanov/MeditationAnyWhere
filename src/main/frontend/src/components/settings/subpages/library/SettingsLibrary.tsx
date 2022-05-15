@@ -1,15 +1,15 @@
 import classes from "./SettingsLibrary.module.css";
-import Section from "../section/Section";
-import audioUploadIcon from "../../../images/audioUploadIcon.svg";
-import InlineAudio from "../../audio/inline/InlineAudio";
+import Section from "../../components/SettingsContentSection";
+import audioUploadIcon from "../../../../images/audioUploadIcon.svg";
+import InlineAudio from "../../../audio/inline/InlineAudio";
 import React, {ChangeEvent, useEffect, useState} from "react";
-import FormAudio from "../../audio/form/FormAudio";
-import removeIcon from "../../../images/removeIcon.svg";
-import Loader from "../../loader/Loader";
-import Popup from "../../popup/Popup";
-import {useCsrfContext} from "../../../context/CsrfContext";
-import {AudioI} from "../../../types/types";
-import {isValidAudioName} from "../../../util/AudioValidator/isValidAudioName";
+import FormAudio from "../../../audio/form/FormAudio";
+import removeIcon from "../../../../images/removeIcon.svg";
+import Loader from "../../../loader/Loader";
+import Popup from "../../../popup/Popup";
+import {useCsrfContext} from "../../../../context/CsrfContext";
+import {AudioI} from "../../../../types/types";
+import {isValidAudioName} from "../../../../util/AudioValidator/isValidAudioName";
 
 
 const SettingsLibrary = () => {

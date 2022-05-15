@@ -1,14 +1,14 @@
 import React, {ChangeEvent, FC, FormEvent, useEffect, useState} from 'react';
-import defaultAvatar from "../../../images/defaultAvatar.svg";
+import defaultAvatar from "../../../../images/defaultAvatar.svg";
 import classes from "./SettingsProfile.module.css";
-import Section from "../section/Section";
-import {useCsrfContext} from "../../../context/CsrfContext";
-import {useFetching} from "../../../hooks/useFetching";
-import Loader from "../../loader/Loader";
-import {useHeaderContext} from "../../../context/HeaderContext";
-import PopupRectangle from "../../popup/PopupRectangle";
-import Popup from "../../popup/Popup";
-import {AbsolutePositionX, AbsolutePositionY} from "../../../types/componentTypes";
+import Section from "../../components/SettingsContentSection";
+import {useCsrfContext} from "../../../../context/CsrfContext";
+import {useFetching} from "../../../../hooks/useFetching";
+import Loader from "../../../loader/Loader";
+import {useHeaderContext} from "../../../../context/HeaderContext";
+import PopupRectangle from "../../../popup/PopupRectangle";
+import Popup from "../../../popup/Popup";
+import {AbsolutePositionX, AbsolutePositionY} from "../../../../types/componentTypes";
 
 const SettingsProfile: FC = () => {
     const csrfContext = useCsrfContext()!;

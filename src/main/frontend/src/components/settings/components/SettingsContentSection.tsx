@@ -1,5 +1,5 @@
 import React from 'react';
-import classes from "./Section.module.css";
+import classes from "./SettingsComponents.module.css";
 
 interface SectionProps {
     title: string,
