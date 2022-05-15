@@ -6,10 +6,10 @@ import React, {ChangeEvent, useEffect, useState} from "react";
 import FormAudio from "../../audio/form/FormAudio";
 import removeIcon from "../../../images/removeIcon.svg";
 import Loader from "../../loader/Loader";
-import AudioValidator from "../../../util/AudioValidator";
 import Popup from "../../popup/Popup";
 import {useCsrfContext} from "../../../context/CsrfContext";
 import {AudioI} from "../../../types/types";
+import {isValidAudioName} from "../../../util/AudioValidator/isValidAudioName";
 
 
 const SettingsLibrary = () => {
@@ -96,7 +96,7 @@ const SettingsLibrary = () => {
             if (ct.name === "audioTitle") {
                 obj.url = ct.dataset.url;
                 obj.title = ct.value;
-                if(!AudioValidator.isValidAudioName(obj.title)) return;
+                if(!isValidAudioName(obj.title)) return;
                 obj.changed = ct.dataset.changed;
                 if(obj.changed === "1") changed = true;
                 if (obj.title in titleHash) {
@@ -175,7 +175,7 @@ const SettingsLibrary = () => {
         // @ts-ignore
         let audioTitle = e.target[5].value;
 
-        if(!AudioValidator.isValidAudioName(audioTitle)) return;
+        if(!isValidAudioName(audioTitle)) return;
         if(audioFetched.filter((el) => el.audioTitle === audioTitle).length !== 0) {
             setInputErrorMsg("Title already taken.");
             return;
@@ -241,7 +241,7 @@ const SettingsLibrary = () => {
                                             <input className={classes.previewInput} type="text" maxLength={20}
                                                    placeholder={"Enter file name"} onChange={(e) => {
                                                        setAddAllowed(false);
-                                                if(!AudioValidator.isValidAudioName(e.target.value)) setInputErrorMsg("Invalid audio title");
+                                                if(!isValidAudioName(e.target.value)) setInputErrorMsg("Invalid audio title");
                                                 else{
                                                     setAddAllowed(true);
                                                     setInputErrorMsg("");
