@@ -11,12 +11,18 @@ import {useCsrfContext} from "../../../../context/CsrfContext";
 import {AudioI} from "../../../../types/types";
 import {isValidAudioName} from "../../../../util/AudioValidator/isValidAudioName";
 
+interface formData {
+    url: string,
+    title: string,
+    delete: string,
+    changed: string
+}
 
 const SettingsLibrary = () => {
 
     let csrfContext = useCsrfContext()!;
 
-    const [audioFetched, setAudioFetched] = useState<AudioI[] | null>(null);
+    const [audioFetched, setAudioFetched] = useState<AudioI[] | []>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     const [inputErrorMsg, setInputErrorMsg] = useState("");
@@ -25,32 +31,32 @@ const SettingsLibrary = () => {
     const [popupContent, setPopupContent] = useState("");
 
     const [audioFile, setAudioFile] = useState<File | null>(null);
-    const [fileErrorMsg, setFileErrorMsg] = useState("");
+    const [audioErrorMsg, setAudioErrorMsg] = useState("");
     const [audioPreviewUrl, setAudioPreviewUrl] = useState("");
-    const [inputKey, setInputKey] = useState(Date.now());
+    const [audioInputKey, setAudioInputKey] = useState(Date.now());
 
     const [addAllowed, setAddAllowed] = useState(false);
+
     const [updateAllowed, setUpdateAllowed] = useState(false);
     const [errorUpdateMsg, setErrorUpdateMsg] = useState("");
 
     useEffect(() => {
         fetch("/user/audio/get").then((response) => {
             return response.json()
-        }).then((data) => setAudioFetched(data)).catch(() => {
+        }).then((data) => setAudioFetched(data)).catch(() => { // catch in case server return null
             setAudioFetched([])
         }).then(() => setIsLoading(false));
     }, []);
 
     const audioPreview = (e: ChangeEvent) => {
-        if(audioFetched === null) return;
         setAudioFile(null);
-        setFileErrorMsg("");
+        setAudioErrorMsg("");
         setAudioPreviewUrl("");
-        setInputKey(Date.now());
+        setAudioInputKey(Date.now());
         setAddAllowed(false);
         if (audioFetched.length >= 3) {
-            setFileErrorMsg("You cannot have more than 3 tracks.");
-            setInputKey(Date.now());
+            setAudioErrorMsg("You cannot have more than 3 tracks.");
+            setAudioInputKey(Date.now());
             return;
         }
 
@@ -61,14 +67,14 @@ const SettingsLibrary = () => {
 
 
         if (!file.type.match("audio.*")) {
-            setInputKey(Date.now());
-            setFileErrorMsg("Invalid type");
+            setAudioInputKey(Date.now());
+            setAudioErrorMsg("Invalid type");
             return;
         }
 
         if(file.size > 7_000_000) {
-            setInputKey(Date.now()); // reset file input
-            setFileErrorMsg("Audio cannot exceed 7mb.");
+            setAudioInputKey(Date.now()); // reset file input
+            setAudioErrorMsg("Audio cannot exceed 7mb.");
             return;
         }
 
@@ -78,20 +84,21 @@ const SettingsLibrary = () => {
 
         };
         fileReader.readAsDataURL(file);
-
         setAudioFile(file);
     };
 
     function updateLibrarySubmit(e: React.FormEvent) {
         e.preventDefault();
         setErrorUpdateMsg("");
+
         let target = e.target;
-        let titleHash = {};
+        let titleMap = {};
         let index = 0;
         let inputs = [];
         let changed = false;
         while (true) {
-            let obj = {title: "", url: "", delete: "0", changed: "0"}
+
+            let obj: formData = {title: "", url: "", delete: "0", changed: "0"}
             // @ts-ignore
             let ct = target[index];
             if(ct === undefined) break;
@@ -101,12 +108,13 @@ const SettingsLibrary = () => {
                 if(!isValidAudioName(obj.title)) return;
                 obj.changed = ct.dataset.changed;
                 if(obj.changed === "1") changed = true;
-                if (obj.title in titleHash) {
-                    setFileErrorMsg("Title already taken");
+                if (obj.title in titleMap) {
+                    setAudioErrorMsg("Title already taken");
                     return;
                 }
                 // @ts-ignore
-                titleHash[obj.title] = null;
+                titleMap[obj.title] = true;
+
                 index++;
                 while(true) { // find button of that form audio
                     // @ts-ignore
@@ -127,7 +135,6 @@ const SettingsLibrary = () => {
             return;
         }
 
-        let audioChanged: any = []
         inputs.forEach((inp) => {
             if (inp.delete === "1") {
                 fetch("/user/audio/del", {
@@ -139,13 +146,13 @@ const SettingsLibrary = () => {
                     body: JSON.stringify({"url": inp.url})
                 }).then((response) => response.json()).then((data) => {
                     if("error" in data) {
-                        setFileErrorMsg(data.error);
+                        setAudioErrorMsg(data.error);
                         return;
                     }
+                    setAudioFetched(prev => prev!.filter(el => el.audioUrl !== inp.url));
                 });
 
             }
-            else audioChanged = [...audioChanged, {audioUrl: inp.url, audioTitle: inp.title}]
             if (inp.changed === "1") {
                 fetch("/user/audio/update", {
                     method: "PUT",
@@ -156,13 +163,18 @@ const SettingsLibrary = () => {
                     body: JSON.stringify({title: inp.title, url: inp.url})
                 }).then((response) => response.json()).then((data) => {
                     if("error" in data) {
-                        setFileErrorMsg(data.error);
+                        setAudioErrorMsg(data.error);
                         return;
                     }
+                    setAudioFetched(prev => prev!.map(el => {
+                        if (el.audioUrl === inp.url) {
+                            el.audioTitle = inp.title;
+                        }
+                        return el;
+                    }));
                 });
             }
         });
-        setAudioFetched(audioChanged);
         setPopupContent("Library updated!");
         setShowPopup(true);
         setUpdateAllowed(false);
@@ -170,14 +182,14 @@ const SettingsLibrary = () => {
 
     function addAudioSubmit(e: React.FormEvent) {
         e.preventDefault();
-        if(audioFetched === null) return;
+
         if(audioFile === null) return;
 
         if(!addAllowed) return;
 
         if(audioFetched.length >= 3) return;
-        // @ts-ignore
-        let audioTitle = e.target[5].value;
+
+        let audioTitle = (e.currentTarget.querySelector("input[type=text]") as HTMLInputElement).value;
 
         if(!isValidAudioName(audioTitle)) return;
         if(audioFetched.filter((el) => el.audioTitle === audioTitle).length !== 0) {
@@ -196,94 +208,98 @@ const SettingsLibrary = () => {
             body: formData
         }).then((response) => response.json()).then((data) => {
             if("error" in data) {
-                setFileErrorMsg(data.error);
+                setAudioErrorMsg(data.error);
                 return;
             }
             setAudioFetched([...audioFetched, data])
         });
-        setInputKey(Date.now());
+        // reset audio preview
+        setAudioInputKey(Date.now());
         setAudioPreviewUrl("");
-        setAudioFile(null);
+
         setPopupContent("Audio added successfully");
         setShowPopup(true);
         setAddAllowed(false);
     }
 
     return (
-        <Section title={"Your library"}>
-            <div className={classes.library}>
-                {
-                    isLoading
-                        ?
-                        <Loader></Loader>
-                        :
-                        <div className={classes.libraryInner}>
-                            <form className={classes.addForm} onSubmit={addAudioSubmit}>
-                                {
-                                    audioPreviewUrl === ""
-                                        ?
-                                        <div>
-                                            <label className={classes.input}>
-                                                <img className={classes.inputImg} src={audioUploadIcon}
-                                                     alt="uploadIcon"/>
-                                                <p className={classes.inputText}>Add new audio file</p>
-                                                <input type="file" style={{display: "none"}} onChange={audioPreview}
-                                                       key={inputKey}/>
-                                            </label>
-                                            <p className={classes.fileError}>{fileErrorMsg}</p>
-                                        </div>
-                                        :
-                                        <div className={classes.preview}>
-                                            <div className={classes.previewAudio}>
-                                                <InlineAudio url={audioPreviewUrl}></InlineAudio>
-                                            </div>
-                                            <button type={"button"} className={classes.removePreviewBtn}
-                                                    onClick={() => {
-                                                        setAudioPreviewUrl("");
-                                                        setInputKey(Date.now());
-                                                    }}><img src={removeIcon} alt="remove"/></button>
-                                            <input className={classes.previewInput} type="text" maxLength={20}
-                                                   placeholder={"Enter file name"} onChange={(e) => {
-                                                       setAddAllowed(false);
-                                                if(!isValidAudioName(e.target.value)) setInputErrorMsg("Invalid audio title");
-                                                else{
-                                                    setAddAllowed(true);
-                                                    setInputErrorMsg("");
-                                                }
-                                            }}/>
-                                            <p className={classes.inputError}>{inputErrorMsg}</p>
-                                            {
-                                                addAllowed&&
-                                                <button className={classes.addBtn} type={"submit"}>Add audio</button>
-                                            }
-                                        </div>
-                                }
-                            </form>
-                            {
-                                audioFetched !== null && audioFetched.length > 0 &&
-                                <form onSubmit={updateLibrarySubmit}>
-                                    {audioFetched.map(audio => <FormAudio audioUrl={audio.audioUrl}
-                                                                     audioTitle={audio.audioTitle}
-                                                                     key={audio.audioUrl} setUpdateAllowed={setUpdateAllowed}></FormAudio>) }
+        <div>
+            {
+                isLoading
+                    ?
+                    <Loader></Loader>
+                    :
+                    <Section title={"Your library"}>
+                        <div className={classes.library}>
+                            <div className={classes.libraryInner}>
+                                <form className={classes.addForm} onSubmit={addAudioSubmit}>
                                     {
-                                        updateAllowed&&
-                                        <div>
-                                            <button className={classes.updateBtn} type={"submit"}>
-                                                Update library
-                                            </button>
-                                            <p className={classes.updateError}>{errorUpdateMsg}</p>
-                                        </div>
-
+                                        audioPreviewUrl === ""
+                                            ?
+                                            <div>
+                                                <label className={classes.input}>
+                                                    <img className={classes.inputImg} src={audioUploadIcon}
+                                                         alt="uploadIcon"/>
+                                                    <p className={classes.inputText}>Add new audio file</p>
+                                                    <input type="file" style={{display: "none"}} onChange={audioPreview}
+                                                           key={audioInputKey}/>
+                                                </label>
+                                                <p className={classes.fileError}>{audioErrorMsg}</p>
+                                            </div>
+                                            :
+                                            <div className={classes.preview}>
+                                                <div className={classes.previewAudio}>
+                                                    <InlineAudio url={audioPreviewUrl}></InlineAudio>
+                                                </div>
+                                                <button type={"button"} className={classes.removePreviewBtn}
+                                                        onClick={() => {
+                                                            setAudioPreviewUrl("");
+                                                            setAudioInputKey(Date.now());
+                                                        }}><img src={removeIcon} alt="remove"/></button>
+                                                <input className={classes.previewInput} type="text" maxLength={20}
+                                                       placeholder={"Enter file name"} onChange={(e) => {
+                                                    setAddAllowed(false);
+                                                    if (!isValidAudioName(e.target.value)) setInputErrorMsg("Invalid audio title");
+                                                    else {
+                                                        setAddAllowed(true);
+                                                        setInputErrorMsg("");
+                                                    }
+                                                }}/>
+                                                <p className={classes.inputError}>{inputErrorMsg}</p>
+                                                {
+                                                    addAllowed &&
+                                                    <button className={classes.addBtn} type={"submit"}>Add
+                                                        audio</button>
+                                                }
+                                            </div>
                                     }
-
                                 </form>
-                            }
+                                {
+                                    audioFetched.length > 0 &&
+                                    <form onSubmit={updateLibrarySubmit}>
+                                        {audioFetched.map(audio => <FormAudio audioUrl={audio.audioUrl}
+                                                                              audioTitle={audio.audioTitle}
+                                                                              key={audio.audioUrl}
+                                                                              setUpdateAllowed={setUpdateAllowed}></FormAudio>)}
+                                        {
+                                            updateAllowed &&
+                                            <div>
+                                                <button className={classes.updateBtn} type={"submit"}>
+                                                    Update library
+                                                </button>
+                                                <p className={classes.updateError}>{errorUpdateMsg}</p>
+                                            </div>
 
+                                        }
+                                    </form>
+                                }
+                            </div>
                         </div>
-                }
-            </div>
-            <Popup popupInfo={popupContent} shown={showPopup} setShown={setShowPopup} popupConfirm={"Ok"}></Popup>
-        </Section>
+                        <Popup popupInfo={popupContent} shown={showPopup} setShown={setShowPopup}
+                               popupConfirm={"Ok"}></Popup>
+                    </Section>
+            }
+        </div>
     );
 };
 
