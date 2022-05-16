@@ -44,13 +44,9 @@
 }
 
 .profile__section {
-    border-bottom: 1px solid #2D2E32;
     padding-bottom: 20px;
     padding-top: 20px;
     position: relative;
-}
-.profile__section:last-child {
-    border-bottom: none;
 }
 .profile__sectionTitle {
     font-size: 18px;
@@ -69,12 +65,28 @@ button {
     font-size: 16px;
 }
 
-.setting {
-
+.settings__content{
+    min-width: 350px;
+    height: 600px;
+    position: relative;
 }
+
 .setting__title {
     padding: 0 0 10px;
     border-bottom: 1px solid #2D2E32;
     font-size: 26px;
     margin: 0;
+}
+
+.remove {
+    background: #480c0c;
+    margin-left: 35px;
+    margin-top: 30px;
+    transition: all .3s ease;
+}
+.remove:hover {
+    background: #5d1a1a;
+}
+.remove.removeSelected {
+    border: 2px solid #853232;
 }

@@ -8,7 +8,7 @@ interface SettingsContentProps {
 
 const SettingsContent: FC<SettingsContentProps> = ({children, title}) => {
     return (
-        <div className={classes.settings__setting}>
+        <div className={classes.settings__content}>
             <h3 className={classes.setting__title}>
                 {title}
             </h3>
