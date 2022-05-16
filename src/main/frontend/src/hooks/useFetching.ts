@@ -5,7 +5,6 @@ import {ErrorI} from "../types/types";
 export const useFetching = <T>(fetchRequest: string, setIsLoading: (loading: boolean) => void, setData: (el: T) => void) => {
     useEffect(() => {
         fetchReq(fetchRequest, setIsLoading, setData);
-        setIsLoading(false);
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 };
 
@@ -13,8 +12,9 @@ export const useFetchingOnCondition = <T>(fetchRequest: string, setIsLoading: (l
     useEffect(() => {
         if (condition) {
             fetchReq(fetchRequest, setIsLoading, setData)
+        } else {
+            setIsLoading(false);
         }
-        setIsLoading(false);
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 }
 
@@ -26,5 +26,6 @@ function fetchReq<T>(fetchRequest: string, setIsLoading: (loading: boolean) => v
         else {
             setData(data);
         }
+        setIsLoading(false);
     });
 }
