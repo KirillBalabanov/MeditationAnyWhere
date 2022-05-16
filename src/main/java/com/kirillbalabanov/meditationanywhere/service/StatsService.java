@@ -7,6 +7,8 @@ import com.kirillbalabanov.meditationanywhere.repository.StatsRepository;
 import com.kirillbalabanov.meditationanywhere.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
 import java.time.LocalDate;
@@ -31,6 +33,7 @@ public class StatsService {
      * @param userId id of user, to which update would be used.
      * @return updates StatsEntity.
      */
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public StatsEntity updateStats(int minutesListened, long userId) throws NoUserFoundException {
         Optional<UserEntity> optionalUserEntity = userRepository.findById(userId);
         if(optionalUserEntity.isEmpty()) throw new NoUserFoundException("User not found.");

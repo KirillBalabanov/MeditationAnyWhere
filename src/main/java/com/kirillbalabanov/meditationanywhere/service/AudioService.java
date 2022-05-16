@@ -10,6 +10,8 @@ import com.kirillbalabanov.meditationanywhere.model.AudioModel;
 import com.kirillbalabanov.meditationanywhere.repository.AudioRepository;
 import com.kirillbalabanov.meditationanywhere.util.validator.TitleValidator;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -29,6 +31,7 @@ public class AudioService {
         this.fileService = fileService;
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public AudioEntity addAudio(long userId, MultipartFile audioFile, String audioTitle) throws NoUserFoundException, IOException, AudioTitleTakenException {
         UserEntity userEntity = userService.findById(userId);
 
@@ -46,12 +49,14 @@ public class AudioService {
         return audioRepository.save(audioEntity);
     }
 
+    @Transactional(readOnly = true)
     public AudioModel[] getUserAudioInArrayModels(long userId) throws NoUserFoundException {
         UserEntity userEntity = userService.findById(userId);
         if(userEntity.getAudioEntityList().size() == 0) return null;
         return userEntity.getAudioEntityList().stream().map(AudioModel::toModel).toArray(AudioModel[]::new);
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public AudioEntity updateAudioTitle(long userId, String url, String title) throws NoUserFoundException, AudioNotFoundException, InvalidAudioTitleException, AudioTitleTakenException {
         if(!TitleValidator.validateAudioTitle(title)) throw new InvalidAudioTitleException("Invalid audio title");
         UserEntity userEntity = userService.findById(userId);
@@ -69,6 +74,7 @@ public class AudioService {
         return audioEntity;
     }
 
+    @Transactional(readOnly = true)
     public AudioEntity findUserAudioByUrl(long userId, String url) throws NoUserFoundException, AudioNotFoundException {
         UserEntity userEntity = userService.findById(userId);
         Optional<AudioEntity> optional = userEntity.getAudioEntityList().stream().filter((el) -> el.getAudioUrl().equals(url)).findFirst();
@@ -76,7 +82,7 @@ public class AudioService {
         return optional.get();
     }
 
-
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void deleteUserAudioByUrl(long userId, String url) throws NoUserFoundException, AudioNotFoundException {
         UserEntity userEntity = userService.findById(userId);
         Optional<AudioEntity> optional = userEntity.getAudioEntityList().stream().filter((el) -> el.getAudioUrl().equals(url)).findFirst();

@@ -6,6 +6,8 @@ import com.kirillbalabanov.meditationanywhere.exception.user.NoUserFoundExceptio
 import com.kirillbalabanov.meditationanywhere.repository.ProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -21,7 +23,7 @@ public class ProfileService {
         this.userService = userService;
         this.fileService = fileService;
     }
-
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public ProfileEntity updateProfileSettings(long id, String bio, MultipartFile image) throws NoUserFoundException, IOException {
         UserEntity userEntity = userService.findById(id);
         ProfileEntity profileEntity = userEntity.getProfileEntity();
@@ -38,7 +40,7 @@ public class ProfileService {
 
         return profileRepository.save(profileEntity);
     }
-
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public ProfileEntity updateProfileSettings(long id, String bio, boolean deleteAvatar) throws NoUserFoundException {
         UserEntity userEntity = userService.findById(id);
 
