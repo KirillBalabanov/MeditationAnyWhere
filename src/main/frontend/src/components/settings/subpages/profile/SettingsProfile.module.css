@@ -28,18 +28,6 @@
     display: flex;
 }
 
-.remove {
-    background: #480c0c;
-    margin-left: 35px;
-    margin-top: 30px;
-    transition: all .3s ease;
-}
-.remove:hover {
-    background: #5d1a1a;
-}
-.remove.removeSelected {
-    border: 2px solid #853232;
-}
 
 .bio {
     background: black;
