@@ -83,7 +83,7 @@ public class AudioService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void deleteUserAudioByUrl(long userId, String url) throws NoUserFoundException, AudioNotFoundException {
+    public AudioEntity deleteUserAudioByUrl(long userId, String url) throws NoUserFoundException, AudioNotFoundException {
         UserEntity userEntity = userService.findById(userId);
         Optional<AudioEntity> optional = userEntity.getAudioEntityList().stream().filter((el) -> el.getAudioUrl().equals(url)).findFirst();
         if (optional.isEmpty()) throw new AudioNotFoundException("Audio not found.");
@@ -91,5 +91,6 @@ public class AudioService {
         fileService.deleteFileFromUserDirectory(audioEntity.getAudioPath());
         userEntity.getAudioEntityList().remove(audioEntity);
         audioRepository.delete(audioEntity);
+        return audioEntity;
     }
 }
