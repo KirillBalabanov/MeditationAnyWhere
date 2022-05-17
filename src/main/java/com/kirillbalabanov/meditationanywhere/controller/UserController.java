@@ -61,7 +61,6 @@ public class UserController {
             return ResponseEntity.ok().body(ErrorModel.fromMessage(e.getMessage()));
         }
 
-        hm.put("authenticated", true);
         hm.put("username", username);
         // generate new csrf token
         hm.put("csrf", generateAndSaveToken(request, response));
