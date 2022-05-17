@@ -1,7 +1,7 @@
 import React, {createContext, Dispatch, FC, useContext, useEffect, useReducer, useState} from 'react';
 import {ContextProviderInterface} from "../ContextProviderInterface";
 import Loader from "../../components/loader/Loader";
-import {useRefreshAuth} from "../../hooks/useRefteshAuth";
+import {useGetPrincipal} from "../../hooks/useRefteshAuth";
 import {AuthAction, authReducer, AuthState} from "../../reducer/authReducer";
 import {CsrfAction, CsrfActionTypes, csrfReducer, CsrfState} from "../../reducer/csrfReducer";
 import {HeaderAction, headerReducer, HeaderState} from "../../reducer/headerReducer";
@@ -76,7 +76,7 @@ export const CacheStoreProvider: FC<ContextProviderInterface> = ({children}) => 
 
 
     // get principal
-    useRefreshAuth(cacheStoreContextImp, setIsLoadingPrincipal);
+    useGetPrincipal(cacheStoreContextImp, setIsLoadingPrincipal);
 
 
     if(isLoadingPrincipal) return (<Loader></Loader>)
