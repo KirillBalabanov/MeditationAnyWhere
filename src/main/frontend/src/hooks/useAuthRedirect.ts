@@ -1,11 +1,10 @@
 import {useNavigate} from "react-router-dom";
 import {useEffect} from "react";
-import {AuthContextI} from "../context/AuthContext";
 
-export const useAuthRedirect = (authContext: AuthContextI) => {
+export const useAuthRedirect = (auth: boolean) => {
     // if user is logged in, redirect to main page
     let navigateFunction = useNavigate();
     useEffect(() => {
-        if(authContext?.auth) navigateFunction("/");
-    }, [authContext, navigateFunction]);
+        if(auth) navigateFunction("/");
+    }, [navigateFunction, auth]);
 };
