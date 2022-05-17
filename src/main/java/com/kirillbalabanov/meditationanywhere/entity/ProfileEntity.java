@@ -10,13 +10,13 @@ public class ProfileEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(nullable = true, length = 255)
+    @Column
     private String avatarUrl;
 
-    @Column(nullable = true)
+    @Column
     private String avatarPath;
 
-    @Column(nullable = true, length = 255)
+    @Column
     private String bio;
 
     @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
@@ -28,9 +28,9 @@ public class ProfileEntity {
 
     public static ProfileEntity initProfileEntity() {
         ProfileEntity profileEntity = new ProfileEntity();
-        profileEntity.setBio("");
-        profileEntity.setAvatarUrl("");
-        profileEntity.setAvatarPath("");
+        profileEntity.setBio(null);
+        profileEntity.setAvatarUrl(null);
+        profileEntity.setAvatarPath(null);
         return profileEntity;
     }
 
