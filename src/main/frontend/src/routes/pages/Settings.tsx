@@ -1,13 +1,12 @@
-import React, {FC, useState} from 'react';
+import React, {FC} from 'react';
 import {useNavigate, useParams} from "react-router-dom";
 import classes from "../styles/Settings.module.css";
 import SettingsProfile from "../../components/settings/subpages/profile/SettingsProfile";
 import SettingsAccount from "../../components/settings/subpages/account/SettingsAccount";
 import SettingsLibrary from "../../components/settings/subpages/library/SettingsLibrary";
-import {useAuthContext, useRefreshAuthContext} from "../../context/AuthContext";
-import Loader from "../../components/loader/Loader";
 import SettingsOption from "../../components/settings/components/SettingsOption";
 import SettingsContent from "../../components/settings/components/SettingsContent";
+import {useCacheStore} from "../../context/CacheStore/CacheStoreContext";
 
 export enum SettingOptions {
     profile = "profile",
@@ -17,15 +16,13 @@ export enum SettingOptions {
 
 const Settings: FC = () => {
     const setting = useParams()["setting"];
+
+    const cacheStore = useCacheStore()!;
+    const [authState] = cacheStore.authReducer;
+
     let navigateFunction = useNavigate();
 
-    let authContext = useAuthContext();
-    const [refreshAuthLoading, setRefreshAuthLoading] = useState(true);
-    useRefreshAuthContext(authContext!, setRefreshAuthLoading);
-
-    if(refreshAuthLoading) return (<Loader></Loader>)
-
-    if(!authContext?.auth) navigateFunction("/login");
+    if(!authState.auth) navigateFunction("/login");
 
     return (
         <div>

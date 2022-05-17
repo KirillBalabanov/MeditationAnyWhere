@@ -2,22 +2,22 @@ import React, {ChangeEvent, FC, FormEvent, useEffect, useState} from 'react';
 import defaultAvatar from "../../../../images/defaultAvatar.svg";
 import classes from "./SettingsProfile.module.css";
 import Section from "../../components/SettingsContentSection";
-import {useCsrfContext} from "../../../../context/CsrfContext";
-import {useFetching} from "../../../../hooks/useFetching";
 import Loader from "../../../loader/Loader";
-import {useHeaderContext} from "../../../../context/HeaderContext";
 import PopupRectangle from "../../../popup/PopupRectangle";
 import Popup from "../../../popup/Popup";
 import {AbsolutePositionX, AbsolutePositionY} from "../../../../types/componentTypes";
 import SettingsDelBtn from "../../components/SettingsDelBtn";
-import {ErrorI, ProfileI} from "../../../../types/types";
+import {useCacheStore} from "../../../../context/CacheStore/CacheStoreContext";
+import {ErrorFetchI, ProfileFetchI} from "../../../../types/serverTypes";
+import {UserActionTypes} from "../../../../reducer/userReducer";
 
 const SettingsProfile: FC = () => {
-    const csrfContext = useCsrfContext()!;
-    const headerContext = useHeaderContext()!;
+    const cacheStore = useCacheStore()!;
+    const [userState, userDispatcher] = cacheStore.userReducer;
+    const [csrfState] = cacheStore.csrfReducer;
 
-    const [bio, setBio] = useState("");
-    const [avatarUrl, setAvatarUrl] = useState("");
+
+    const [avatarPreviewUrl, setAvatarPreviewUrl] = useState<string | null>(null);
 
     const [deleteAvatar, setDeleteAvatar] = useState(false);
     const [imageUploadFailed, setImageUploadFailed] = useState(false);
@@ -25,17 +25,27 @@ const SettingsProfile: FC = () => {
     const [imageUploadErrorMsg, setImageUploadErrorMsg] = useState("");
 
     const [popupShown, setPopupShown] = useState(false);
-    const [data, setData] = useState<ProfileI>({bio: "", avatarUrl: ""});
     const [isDataLoading, setIsDataLoading] = useState(true);
 
     const [rectangleShown, setRectangleShown] = useState(false);
 
-    useFetching("/user/profile/settings/get", setIsDataLoading, setData);
+    useEffect(() => {
+
+        if (userState.avatar === null || userState.bio === null) { // fetch from server and add to cache
+            fetch("/user/profile/settings/get").then((response) => response.json()).then((data: ProfileFetchI) => {
+                userDispatcher({type: UserActionTypes.SET_AVATAR, payload: {url: data.avatarUrl}})
+                userDispatcher({type: UserActionTypes.SET_BIO, payload: {bio: data.bio}})
+                setIsDataLoading(false)
+            });
+        } else {
+            setIsDataLoading(false);
+        }
+
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     useEffect(() => {
-        setBio(data.bio);
-        setAvatarUrl(data.avatarUrl);
-    }, [data]);
+        setAvatarPreviewUrl(  userState.avatar !== null && userState.avatar.url !== null ? userState.avatar.url : null);
+    }, [userState.avatar?.url]);
 
     const imagePreview = (e: ChangeEvent) => {
         let fileReader = new FileReader();
@@ -59,7 +69,7 @@ const SettingsProfile: FC = () => {
 
         fileReader.onloadend = () => {
             // @ts-ignore
-            setAvatarUrl(fileReader.result);
+            setAvatarPreviewUrl(fileReader.result);
         };
         fileReader.readAsDataURL(file);
         setImageUploadFailed(false);
@@ -67,35 +77,41 @@ const SettingsProfile: FC = () => {
 
     const formSubmit = (e: FormEvent) => {
         e.preventDefault();
+
         // @ts-ignore
-        let image = e.target[0].files[0];
-        // @ts-ignore
-        let bioForm = e.target[2].value;
-        if(image == null && bioForm === bio && !deleteAvatar) { // in case no changes but user clicked the btn.
+        let image: File = (e.currentTarget.querySelector("input[type=file]") as HTMLInputElement).files[0];
+        let bioForm: string = e.currentTarget.querySelector("textarea")!.value;
+
+        if(image === null && bioForm === userState.bio?.bio && !deleteAvatar) { // in case no changes but user clicked the btn.
             return;
         }
 
-        if(bioForm === bio && deleteAvatar && avatarUrl === "") return; // del but no avatar is set
+        if(bioForm === userState.bio?.bio && deleteAvatar && userState.avatar?.url === null) return; // del but no avatar is set
         if(imageUploadFailed) return;
 
         let formData = new FormData();
         formData.append("bio", bioForm);
         formData.append("deleteAvatar", deleteAvatar.toString());
         formData.append("image", image);
+
         fetch("/user/profile/settings/update", {
             method: "PUT",
             headers: {
-                'X-XSRF-TOKEN': csrfContext.csrfToken
+                'X-XSRF-TOKEN': csrfState.csrfToken!,
             },
             body: formData
-        }).then((response) => response.json()).then((data: ProfileI | ErrorI) => {
+        }).then((response) => response.json()).then((data: ProfileFetchI | ErrorFetchI) => {
             if ("errorMsg" in data) {
                 setImageUploadErrorMsg(data.errorMsg);
+                setImageUploadFailed(true);
                 return;
             }
-            setAvatarUrl(data["avatarUrl"]);
-            setBio(data["bio"]);
-            headerContext?.setReload(true);
+            if (data.bio === null) {
+
+            }
+            userDispatcher({type: UserActionTypes.SET_BIO, payload: {bio: data.bio}});
+            userDispatcher({type: UserActionTypes.SET_AVATAR, payload: {url: data.avatarUrl}})
+
             setPopupShown(true);
             setDeleteAvatar(false);
             setImageInputKey(Date.now()); // reset file input
@@ -114,7 +130,7 @@ const SettingsProfile: FC = () => {
                             <Section title={"Profile image"}>
                                 <label className={classes.upload} onMouseOver={() => setRectangleShown(true)} onMouseLeave={() => setRectangleShown(false)}>
                                     <img className={classes.avatar}
-                                         src={avatarUrl==="" ? defaultAvatar : avatarUrl}
+                                         src={avatarPreviewUrl === null ? defaultAvatar : avatarPreviewUrl}
                                          alt="avatar"/>
                                     <PopupRectangle popupShown={rectangleShown} popupText={"change avatar"} positionX={AbsolutePositionX.MIDDLE} positionY={AbsolutePositionY.BOTTOM}></PopupRectangle>
                                     <input style={{display: "none"}} type={"file"} name={"image"}
@@ -123,11 +139,11 @@ const SettingsProfile: FC = () => {
                                 <p className={imageUploadFailed ? classes.uploadError + " " + classes.uploadErrorShown : classes.uploadError}>
                                     {imageUploadErrorMsg}
                                 </p>
-                                <SettingsDelBtn show={avatarUrl !== ""} del={deleteAvatar} setDel={setDeleteAvatar} title={"Remove photo"}/>
+                                <SettingsDelBtn show={userState.avatar !== null && userState.avatar.url !== null} del={deleteAvatar} setDel={setDeleteAvatar} title={"Remove photo"}/>
                             </Section>
 
                             <Section title={"Bio"}>
-                                <textarea className={classes.bio} name="bio" cols={50} rows={6} defaultValue={bio} maxLength={255}></textarea>
+                                <textarea className={classes.bio} name="bio" cols={50} rows={6} defaultValue={(userState.bio !== null && userState.bio.bio !== null) ? userState.bio.bio : ""} maxLength={255}></textarea>
                             </Section>
 
                             <button type={"submit"} className={classes.updateProfile}>Update profile</button>

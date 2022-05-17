@@ -1,25 +1,24 @@
 import React, {FC, FormEvent, useCallback, useState} from 'react';
 import classes from "../styles/AuthPage.module.css";
 import {Link} from "react-router-dom";
-import {useAuthContext} from "../../context/AuthContext";
-import {useCsrfContext} from "../../context/CsrfContext";
 import {useAuthRedirect} from "../../hooks/useAuthRedirect";
 import Form, {FormStyles} from "../../components/form/Form";
 import FormTitle from "../../components/form/FormTitle";
 import FormInput from "../../components/form/FormInput";
-import {ErrorI, LoginI} from "../../types/types";
 import {validFormInput, ValidFormValidator} from "../../components/form/FormService/validFormInput";
 import {animateFetchRequest} from "../../components/form/FormService/animateFetchRequest";
 import {isValidUsername} from "../../util/UserValidator/isValidUsername";
 import {isValidPassword} from "../../util/UserValidator/isValidPassword";
-import {useHeaderContext} from "../../context/HeaderContext";
+import {useCacheStore} from "../../context/CacheStore/CacheStoreContext";
+import {ErrorFetchI, LoginFetchI} from "../../types/serverTypes";
+import {loginUser} from "../../context/CacheStore/CacheStoreService/loginUser";
 
 const LoginPage: FC = () => {
-    const csrfContext = useCsrfContext()!;
-    let authContext = useAuthContext()!;
-    const headerContext = useHeaderContext()!;
+    const cacheStore = useCacheStore()!;
+    const [authState] = cacheStore.authReducer;
+    const [csrfState] = cacheStore.csrfReducer;
 
-    useAuthRedirect(authContext);
+    useAuthRedirect(authState.auth);
 
     const [isLoading, setIsLoading] = useState(false);
     const [formClasses, setFormClasses] = useState<FormStyles[]>([]);
@@ -45,32 +44,30 @@ const LoginPage: FC = () => {
         setFormClasses([FormStyles.loading]);
         setIsLoading(true);
         fetch("/user/auth/login", {
-            method: "POST", headers: {
+            method: "POST",
+            headers: {
                 'Content-Type': 'application/json',
-                'X-XSRF-TOKEN': csrfContext.csrfToken
+                'X-XSRF-TOKEN': csrfState.csrfToken!
             },
             body: JSON.stringify({
                 "username": username,
                 "password": password
             })
-        }).then((response) => response.json()).then((data: LoginI | ErrorI) => {
+        }).then((response) => response.json()).then((data: LoginFetchI | ErrorFetchI) => {
             let failed: boolean = false;
             if ("errorMsg" in data) {
                 errorText.textContent = data["errorMsg"];
                 failed = true;
             } else {
                 setTimeout(() => {
-                    authContext.setAuth(data["authenticated"]);
-                    authContext.setUsername(data["username"]);
-                    csrfContext.setToken(data["csrf"]);
-                    headerContext?.setReload(true);
+                    loginUser(data.username, data.csrf, cacheStore);
                 }, 200); // for animation
 
             }
             // animation
             animateFetchRequest(setIsLoading, setFormClasses, failed)
         });
-    }, [authContext, csrfContext, headerContext]);
+    }, [loginUser]);
 
     return (
         <div>

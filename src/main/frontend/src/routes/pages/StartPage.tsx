@@ -2,12 +2,14 @@ import React, {FC, useEffect, useState} from 'react';
 import {Link} from "react-router-dom";
 
 import classes from "../styles/StartPage.module.css";
-import {useHeaderContext} from "../../context/HeaderContext";
+import {useCacheStore} from "../../context/CacheStore/CacheStoreContext";
+import {HeaderActionTypes} from "../../reducer/headerReducer";
 
 const speed = 0.003;
 
 const StartPage: FC = () => {
-    const headerContext = useHeaderContext();
+    const cacheStore = useCacheStore()!;
+    const [, headerDispatcher] = cacheStore.headerReducer;
 
     const [x, setX] = useState(0);
     const [y, setY] = useState(0);
@@ -20,10 +22,10 @@ const StartPage: FC = () => {
     };
 
     useEffect(() => {
-        headerContext?.setShowHeader(false);
+        headerDispatcher({type: HeaderActionTypes.HIDE_HEADER})
 
         return () => {
-            headerContext?.setShowHeader(true);
+            headerDispatcher({type: HeaderActionTypes.SHOW_HEADER})
         };
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 

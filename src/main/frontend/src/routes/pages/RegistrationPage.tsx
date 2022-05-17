@@ -1,25 +1,25 @@
 import React, {FC, FormEvent, useCallback, useState} from 'react';
 import classes from "../styles/AuthPage.module.css";
 import {Link} from "react-router-dom";
-import {useAuthContext} from "../../context/AuthContext";
 import {useAuthRedirect} from "../../hooks/useAuthRedirect";
 import Form, {FormStyles} from "../../components/form/Form";
 import FormTitle from "../../components/form/FormTitle";
 import FormInput from "../../components/form/FormInput";
-import {ErrorI, UserI} from "../../types/types";
 import {validFormInput, ValidFormValidator} from "../../components/form/FormService/validFormInput";
 import {animateFetchRequest} from "../../components/form/FormService/animateFetchRequest";
 import {isValidEmail} from "../../util/UserValidator/isValidEmail";
 import {isValidUsername} from "../../util/UserValidator/isValidUsername";
 import {isValidPassword} from "../../util/UserValidator/isValidPassword";
-import {useCsrfContext} from "../../context/CsrfContext";
+import {useCacheStore} from "../../context/CacheStore/CacheStoreContext";
+import {ErrorFetchI, UserFetchI} from "../../types/serverTypes";
 
 
 const RegistrationPage: FC = () => {
-    const csrfContext = useCsrfContext();
-    const authContext = useAuthContext();
+    const cacheStore = useCacheStore()!;
+    const [authState] = cacheStore.authReducer;
+    const [csrfState] = cacheStore.csrfReducer;
 
-    useAuthRedirect(authContext!);
+    useAuthRedirect(authState.auth);
 
     const [isLoading, setIsLoading] = useState(false);
     const [formClasses, setFormClasses] = useState<FormStyles[]>([]);
@@ -50,14 +50,14 @@ const RegistrationPage: FC = () => {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
-                'X-XSRF-TOKEN': csrfContext?.csrfToken!
+                'X-XSRF-TOKEN': csrfState.csrfToken!,
             },
             body: JSON.stringify({
                 "username": username,
                 "email": email,
                 "password": password
             })
-        }).then((response) => response.json()).then((data: UserI | ErrorI) => {
+        }).then((response) => response.json()).then((data: UserFetchI | ErrorFetchI) => {
             let failed: boolean = false;
             if("errorMsg" in data) {
                 setErrorMsg(data["errorMsg"]);
@@ -72,7 +72,7 @@ const RegistrationPage: FC = () => {
             }
             animateFetchRequest(setIsLoading, setFormClasses, failed);
         });
-    }, [csrfContext?.csrfToken]);
+    }, [csrfState.csrfToken]);
 
 
     return (

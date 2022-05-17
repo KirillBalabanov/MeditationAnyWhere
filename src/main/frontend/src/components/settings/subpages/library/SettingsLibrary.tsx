@@ -7,9 +7,11 @@ import FormAudio from "../../../audio/form/FormAudio";
 import removeIcon from "../../../../images/removeIcon.svg";
 import Loader from "../../../loader/Loader";
 import Popup from "../../../popup/Popup";
-import {useCsrfContext} from "../../../../context/CsrfContext";
-import {AudioI} from "../../../../types/types";
 import {isValidAudioName} from "../../../../util/AudioValidator/isValidAudioName";
+import {useCacheStore} from "../../../../context/CacheStore/CacheStoreContext";
+import {UserActionTypes} from "../../../../reducer/userReducer";
+import {AudioFetchI, ErrorFetchI} from "../../../../types/serverTypes";
+import {AudioInterface} from "../../../../types/types";
 
 interface formData {
     url: string,
@@ -20,9 +22,10 @@ interface formData {
 
 const SettingsLibrary = () => {
 
-    let csrfContext = useCsrfContext()!;
+    const cacheStore = useCacheStore()!;
+    const [csrfState] = cacheStore.csrfReducer;
+    const [userState, userDispatcher] = cacheStore.userReducer;
 
-    const [audioFetched, setAudioFetched] = useState<AudioI[] | []>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     const [inputErrorMsg, setInputErrorMsg] = useState("");
@@ -41,20 +44,27 @@ const SettingsLibrary = () => {
     const [errorUpdateMsg, setErrorUpdateMsg] = useState("");
 
     useEffect(() => {
-        fetch("/user/audio/get").then((response) => {
-            return response.json()
-        }).then((data) => setAudioFetched(data)).catch(() => { // catch in case server return null
-            setAudioFetched([])
+        if(userState.audio !== null) {
+            setIsLoading(false);
+            return;
+        } // is in cache
+        fetch("/user/audio/get").then((response) => response.json()).then((data: AudioFetchI[]) => {
+            userDispatcher({type: UserActionTypes.SET_AUDIO, payload: data.map(el => {
+                    return {url: el.audioUrl, title: el.audioTitle}
+                })})
+        }).catch(() => { // catch in case server return null
+            userDispatcher({type: UserActionTypes.SET_AUDIO, payload: []})
         }).then(() => setIsLoading(false));
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     const audioPreview = (e: ChangeEvent) => {
+        if(userState.audio === null) return;
         setAudioFile(null);
         setAudioErrorMsg("");
         setAudioPreviewUrl("");
         setAudioInputKey(Date.now());
         setAddAllowed(false);
-        if (audioFetched.length >= 3) {
+        if (userState.audio.length >= 3) {
             setAudioErrorMsg("You cannot have more than 3 tracks.");
             setAudioInputKey(Date.now());
             return;
@@ -134,30 +144,30 @@ const SettingsLibrary = () => {
             setErrorUpdateMsg("Please make some changes first.");
             return;
         }
-
+        let payload: AudioInterface[] = userState.audio!;
         inputs.forEach((inp) => {
             if (inp.delete === "1") {
                 fetch("/user/audio/del", {
                     method: "DELETE",
                     headers: {
-                        'X-XSRF-TOKEN': csrfContext.csrfToken,
+                        'X-XSRF-TOKEN': csrfState.csrfToken!,
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({"url": inp.url})
                 }).then((response) => response.json()).then((data) => {
                     if("error" in data) {
                         setAudioErrorMsg(data.error);
+                        userDispatcher({type: UserActionTypes.RESET_AUDIO})
                         return;
                     }
-                    setAudioFetched(prev => prev!.filter(el => el.audioUrl !== inp.url));
                 });
-
+                payload = payload.filter(el => el.url !== inp.url);
             }
-            if (inp.changed === "1") {
+            else if (inp.changed === "1") {
                 fetch("/user/audio/update", {
                     method: "PUT",
                     headers: {
-                        'X-XSRF-TOKEN': csrfContext.csrfToken,
+                        'X-XSRF-TOKEN': csrfState.csrfToken!,
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({title: inp.title, url: inp.url})
@@ -166,15 +176,16 @@ const SettingsLibrary = () => {
                         setAudioErrorMsg(data.error);
                         return;
                     }
-                    setAudioFetched(prev => prev!.map(el => {
-                        if (el.audioUrl === inp.url) {
-                            el.audioTitle = inp.title;
-                        }
-                        return el;
-                    }));
+                });
+                payload = payload.map(el => {
+                    if (el.url === inp.url) {
+                        el.title = inp.title;
+                    }
+                    return el;
                 });
             }
         });
+        userDispatcher({type: UserActionTypes.SET_AUDIO, payload: payload})
         setPopupContent("Library updated!");
         setShowPopup(true);
         setUpdateAllowed(false);
@@ -182,17 +193,17 @@ const SettingsLibrary = () => {
 
     function addAudioSubmit(e: React.FormEvent) {
         e.preventDefault();
-
+        if(userState.audio === null) return;
         if(audioFile === null) return;
 
         if(!addAllowed) return;
 
-        if(audioFetched.length >= 3) return;
+        if(userState.audio.length >= 3) return;
 
         let audioTitle = (e.currentTarget.querySelector("input[type=text]") as HTMLInputElement).value;
 
         if(!isValidAudioName(audioTitle)) return;
-        if(audioFetched.filter((el) => el.audioTitle === audioTitle).length !== 0) {
+        if(userState.audio.filter((el) => el.title === audioTitle).length !== 0) {
             setInputErrorMsg("Title already taken.");
             return;
         }
@@ -203,15 +214,15 @@ const SettingsLibrary = () => {
         fetch("/user/audio/add", {
             method: "POST",
             headers: {
-                'X-XSRF-TOKEN': csrfContext.csrfToken
+                'X-XSRF-TOKEN': csrfState.csrfToken!,
             },
             body: formData
-        }).then((response) => response.json()).then((data) => {
-            if("error" in data) {
-                setAudioErrorMsg(data.error);
+        }).then((response) => response.json()).then((data: AudioFetchI | ErrorFetchI) => {
+            if("errorMsg" in data) {
+                setAudioErrorMsg(data.errorMsg);
                 return;
             }
-            setAudioFetched([...audioFetched, data])
+            userDispatcher({type: UserActionTypes.SET_AUDIO, payload: [...userState.audio!, {url: data.audioUrl, title: data.audioTitle}]});
         });
         // reset audio preview
         setAudioInputKey(Date.now());
@@ -249,7 +260,7 @@ const SettingsLibrary = () => {
                                             :
                                             <div className={classes.preview}>
                                                 <div className={classes.previewAudio}>
-                                                    <InlineAudio url={audioPreviewUrl}></InlineAudio>
+                                                    <InlineAudio audioUrl={audioPreviewUrl}></InlineAudio>
                                                 </div>
                                                 <button type={"button"} className={classes.removePreviewBtn}
                                                         onClick={() => {
@@ -275,11 +286,11 @@ const SettingsLibrary = () => {
                                     }
                                 </form>
                                 {
-                                    audioFetched.length > 0 &&
+                                    userState.audio !== null && userState.audio.length > 0 &&
                                     <form onSubmit={updateLibrarySubmit}>
-                                        {audioFetched.map(audio => <FormAudio audioUrl={audio.audioUrl}
-                                                                              audioTitle={audio.audioTitle}
-                                                                              key={audio.audioUrl}
+                                        {userState.audio.map(audio => <FormAudio audioUrl={audio.url}
+                                                                              audioTitle={audio.title}
+                                                                              key={audio.url}
                                                                               setUpdateAllowed={setUpdateAllowed}></FormAudio>)}
                                         {
                                             updateAllowed &&
