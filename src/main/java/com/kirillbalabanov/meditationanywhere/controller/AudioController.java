@@ -51,7 +51,8 @@ public class AudioController {
         } catch (Exception e) {
             return ResponseEntity.ok().body(ErrorModel.fromMessage(e.getMessage()));
         }
-        return ResponseEntity.ok().cacheControl(CacheControl.noCache().sMaxAge(1, TimeUnit.MINUTES)).body(audioModels);
+
+        return ResponseEntity.ok().cacheControl(CacheControl.noCache().cachePrivate()).body(audioModels);
     }
 
     @PutMapping(value = "/update")
@@ -72,14 +73,13 @@ public class AudioController {
     public ResponseEntity<?> deleteAudio(@RequestBody HashMap<String, String> audioObj) {
         String audioUrl = audioObj.get("url");
         UserDet userDet = (UserDet) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        HashMap<String, String> hm = new HashMap<>();
+        AudioEntity deleted;
         try {
-            audioService.deleteUserAudioByUrl(userDet.getUserId(), audioUrl);
+            deleted = audioService.deleteUserAudioByUrl(userDet.getUserId(), audioUrl);
         } catch (Exception e) {
             return ResponseEntity.ok().body(ErrorModel.fromMessage(e.getMessage()));
         }
-        hm.put("deleted", audioUrl);
-        return ResponseEntity.ok().body(hm);
+        return ResponseEntity.ok().body(AudioModel.toModel(deleted));
     }
 
 }
