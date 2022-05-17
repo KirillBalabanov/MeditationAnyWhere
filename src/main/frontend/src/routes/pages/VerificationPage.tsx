@@ -3,15 +3,15 @@ import {Link, useParams} from "react-router-dom";
 import classes from "../styles/VerificationPage.module.css";
 import {useFetching} from "../../hooks/useFetching";
 import Loader from "../../components/loader/Loader";
-import {ErrorI, VerificationI} from "../../types/types";
+import {ErrorFetchI, VerificationFetchI} from "../../types/serverTypes";
 
 const VerificationPage: FC = () => {
     let activationCode: string = useParams()["activationCode"]!;
     const [isLoading, setIsLoading] = useState(true);
 
-    const [verificationData, setVerificationData] = useState<VerificationI | null | ErrorI>(null);
+    const [verificationData, setVerificationData] = useState<VerificationFetchI | null | ErrorFetchI>(null);
 
-    useFetching<VerificationI | ErrorI | null>("/user/auth/verification/" + activationCode, setIsLoading, setVerificationData);
+    useFetching<VerificationFetchI | ErrorFetchI | null>("/user/auth/verification/" + activationCode, setIsLoading, setVerificationData);
 
     return (
         <div className={classes.verification}>

@@ -1,23 +1,23 @@
 import React, {FC} from 'react';
 import btnStop from "../../images/stopIcon.svg";
 import btnStart from "../../images/startIcon.svg";
-import {useTimerContext} from "../../context/TimerContext";
 
 import classes from "./Timer.module.css";
+import {useTimerContextReducer} from "../../context/TimerContext";
+import {TimerActionTypes} from "../../reducer/timerReducer";
 
 const TimerButton: FC = () => {
-    const timerContext = useTimerContext();
-
+    const [timerState, timerDispatch] = useTimerContextReducer()!;
     const toggleTimer = () => {
-        if(timerContext?.timerValue === 0 && !timerContext.isPlaying) return;
+        if(timerState.timerValue === 0) return;
 
-        timerContext?.setIsPlaying(!timerContext?.isPlaying);
+        timerDispatch({type: TimerActionTypes.TOGGLE})
     }
 
     return (
         <div className={classes.timer__btn} onClick={toggleTimer}>
             {
-                timerContext?.isPlaying
+                timerState.isPlaying
                     ?
                     <img src={btnStop} alt="stop"/>
                     :

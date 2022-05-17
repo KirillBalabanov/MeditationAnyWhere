@@ -3,25 +3,25 @@ import classes from "../Profile.module.css";
 import defaultAvatar from "../../../images/defaultAvatar.svg";
 import PopupRectangle from "../../popup/PopupRectangle";
 import {useNavigate} from "react-router-dom";
-import {useAuthContext} from "../../../context/AuthContext";
 import {AbsolutePositionX, AbsolutePositionY} from "../../../types/componentTypes";
+import {useCacheStore} from "../../../context/CacheStore/CacheStoreContext";
 
 interface ProfileAvatarProps {
-    avatarUrl: string,
+    avatarUrl: string | null,
     username: string
 }
 
 const ProfileAvatar: FC<ProfileAvatarProps> = ({avatarUrl, username}) => {
     let navigateFunction = useNavigate();
     const [popupShown, setPopupShown] = useState(false);
-    const authContext = useAuthContext()!;
+    const cacheStore = useCacheStore()!;
 
-    let isAuthUserPage: boolean = username === authContext?.username;
+    let isAuthUserPage: boolean = username === cacheStore.userReducer[0].username;
 
     return (
         <div className={classes.profile__infoAvatarWrap}>
             <div className={classes.profile__infoAvatarOuter}>
-                <img src={avatarUrl==="" ? defaultAvatar : avatarUrl} alt="avatar"
+                <img src={avatarUrl===null ? defaultAvatar : avatarUrl} alt="avatar"
                      className={classes.profile__infoAvatar} onMouseOver={() => {
                     if(!isAuthUserPage) return;
                     setPopupShown(true)

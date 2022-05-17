@@ -35,7 +35,7 @@ const FormAudio = ({audioUrl, audioTitle, setUpdateAllowed}: FormAudioProps) => 
             }}/>
             <p className={errorMsg==="" ? classes.error : classes.error + " " + classes.errorShown}>{errorMsg}</p>
             <div className={classes.inlineAudio}>
-                <InlineAudio url={audioUrl}></InlineAudio>
+                <InlineAudio audioUrl={audioUrl}></InlineAudio>
             </div>
             <button style={{display: errorMsg!=="" ? "block" : "flex"}} type={"button"} className={deleteAudio ? classes.audioDelete + " " + classes.deleteSelected : classes.audioDelete}
                     onClick={() => {

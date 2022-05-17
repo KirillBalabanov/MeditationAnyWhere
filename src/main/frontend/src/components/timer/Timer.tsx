@@ -1,42 +1,56 @@
 import React, {FC, useEffect, useMemo, useRef, useState} from 'react';
 import classes from "./Timer.module.css";
-import {useTimerContext} from "../../context/TimerContext";
 import {formatToMinSecStr} from "./TimerService/formatToMinSecStr";
 import {timerLenDefault} from "./TimerService/timerLenDefault";
-import {useAuthContext} from "../../context/AuthContext";
-import {useCsrfContext} from "../../context/CsrfContext";
 import Popup from "../popup/Popup";
-import {AudioI, ErrorI} from "../../types/types";
 import AudioSource from "../audio/components/AudioSource";
 import {useAudioSelectContext} from "../../context/AudioSelectContext";
+import {useCacheStore} from "../../context/CacheStore/CacheStoreContext";
+import {AudioFetchI, ErrorFetchI, StatsFetchI} from "../../types/serverTypes";
+import {useTimerContextReducer} from "../../context/TimerContext";
+import {TimerActionTypes} from "../../reducer/timerReducer";
+import {UserActionTypes} from "../../reducer/userReducer";
+import {ServerActionTypes} from "../../reducer/serverReducer";
 
 const Timer:FC = () => {
-    const timerContext = useTimerContext();
-    const authContext = useAuthContext();
-    const csrfContext = useCsrfContext();
+
+    const [timerState, timerDispatcher] = useTimerContextReducer()!;
+
+    const cacheStore = useCacheStore()!;
+    const [authState] = cacheStore.authReducer;
+    const [csrfState] = cacheStore.csrfReducer;
+    const [, userDispatcher] = cacheStore.userReducer;
+    const [serverState, serverDispatcher] = cacheStore.serverReducer;
+
     const audioSelectContext = useAudioSelectContext();
 
     const [showPopup, setShowPopup] = useState(false);
     const [popupContent, setPopupContent] = useState("");
 
-    const [toggleAudioData, setToggleAudioData] = useState<AudioI | null | ErrorI>(null);
+
     const toggleAudioElement = useRef<HTMLAudioElement | null>(null);
 
 
 
     let timerLenDecrement = useMemo(() => {
-        return timerLenDefault / (timerContext?.minListened! * 60);
-    }, [timerContext?.minListened]);
+        return timerLenDefault / (timerState.minListened! * 60);
+    }, [timerState.minListened]);
 
 
     useEffect(() => {
-        fetch("/server/audio/toggle").then((response) => response.json()).then((data: ErrorI | AudioI) => {
-            setToggleAudioData(data);
+        if(serverState.defaultAudio !== null) { // is in cache
+            return;
+        }
+        fetch("/server/audio/toggle").then((response) => {
+            return response.json()
+        }).then((data: ErrorFetchI | AudioFetchI) => {
+            if("errorMsg" in data) return;
+            serverDispatcher({type: ServerActionTypes.ADD_TOGGLE_AUDIO, payload: {url: data.audioUrl, title: data.audioTitle}})
         });
     }, []);
 
     useEffect(() => {
-        if (timerContext?.sessionEnded) {
+        if (timerState.sessionEnded) {
             if(audioSelectContext != null && audioSelectContext.isLibraryAudioOnPlay) { // smooth audio volume decrease
                 let counter = 0;
                 let interval = setInterval(() => {
@@ -59,66 +73,76 @@ const Timer:FC = () => {
                     counter++;
                 }, 500);
             }
-            setPopupContent("Listened " + timerContext?.minListened + " min");
+
+            setPopupContent("Listened " + timerState.minListened + " min");
             setShowPopup(true);
-            if (toggleAudioData != null) {
+            if (toggleAudioElement !== null) {
                 toggleAudioElement.current?.play();
             }
-            if (authContext?.auth) { // update user stats
+
+            if (authState.auth) { // update user stats
+                let minListened = timerState.minListened;
+
                 fetch("/user/stats/updateStats", {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
-                        "X-XSRF-TOKEN": csrfContext?.csrfToken!
+                        "X-XSRF-TOKEN": csrfState.csrfToken!,
                     },
-                    body: JSON.stringify({minListened: timerContext?.minListened})
+                    body: JSON.stringify({minListened: minListened})
+                }).then((response) => response.json()).then((data: ErrorFetchI | StatsFetchI) => {
+                    if ("errorMsg" in data) {
+                        return;
+                    }
+                    userDispatcher({type: UserActionTypes.SET_STATS, payload: data})
                 });
             }
-            timerContext.setSessionEnded(false);
+
+            timerDispatcher({type: TimerActionTypes.RESET})
         }
-    }, [timerContext, audioSelectContext, toggleAudioData, authContext?.auth, csrfContext?.csrfToken]);
+    }, [timerState.sessionEnded]); // eslint-disable-line react-hooks/exhaustive-deps
 
 
     useEffect(() => {
         const stopTimer = ()  => {
-            if(timerContext?.timerInterval == null) return;
-            clearInterval(timerContext.timerInterval);
-            timerContext?.setTimerInterval(null);
+            timerDispatcher({type: TimerActionTypes.STOP})
         };
 
         const startTimer = () => {
-            if(timerContext?.minListened! * 60 === timerContext?.timerValue && toggleAudioElement != null) {
+            if(timerState.minListened! * 60 === timerState.timerValue) { // play on first start
                 toggleAudioElement.current?.play();
             }
 
+            let timerVal = timerState.timerValue;
+            let timerLen = timerState.timerLenCurrent;
             let interval = setInterval(() => {
 
-                timerContext?.setTimerValue(prev => {
-                    if (prev === 0) { // session end
-                        clearInterval(interval);
-                        timerContext?.setIsPlaying(false);
-                        timerContext?.setTimerLenCurrent(0);
-                        timerContext?.setSessionEnded(true);
-                        return 0;
-                    }
+                if (timerVal === 0) {
+                    timerDispatcher({type: TimerActionTypes.END})
+                    return;
+                }
 
-                    return prev - 1;
-                });
-                timerContext?.setTimerLenCurrent(prev => {
-                    if(prev - timerLenDecrement <= 0) return 0;
-                    return prev - timerLenDecrement;
-                });
+                timerVal--;
+                timerLen -= timerLenDecrement;
+                if(timerLen < 0) timerLen = 0;
+
+                timerDispatcher({type: TimerActionTypes.TIMER_TICK, payload: {
+                        newTimerValue: timerVal,
+                        newTimerLen: timerLen,
+                    }})
             }, 100);
 
-            timerContext?.setTimerInterval(interval);
+            timerDispatcher({type: TimerActionTypes.PLAY, payload: {
+                interval: interval
+                }})
         };
 
-        if (!timerContext?.isPlaying) {
+        if (!timerState.isPlaying) {
             stopTimer();
         } else {
             startTimer();
         }
-    }, [timerContext?.isPlaying]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [timerState.isPlaying]); // eslint-disable-line react-hooks/exhaustive-deps
 
 
     return (
@@ -128,7 +152,7 @@ const Timer:FC = () => {
                     <g>
                         <circle className={classes.timer__circle} cx="50" cy="50" r="45"/>
                         <path
-                            strokeDasharray={timerContext?.timerLenCurrent + " " + 283} style={timerContext?.timerLenCurrent!<=1 ? {opacity: "0"} : {opacity: "100"}}
+                            strokeDasharray={timerState.timerLenCurrent + " " + 283} style={timerState.timerLenCurrent!<=1 ? {opacity: "0"} : {opacity: "100"}}
                             d="M 50, 50
                              m -45, 0
                              a 45,45 0 1,0 90,0
@@ -136,11 +160,11 @@ const Timer:FC = () => {
                         />
                     </g>
                 </svg>
-                <p>{formatToMinSecStr(timerContext?.timerValue!)}</p>
+                <p>{formatToMinSecStr(timerState.timerValue)}</p>
             </div>
             {
-                toggleAudioData != null && "audioUrl" in toggleAudioData &&
-                <AudioSource url={toggleAudioData.audioUrl} audioElement={toggleAudioElement}/>
+                serverState.toggleAudio !== null &&
+                <AudioSource audioUrl={serverState.toggleAudio.url} audioElement={toggleAudioElement}/>
             }
             <Popup popupInfo={popupContent} shown={showPopup} setShown={setShowPopup} popupConfirm={"Ok"}></Popup>
         </div>

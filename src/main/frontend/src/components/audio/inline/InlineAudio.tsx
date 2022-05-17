@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {FC, useEffect} from 'react';
 import Bar from "../components/Bar";
 import Volume from "../components/Volume";
 import Controls from "../components/Controls";
@@ -8,10 +8,10 @@ import AudioOuter from "../components/AudioOuter";
 import {useAudio} from "../components/useAudio";
 
 interface InlineAudioProps {
-    url: string
+    audioUrl: string | null,
 }
 
-const InlineAudio = ({url}: InlineAudioProps) => {
+const InlineAudio: FC<InlineAudioProps> = ({audioUrl}) => {
     const {isPlaying, setIsPlaying, currentTime, setCurrentTime, duration, setDuration, audioShown, setAudioShown, audioVolume, setAudioVolume, audioElement} = useAudio();
 
     useEffect(() => {
@@ -29,7 +29,7 @@ const InlineAudio = ({url}: InlineAudioProps) => {
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
-        <AudioOuter url={url} audioElement={audioElement}>
+        <AudioOuter audioUrl={audioUrl} audioElement={audioElement}>
             <PlayButton isPlaying={isPlaying} setIsPlaying={setIsPlaying} audioElement={audioElement}></PlayButton>
             <StopButton isPlaying={isPlaying} setIsPlaying={setIsPlaying} audioElement={audioElement}></StopButton>
             <Controls>

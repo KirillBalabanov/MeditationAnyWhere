@@ -77,7 +77,7 @@ const AudioSelectLibraryAudio: FC<AudioSelectLibraryAudioProps> = ({url, title})
                         :
                         <div>
                             {title}
-                            <AudioSource url={url} audioElement={audioElement} looped={true} setAudioNotFoundError={setAudioNotFoundError}></AudioSource>
+                            <AudioSource audioUrl={url} audioElement={audioElement} looped={true} setAudioNotFoundError={setAudioNotFoundError}></AudioSource>
                         </div>
                 }
             </div>

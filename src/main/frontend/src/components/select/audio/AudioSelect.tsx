@@ -1,27 +1,58 @@
-import React, {FC, useCallback, useState} from 'react';
+import React, {FC, useCallback, useEffect, useState} from 'react';
 import selectAudioIcon from "../../../images/selectAudioIcon.svg";
 import classes from "./AudioSelect.module.css";
 import Slider from "../../slider/Slider";
 import AudioSelectLibrary from "./AudioSelectLibrary";
-import {useFetching, useFetchingOnCondition} from "../../../hooks/useFetching";
-import {AudioI, ErrorI} from "../../../types/types";
 import AudioSelectLibraryAudio from "./AudioSelectLibraryAudio";
-import {useAuthContext} from "../../../context/AuthContext";
 import {Link} from "react-router-dom";
 import Loader from "../../loader/Loader";
+import {useCacheStore} from "../../../context/CacheStore/CacheStoreContext";
+import {AudioFetchI, ErrorFetchI} from "../../../types/serverTypes";
+import {UserActionTypes} from "../../../reducer/userReducer";
+import {ServerActionTypes} from "../../../reducer/serverReducer";
 
 const AudioSelect: FC = () => {
     const [selectShown, setSelectShown] = useState(false);
 
-    const authContext = useAuthContext();
+    const cacheStore = useCacheStore()!;
+    const [authState] = cacheStore.authReducer;
+    const [userState, userDispatcher] = cacheStore.userReducer;
+    const [serverState, serverDispatcher] = cacheStore.serverReducer;
 
     const [serverAudioIsLoading, setServerAudioIsLoading] = useState(true);
-    const [serverAudioData, setServerAudioData] = useState<AudioI[] | null | ErrorI>(null);
-    useFetching("/server/audio/default", setServerAudioIsLoading, setServerAudioData);
 
     const [userAudioIsLoading, setUserAudioIsLoading] = useState(true);
-    const [userAudioData, setUserAudioData] = useState<AudioI[] | null | ErrorI>(null);
-    useFetchingOnCondition("/user/audio/get", setUserAudioIsLoading, setUserAudioData, authContext?.auth!);
+
+    useEffect(() => {
+        // server audio url
+        if (serverState.defaultAudio !== null) { // is in cache
+            setServerAudioIsLoading(false);
+        } else {
+            fetch("/server/audio/default").then((response) => response.json()).then((data: AudioFetchI[] | ErrorFetchI) => {
+                if("errorMsg" in data) return;
+                serverDispatcher({type: ServerActionTypes.ADD_DEFAULT_AUDIO, payload: data.map(el => {
+                        return {url: el.audioUrl, title: el.audioTitle}
+                    })})
+            }).catch(() => { // catch in case server return null
+                userDispatcher({type: UserActionTypes.SET_AUDIO, payload: []})
+            }).then(() => setServerAudioIsLoading(false));
+        }
+
+        // user audio url
+        if (userState.audio !== null) { // is in cache
+            setUserAudioIsLoading(false);
+        } else {
+            fetch("/user/audio/get").then((response) => response.json()).then((data: AudioFetchI[] | ErrorFetchI) => {
+                if("errorMsg" in data) return;
+                userDispatcher({type: UserActionTypes.SET_AUDIO, payload: data.map(el => {
+                        return {url: el.audioUrl, title: el.audioTitle}
+                    })})
+            }).catch(() => { // catch in case server return null
+                userDispatcher({type: UserActionTypes.SET_AUDIO, payload: []})
+            }).then(() => setUserAudioIsLoading(false));
+        }
+
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     const selectShownToggle = useCallback(() => {
         setSelectShown(prev => !prev);
@@ -38,57 +69,55 @@ const AudioSelect: FC = () => {
             <Slider>
                 <AudioSelectLibrary title={"Your library"}>
                     {
-                        authContext?.auth
+                        userAudioIsLoading
                             ?
-                            (
-                                Array.isArray(userAudioData)
-                                    ?
-                                    userAudioData.map(data => {
-                                        return (
-                                            <AudioSelectLibraryAudio title={data.audioTitle} url={data.audioUrl}
-                                                                     key={data.audioUrl}
-                                            ></AudioSelectLibraryAudio>
-                                        )
-                                    })
-                                    :
-                                    (
-                                        userAudioIsLoading
-                                            ?
-                                        <Loader></Loader>
-                                            :
-                                            <div className={classes.libraryError}>
-                                                {userAudioData?.errorMsg}
-                                            </div>
-                                    )
-                            )
+                            <Loader/>
                             :
-                            <div className={classes.libraryLogin}>
-                                <Link to={"/login"} className={classes.libraryLoginLink}>login to have your own
-                                    library.</Link>
-                            </div>
+                            authState.auth
+                                ?
+                                (
+                                    userState.audio !== null && userState.audio.length >= 1
+                                        ?
+                                        userState.audio.map(data => {
+                                            return (
+                                                <AudioSelectLibraryAudio title={data.title} url={data.url}
+                                                                         key={data.url}
+                                                ></AudioSelectLibraryAudio>
+                                            )
+                                        })
+                                        :
+                                        <div className={classes.libraryLinkOuter}>
+                                            <Link to={"/settings/library"} className={classes.libraryLink}>Add new
+                                                tracks.</Link>
+                                        </div>
+
+                                )
+                                :
+                                <div className={classes.libraryLinkOuter}>
+                                    <Link to={"/login"} className={classes.libraryLink}>login to have your own
+                                        library.</Link>
+                                </div>
                     }
                 </AudioSelectLibrary>
                 <AudioSelectLibrary title={"Default library"}>
                     {
-                        Array.isArray(serverAudioData)
+                        serverAudioIsLoading
                             ?
-                            serverAudioData.map(data => {
-                                return (
-                                    <AudioSelectLibraryAudio title={data.audioTitle} url={data.audioUrl}
-                                                             key={data.audioUrl}
-                                    ></AudioSelectLibraryAudio>
-                                )
-                            })
+                            <Loader/>
                             :
-                            (
-                                serverAudioIsLoading
-                                    ?
-                                    <Loader/>
-                                    :
-                                    <div className={classes.libraryError}>
-                                        {serverAudioData?.errorMsg}
-                                    </div>
-                            )
+                            serverState.defaultAudio !== null && serverState.defaultAudio.length >= 1
+                                ?
+                                serverState.defaultAudio.map(data => {
+                                    return (
+                                        <AudioSelectLibraryAudio title={data.title} url={data.url}
+                                                                 key={data.url}
+                                        ></AudioSelectLibraryAudio>
+                                    )
+                                })
+                                :
+                                <div className={classes.libraryLinkOuter}>
+                                    Server has no audio.
+                                </div>
                     }
                 </AudioSelectLibrary>
             </Slider>

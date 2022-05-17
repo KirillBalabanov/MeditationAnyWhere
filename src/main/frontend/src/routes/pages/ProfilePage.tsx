@@ -1,10 +1,8 @@
-import React, {FC, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import {useParams} from "react-router-dom";
-import {useFetching} from "../../hooks/useFetching";
 import Error from "./Error";
 import Loader from "../../components/loader/Loader";
 import classes from "../styles/ProfilePage.module.css";
-import {ErrorI, UserProfileI} from "../../types/types";
 import Profile from "../../components/profile/Profile";
 import ProfileInfo from "../../components/profile/info/ProfileInfo";
 import ProfileStats from "../../components/profile/stats/ProfileStats";
@@ -14,21 +12,80 @@ import ProfileBio from "../../components/profile/info/ProfileBio";
 import EditProfileBtn from "../../components/profile/info/EditProfileBtn";
 import ProfileDateJoined from "../../components/profile/info/ProfileDateJoined";
 import ProfileStatBox from "../../components/profile/stats/ProfileStatBox";
-import {useAuthContext, useRefreshAuthContext} from "../../context/AuthContext";
+import {useCacheStore} from "../../context/CacheStore/CacheStoreContext";
+import {ErrorFetchI, UserProfileFetchI} from "../../types/serverTypes";
+import {UserActionTypes} from "../../reducer/userReducer";
 
 const ProfilePage: FC = () => {
     const [isLoading, setIsLoading] = useState(true);
 
     let usernameUrl = useParams()["username"];
-    let authContext = useAuthContext();
 
-    useRefreshAuthContext(authContext!);
+    const cacheStore = useCacheStore()!;
+    const [userState, userDispatcher] = cacheStore.userReducer;
+    const [authState] = cacheStore.authReducer;
 
-    const [profile, setProfile] = useState<UserProfileI | null | ErrorI>(null);
+    const [profile, setProfile] = useState<UserProfileFetchI | null | ErrorFetchI>(null);
+    const [profileFetchError, setProfileFetchError] = useState("");
 
-    useFetching<UserProfileI | null | ErrorI>("/user/profile/" + usernameUrl, setIsLoading, setProfile);
+    useEffect(() => {
 
-    if(profile != null && "errorMsg" in profile) return (<Error errorMsg={profile.errorMsg}/>);
+        // person's page
+        if(userState.username === usernameUrl) {
+
+            if (userState.stats !== null && userState.registrationDate !== null && userState.avatar !== null &&
+                userState.bio !== null && userState.username !== null) { // get from cache
+                setProfile({
+                    minListened: userState.stats.minListened,
+                    sessionsListened: userState.stats.sessionsListened,
+                    currentStreak: userState.stats.currentStreak,
+                    longestStreak: userState.stats.longestStreak,
+                    registrationDate: userState.registrationDate,
+                    bio: userState.bio.bio === null ? "" : userState.bio.bio,
+                    avatarUrl: userState.avatar.url,
+                    username: userState.username,
+                })
+                setIsLoading(false);
+                return;
+            }
+            // fetch to cache
+            fetch("/user/profile/" + usernameUrl).then((response) => response.json()).then((data: ErrorFetchI | UserProfileFetchI) => {
+                if ("errorMsg" in data) {
+                    setProfileFetchError(data.errorMsg);
+                    return;
+                }
+                setProfile(data);
+
+                userDispatcher({type: UserActionTypes.SET_STATS, payload: {
+                        minListened: data.minListened,
+                        sessionsListened: data.sessionsListened,
+                        currentStreak: data.currentStreak,
+                        longestStreak: data.longestStreak,
+                    }})
+                userDispatcher({type: UserActionTypes.SET_REGISTRATION_DATE, payload: data.registrationDate})
+                userDispatcher({type: UserActionTypes.SET_USERNAME, payload: data.username})
+                userDispatcher({type: UserActionTypes.SET_BIO, payload: {bio: data.bio}})
+                userDispatcher({type: UserActionTypes.SET_AVATAR, payload: {url: data.avatarUrl}})
+
+                setIsLoading(false)
+            });
+
+            return;
+        }
+
+        // page of another user
+        fetch("/user/profile/" + usernameUrl).then((response) => response.json()).then((data: ErrorFetchI | UserProfileFetchI) => {
+            if ("errorMsg" in data) {
+                setProfileFetchError(data.errorMsg);
+                return;
+            }
+            setProfile(data);
+            setIsLoading(false)
+        });
+    }, []);
+
+
+    if(profileFetchError !== "") return (<Error errorMsg={profileFetchError}/>);
 
     return (
         <div>
@@ -40,14 +97,14 @@ const ProfilePage: FC = () => {
                     <div className="container">
                         <div className={classes.main}>
                             {
-                                profile != null && "avatarUrl" in profile
+                                profile !== null && "username" in profile
                                 &&
                                 <Profile>
                                     <ProfileInfo>
                                         <ProfileAvatar avatarUrl={profile.avatarUrl} username={usernameUrl!}/>
                                         <ProfileUsername username={profile.username}/>
-                                        <ProfileBio bio={profile.bio}/>
-                                        <EditProfileBtn show={usernameUrl === authContext?.auth}/>
+                                        <ProfileBio bio={profile.bio === null ? "" : profile.bio}/>
+                                        <EditProfileBtn show={authState.auth}/>
                                         <ProfileDateJoined registrationDate={profile.registrationDate}/>
                                     </ProfileInfo>
 
