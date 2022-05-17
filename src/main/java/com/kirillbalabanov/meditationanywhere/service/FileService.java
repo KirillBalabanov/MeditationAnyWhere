@@ -63,7 +63,7 @@ public class FileService {
         File defaultAudioFolder = new File(serverFolderPath + serverDefaultAudioPackRelativePath + "/");
         if(!defaultAudioFolder.exists()) throw new FolderNotExistsException("Folder doesn't exist");
         File[] audio = defaultAudioFolder.listFiles();
-        if(audio.length == 0) throw new AudioNotFoundException("No audio on server");
+        if(audio == null || audio.length == 0) throw new AudioNotFoundException("No audio on server");
 
         AudioModel[] models = new AudioModel[audio.length];
         for (int i = 0; i < audio.length; i++) {
@@ -78,7 +78,7 @@ public class FileService {
         File folder = new File(serverFolderPath + serverToggleAudioRelativePath);
         if(!folder.exists()) throw new FolderNotExistsException("Folder doesn't exist");
         File[] files = folder.listFiles();
-        if(files.length == 0) throw new AudioNotFoundException("No audio on server");
+        if(files == null || files.length == 0) throw new AudioNotFoundException("No audio on server");
         String title = files[0].getName();
         String url = serverFolderUrl + serverToggleAudioRelativePath + "/" + title;
         return AudioModel.fromValues(url, title);
