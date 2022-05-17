@@ -45,7 +45,7 @@ public class MainController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(ErrorModel.fromMessage(e.getMessage()));
         }
-        return ResponseEntity.ok().cacheControl(CacheControl.maxAge(100, TimeUnit.SECONDS)).body(audios);
+        return ResponseEntity.ok().cacheControl(CacheControl.maxAge(120, TimeUnit.MINUTES).cachePublic().mustRevalidate()).body(audios);
     }
 
     @GetMapping("/audio/toggle")
@@ -56,7 +56,7 @@ public class MainController {
         } catch (Exception e) {
             return ResponseEntity.ok().body(ErrorModel.fromMessage(e.getMessage()));
         }
-        return ResponseEntity.ok().cacheControl(CacheControl.maxAge(100, TimeUnit.SECONDS)).body(audioModel);
+        return ResponseEntity.ok().cacheControl(CacheControl.maxAge(120, TimeUnit.MINUTES).cachePublic().mustRevalidate()).body(audioModel);
     }
 }
 
