@@ -58,7 +58,7 @@ public class AudioService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public AudioEntity updateAudioTitle(long userId, String url, String title) throws NoUserFoundException, AudioNotFoundException, InvalidAudioTitleException, AudioTitleTakenException {
-        if(!TitleValidator.validateAudioTitle(title)) throw new InvalidAudioTitleException("Invalid audio title");
+        if(!TitleValidator.isValidAudioTitle(title)) throw new InvalidAudioTitleException("Invalid audio title");
         UserEntity userEntity = userService.findById(userId);
         if(userEntity.getAudioEntityList().stream().anyMatch((el) -> el.getAudioTitle().equals(title))) {
             throw new AudioTitleTakenException("Audio with this title already exists.");
