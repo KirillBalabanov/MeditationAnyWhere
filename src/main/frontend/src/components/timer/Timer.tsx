@@ -11,6 +11,7 @@ import {useTimerContextReducer} from "../../context/TimerContext";
 import {TimerActionTypes} from "../../reducer/timerReducer";
 import {UserActionTypes} from "../../reducer/userReducer";
 import {ServerActionTypes} from "../../reducer/serverReducer";
+import {csrfFetching, FetchContentTypes, FetchingMethods} from "../../util/Fetch/csrfFetching";
 
 const Timer:FC = () => {
 
@@ -18,7 +19,6 @@ const Timer:FC = () => {
 
     const cacheStore = useCacheStore()!;
     const [authState] = cacheStore.authReducer;
-    const [csrfState] = cacheStore.csrfReducer;
     const [, userDispatcher] = cacheStore.userReducer;
     const [serverState, serverDispatcher] = cacheStore.serverReducer;
 
@@ -81,16 +81,9 @@ const Timer:FC = () => {
             }
 
             if (authState.auth) { // update user stats
-                let minListened = timerState.minListened;
+                let body = JSON.stringify({minListened: timerState.minListened})
 
-                fetch("/user/stats/updateStats", {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-XSRF-TOKEN": csrfState.csrfToken!,
-                    },
-                    body: JSON.stringify({minListened: minListened})
-                }).then((response) => response.json()).then((data: ErrorFetchI | StatsFetchI) => {
+                csrfFetching("/user/stats/updateStats", FetchingMethods.PUT, FetchContentTypes.APPLICATION_JSON, body).then((response) => response.json()).then((data: ErrorFetchI | StatsFetchI) => {
                     if ("errorMsg" in data) {
                         return;
                     }

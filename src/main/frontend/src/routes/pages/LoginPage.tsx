@@ -1,4 +1,4 @@
-import React, {FC, FormEvent, useCallback, useState} from 'react';
+import React, {FC, FormEvent, useState} from 'react';
 import classes from "../styles/AuthPage.module.css";
 import {Link} from "react-router-dom";
 import {useAuthRedirect} from "../../hooks/useAuthRedirect";
@@ -12,11 +12,11 @@ import {isValidPassword} from "../../util/UserValidator/isValidPassword";
 import {useCacheStore} from "../../context/CacheStore/CacheStoreContext";
 import {ErrorFetchI, LoginFetchI} from "../../types/serverTypes";
 import {loginUser} from "../../context/CacheStore/CacheStoreService/loginUser";
+import {csrfFetching, FetchContentTypes, FetchingMethods} from "../../util/Fetch/csrfFetching";
 
 const LoginPage: FC = () => {
     const cacheStore = useCacheStore()!;
     const [authState] = cacheStore.authReducer;
-    const [csrfState] = cacheStore.csrfReducer;
 
     useAuthRedirect(authState.auth);
 
@@ -25,7 +25,7 @@ const LoginPage: FC = () => {
 
     const [errorMsg, setErrorMsg] = useState("");
 
-    const postLogin = useCallback((e: FormEvent) => {
+    const postLogin = (e: FormEvent) => {
         e.preventDefault();
         let children = (e.target as Element).children;
         let username = (children[1] as HTMLInputElement).value;
@@ -43,31 +43,28 @@ const LoginPage: FC = () => {
         }
         setFormClasses([FormStyles.loading]);
         setIsLoading(true);
-        fetch("/user/auth/login", {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-                'X-XSRF-TOKEN': csrfState.csrfToken!
-            },
-            body: JSON.stringify({
-                "username": username,
-                "password": password
-            })
-        }).then((response) => response.json()).then((data: LoginFetchI | ErrorFetchI) => {
+        let body = JSON.stringify({
+            "username": username,
+            "password": password
+        });
+        csrfFetching("/user/auth/login", FetchingMethods.POST, FetchContentTypes.APPLICATION_JSON, body).then((response) => {
+            if(!response.ok) return {errorMsg: "Error"}
+            return response.json()
+        }).then((data: LoginFetchI | ErrorFetchI) => {
             let failed: boolean = false;
             if ("errorMsg" in data) {
                 errorText.textContent = data["errorMsg"];
                 failed = true;
             } else {
                 setTimeout(() => {
-                    loginUser(data.username, data.csrf, cacheStore);
+                    loginUser(data.username, cacheStore);
                 }, 200); // for animation
 
             }
             // animation
             animateFetchRequest(setIsLoading, setFormClasses, failed)
         });
-    }, [loginUser]);
+    };
 
     return (
         <div>

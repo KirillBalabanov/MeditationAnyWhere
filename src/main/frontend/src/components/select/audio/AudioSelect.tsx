@@ -39,7 +39,7 @@ const AudioSelect: FC = () => {
         }
 
         // user audio url
-        if (userState.audio !== null) { // is in cache
+        if (userState.audio !== null || !authState.auth) { // is in cache or user not authenticated
             setUserAudioIsLoading(false);
         } else {
             fetch("/user/audio/get").then((response) => response.json()).then((data: AudioFetchI[] | ErrorFetchI) => {

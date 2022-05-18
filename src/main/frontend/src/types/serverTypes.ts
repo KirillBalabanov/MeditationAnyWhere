@@ -43,16 +43,11 @@ export interface AudioFetchI {
 
 export interface LoginFetchI {
     username: string,
-    csrf: string
 }
 
 export interface AvatarFetchI {
     avatarUrl: string,
     avatar: File | null,
-}
-
-export interface CsrfFetchI {
-    csrf: string,
 }
 
 export interface VerificationFetchI {

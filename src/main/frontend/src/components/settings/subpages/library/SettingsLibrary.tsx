@@ -12,6 +12,7 @@ import {useCacheStore} from "../../../../context/CacheStore/CacheStoreContext";
 import {UserActionTypes} from "../../../../reducer/userReducer";
 import {AudioFetchI, ErrorFetchI} from "../../../../types/serverTypes";
 import {AudioInterface} from "../../../../types/types";
+import {csrfFetching, FetchContentTypes, FetchingMethods} from "../../../../util/Fetch/csrfFetching";
 
 interface formData {
     url: string,
@@ -23,7 +24,7 @@ interface formData {
 const SettingsLibrary = () => {
 
     const cacheStore = useCacheStore()!;
-    const [csrfState] = cacheStore.csrfReducer;
+
     const [userState, userDispatcher] = cacheStore.userReducer;
 
     const [isLoading, setIsLoading] = useState(true);
@@ -145,46 +146,46 @@ const SettingsLibrary = () => {
             return;
         }
         let payload: AudioInterface[] = userState.audio!;
-        inputs.forEach((inp) => {
-            if (inp.delete === "1") {
-                fetch("/user/audio/del", {
-                    method: "DELETE",
-                    headers: {
-                        'X-XSRF-TOKEN': csrfState.csrfToken!,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({"url": inp.url})
-                }).then((response) => response.json()).then((data) => {
-                    if("error" in data) {
-                        setAudioErrorMsg(data.error);
-                        userDispatcher({type: UserActionTypes.RESET_AUDIO})
-                        return;
-                    }
-                });
-                payload = payload.filter(el => el.url !== inp.url);
-            }
-            else if (inp.changed === "1") {
-                fetch("/user/audio/update", {
-                    method: "PUT",
-                    headers: {
-                        'X-XSRF-TOKEN': csrfState.csrfToken!,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({title: inp.title, url: inp.url})
-                }).then((response) => response.json()).then((data) => {
-                    if("error" in data) {
-                        setAudioErrorMsg(data.error);
-                        return;
-                    }
-                });
-                payload = payload.map(el => {
-                    if (el.url === inp.url) {
-                        el.title = inp.title;
-                    }
-                    return el;
-                });
-            }
-        });
+        // inputs.forEach((inp) => {
+        //     if (inp.delete === "1") {
+        //         fetch("/user/audio/del", {
+        //             method: "DELETE",
+        //             headers: {
+        //                 'X-XSRF-TOKEN': csrfState.csrfToken!,
+        //                 'Content-Type': 'application/json'
+        //             },
+        //             body: JSON.stringify({"url": inp.url})
+        //         }).then((response) => response.json()).then((data) => {
+        //             if("error" in data) {
+        //                 setAudioErrorMsg(data.error);
+        //                 userDispatcher({type: UserActionTypes.RESET_AUDIO})
+        //                 return;
+        //             }
+        //         });
+        //         payload = payload.filter(el => el.url !== inp.url);
+        //     }
+        //     else if (inp.changed === "1") {
+        //         fetch("/user/audio/update", {
+        //             method: "PUT",
+        //             headers: {
+        //                 'X-XSRF-TOKEN': csrfState.csrfToken!,
+        //                 'Content-Type': 'application/json'
+        //             },
+        //             body: JSON.stringify({title: inp.title, url: inp.url})
+        //         }).then((response) => response.json()).then((data) => {
+        //             if("error" in data) {
+        //                 setAudioErrorMsg(data.error);
+        //                 return;
+        //             }
+        //         });
+        //         payload = payload.map(el => {
+        //             if (el.url === inp.url) {
+        //                 el.title = inp.title;
+        //             }
+        //             return el;
+        //         });
+        //     }
+        // });
         userDispatcher({type: UserActionTypes.SET_AUDIO, payload: payload})
         setPopupContent("Library updated!");
         setShowPopup(true);
@@ -211,13 +212,7 @@ const SettingsLibrary = () => {
         let formData = new FormData();
         formData.append("audio", audioFile!);
         formData.append("title", audioTitle);
-        fetch("/user/audio/add", {
-            method: "POST",
-            headers: {
-                'X-XSRF-TOKEN': csrfState.csrfToken!,
-            },
-            body: formData
-        }).then((response) => response.json()).then((data: AudioFetchI | ErrorFetchI) => {
+        csrfFetching("/user/audio/add", FetchingMethods.POST, FetchContentTypes.APPLICATION_JSON, formData).then((response) => response.json()).then((data: AudioFetchI | ErrorFetchI) => {
             if("errorMsg" in data) {
                 setAudioErrorMsg(data.errorMsg);
                 return;

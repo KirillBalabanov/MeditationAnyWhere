@@ -7,15 +7,15 @@ import polygon from "../../images/polygon.svg";
 import polygonOnRectangle from "../../images/polygonOnRectangle.svg"
 import classes from "./Header.module.css";
 import {useCacheStore} from "../../context/CacheStore/CacheStoreContext";
-import {AvatarFetchI, CsrfFetchI, ErrorFetchI} from "../../types/serverTypes";
+import {AvatarFetchI, ErrorFetchI} from "../../types/serverTypes";
 import {UserActionTypes} from "../../reducer/userReducer";
 import {logoutUser} from "../../context/CacheStore/CacheStoreService/logoutUser";
+import {csrfFetching, FetchingMethods} from "../../util/Fetch/csrfFetching";
 
 const Header = () => {
     const cacheStore = useCacheStore()!;
     const [authState] = cacheStore.authReducer;
     const [userState, userDispatcher] = cacheStore.userReducer;
-    const [csrfState] = cacheStore.csrfReducer;
     const [headerState] = cacheStore.headerReducer;
 
     const [showMenu, setShowMenu] = useState(false);
@@ -50,15 +50,8 @@ const Header = () => {
     function logout() {
         if (!authState.auth) return;
 
-        fetch("/user/auth/logout", {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-                'X-XSRF-TOKEN': csrfState.csrfToken!
-            }
-        }).then((response) => response.json()).then((data: CsrfFetchI) => {
-            logoutUser(cacheStore, data.csrf);
-        });
+        csrfFetching("/user/auth/logout", FetchingMethods.POST, null, null).then(() => logoutUser(cacheStore));
+
 
     }
 

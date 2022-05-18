@@ -10,11 +10,11 @@ import SettingsDelBtn from "../../components/SettingsDelBtn";
 import {useCacheStore} from "../../../../context/CacheStore/CacheStoreContext";
 import {ErrorFetchI, ProfileFetchI} from "../../../../types/serverTypes";
 import {UserActionTypes} from "../../../../reducer/userReducer";
+import {csrfFetching, FetchContentTypes, FetchingMethods} from "../../../../util/Fetch/csrfFetching";
 
 const SettingsProfile: FC = () => {
     const cacheStore = useCacheStore()!;
     const [userState, userDispatcher] = cacheStore.userReducer;
-    const [csrfState] = cacheStore.csrfReducer;
 
 
     const [avatarPreviewUrl, setAvatarPreviewUrl] = useState<string | null>(null);
@@ -94,13 +94,7 @@ const SettingsProfile: FC = () => {
         formData.append("deleteAvatar", deleteAvatar.toString());
         formData.append("image", image);
 
-        fetch("/user/profile/settings/update", {
-            method: "PUT",
-            headers: {
-                'X-XSRF-TOKEN': csrfState.csrfToken!,
-            },
-            body: formData
-        }).then((response) => response.json()).then((data: ProfileFetchI | ErrorFetchI) => {
+        csrfFetching("/user/profile/settings/update", FetchingMethods.PUT, FetchContentTypes.MULTIPART_FORM_DATA, formData).then((response) => response.json()).then((data: ProfileFetchI | ErrorFetchI) => {
             if ("errorMsg" in data) {
                 setImageUploadErrorMsg(data.errorMsg);
                 setImageUploadFailed(true);

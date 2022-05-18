@@ -12,8 +12,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,12 +42,11 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity.ok().body(ErrorModel.fromMessage(e.getMessage()));
         }
-        return ResponseEntity.ok().body(UserModel.toModel(registeredUser));
+        return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(UserModel.toModel(registeredUser));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody HashMap<String, String> hashMap,
-                                   HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<?> login(@RequestBody HashMap<String, String> hashMap) {
         if(hashMap.size() != 2) return ResponseEntity.badRequest().body("Invalid request params");
         String username = hashMap.get("username");
         String password = hashMap.get("password");
@@ -63,13 +60,13 @@ public class UserController {
 
         hm.put("username", username);
         // generate new csrf token
-        hm.put("csrf", generateAndSaveToken(request, response));
+
         // set auth.
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(username,
                 password);
         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 
-        return ResponseEntity.ok().body(hm);
+        return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(hm);
     }
 
     @PostMapping("/logout")
@@ -77,12 +74,7 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         new SecurityContextLogoutHandler().logout(httpServletRequest, httpServletResponse, authentication);
 
-        // generate new csrf token
-        String newToken = generateAndSaveToken(httpServletRequest, httpServletResponse);
-
-        HashMap<String, String> hm = new HashMap<>();
-        hm.put("csrf", newToken);
-        return ResponseEntity.ok().body(hm);
+        return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(null);
     }
     @GetMapping("/verification/{activationCode}")
     public ResponseEntity<?> verification(@PathVariable String activationCode) {
@@ -96,11 +88,4 @@ public class UserController {
         return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(hashMap);
     }
 
-    private String generateAndSaveToken(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        CookieCsrfTokenRepository cookieCsrfTokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();
-        CsrfToken newToken = cookieCsrfTokenRepository.generateToken(httpServletRequest);
-        cookieCsrfTokenRepository.saveToken(newToken,
-                httpServletRequest, httpServletResponse);
-        return newToken.getToken();
-    }
 }

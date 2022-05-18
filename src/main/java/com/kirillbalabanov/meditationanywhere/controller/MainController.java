@@ -7,6 +7,7 @@ import com.kirillbalabanov.meditationanywhere.service.FileService;
 import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,7 +25,7 @@ public class MainController {
     }
 
     @GetMapping("/principal")
-    public ResponseEntity<?> authenticated() {
+    public ResponseEntity<?> principal() {
         HashMap<Object, Object> hashMap = new HashMap<>();
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (!(principal instanceof UserDet userDet)) {
@@ -57,6 +58,11 @@ public class MainController {
             return ResponseEntity.ok().body(ErrorModel.fromMessage(e.getMessage()));
         }
         return ResponseEntity.ok().cacheControl(CacheControl.maxAge(120, TimeUnit.MINUTES).cachePublic().mustRevalidate()).body(audioModel);
+    }
+
+    @GetMapping("/csrf")
+    public CsrfToken csrfToken(CsrfToken token) {
+        return token;
     }
 }
 
