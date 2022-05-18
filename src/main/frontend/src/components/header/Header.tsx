@@ -45,7 +45,7 @@ const Header = () => {
                 setIsLoadingAvatar(false);
             });
         }
-    }, [headerState.reloadHeader]);
+    }, [headerState.reloadHeader]); // eslint-disable-line react-hooks/exhaustive-deps
 
     function logout() {
         if (!authState.auth) return;

@@ -47,7 +47,7 @@ const Timer:FC = () => {
             if("errorMsg" in data) return;
             serverDispatcher({type: ServerActionTypes.ADD_TOGGLE_AUDIO, payload: {url: data.audioUrl, title: data.audioTitle}})
         });
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     useEffect(() => {
         if (timerState.sessionEnded) {

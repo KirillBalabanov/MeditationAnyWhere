@@ -45,7 +45,7 @@ const SettingsProfile: FC = () => {
 
     useEffect(() => {
         setAvatarPreviewUrl(  userState.avatar !== null && userState.avatar.url !== null ? userState.avatar.url : null);
-    }, [userState.avatar?.url]);
+    }, [userState.avatar]);
 
     const imagePreview = (e: ChangeEvent) => {
         let fileReader = new FileReader();
