@@ -6,6 +6,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class UserValidator {
+    static final int EMAIL_MAX_LEN = 320;
+    static final int PASSWORD_MIN_LEN = 7;
 
     /**
      * Validate username. Throws {@link RegistrationException} with message of invalid part of username.
@@ -17,14 +19,14 @@ public class UserValidator {
     }
 
     public static void isValidPassword(String password) throws RegistrationException {
-        if(password.length() < 3) throw new RegistrationException("Invalid password length");
+        if(password.length() < PASSWORD_MIN_LEN) throw new RegistrationException("Invalid password length");
         if (!Patterns.PASSWORD_PATTERN.getPattern().matcher(password).matches()) {
             throw new RegistrationException("Invalid password.");
         }
     }
 
     public static void isValidEmail(String email) throws RegistrationException {
-        if(email.length() > 320) throw new RegistrationException("Invalid email.");
+        if(email.length() > EMAIL_MAX_LEN) throw new RegistrationException("Invalid email.");
         if (!Patterns.EMAIL_PATTERN.getPattern().matcher(email).matches()) throw new RegistrationException("Invalid email.");
     }
 
