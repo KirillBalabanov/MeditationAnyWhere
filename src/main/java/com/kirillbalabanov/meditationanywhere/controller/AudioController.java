@@ -4,6 +4,7 @@ import com.kirillbalabanov.meditationanywhere.config.UserDet;
 import com.kirillbalabanov.meditationanywhere.entity.AudioEntity;
 import com.kirillbalabanov.meditationanywhere.model.AudioModel;
 import com.kirillbalabanov.meditationanywhere.model.ErrorModel;
+import com.kirillbalabanov.meditationanywhere.model.frontend.AudioFileModel;
 import com.kirillbalabanov.meditationanywhere.service.AudioService;
 import com.kirillbalabanov.meditationanywhere.util.validator.ContentTypeValidator;
 import org.springframework.http.CacheControl;
@@ -28,7 +29,10 @@ public class AudioController {
 
 
     @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> addAudio(@RequestParam(name = "audio") MultipartFile audioFile, @RequestParam(name = "title") String audioTitle) {
+    public ResponseEntity<?> addAudio(@ModelAttribute AudioFileModel audioFileModel) {
+        String audioTitle = audioFileModel.audioTitle();
+        MultipartFile audioFile = audioFileModel.audioFile();
+
         if (audioFile == null || !ContentTypeValidator.isValidAudio(audioFile.getContentType())) {
             return ResponseEntity.badRequest().body("Invalid arguments");
         }
@@ -56,9 +60,9 @@ public class AudioController {
     }
 
     @PutMapping(value = "/update")
-    public ResponseEntity<?> updateTitle(@RequestBody HashMap<String, String> hashMap) {
-        String newTitle = hashMap.get("title");
-        String audioUrl = hashMap.get("url");
+    public ResponseEntity<?> updateTitle(@RequestBody AudioModel audioModel) {
+        String newTitle = audioModel.getAudioTitle();
+        String audioUrl = audioModel.getAudioUrl();
         UserDet userDet = (UserDet) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         AudioEntity audioEntity;
         try {
