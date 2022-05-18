@@ -146,46 +146,33 @@ const SettingsLibrary = () => {
             return;
         }
         let payload: AudioInterface[] = userState.audio!;
-        // inputs.forEach((inp) => {
-        //     if (inp.delete === "1") {
-        //         fetch("/user/audio/del", {
-        //             method: "DELETE",
-        //             headers: {
-        //                 'X-XSRF-TOKEN': csrfState.csrfToken!,
-        //                 'Content-Type': 'application/json'
-        //             },
-        //             body: JSON.stringify({"url": inp.url})
-        //         }).then((response) => response.json()).then((data) => {
-        //             if("error" in data) {
-        //                 setAudioErrorMsg(data.error);
-        //                 userDispatcher({type: UserActionTypes.RESET_AUDIO})
-        //                 return;
-        //             }
-        //         });
-        //         payload = payload.filter(el => el.url !== inp.url);
-        //     }
-        //     else if (inp.changed === "1") {
-        //         fetch("/user/audio/update", {
-        //             method: "PUT",
-        //             headers: {
-        //                 'X-XSRF-TOKEN': csrfState.csrfToken!,
-        //                 'Content-Type': 'application/json'
-        //             },
-        //             body: JSON.stringify({title: inp.title, url: inp.url})
-        //         }).then((response) => response.json()).then((data) => {
-        //             if("error" in data) {
-        //                 setAudioErrorMsg(data.error);
-        //                 return;
-        //             }
-        //         });
-        //         payload = payload.map(el => {
-        //             if (el.url === inp.url) {
-        //                 el.title = inp.title;
-        //             }
-        //             return el;
-        //         });
-        //     }
-        // });
+        inputs.forEach((inp) => {
+            if (inp.delete === "1") {
+                csrfFetching("/user/audio/del", FetchingMethods.DELETE, FetchContentTypes.APPLICATION_JSON, JSON.stringify({"url": inp.url})).then((response) => response.json()).then((data) => {
+                    if("error" in data) {
+                        setAudioErrorMsg(data.error);
+                        userDispatcher({type: UserActionTypes.RESET_AUDIO})
+                        return;
+                    }
+                });
+                payload = payload.filter(el => el.url !== inp.url);
+            }
+            else if (inp.changed === "1") {
+                csrfFetching("/user/audio/update", FetchingMethods.PUT, FetchContentTypes.APPLICATION_JSON,
+                    JSON.stringify({audioTitle: inp.title, audioUrl: inp.url})).then((response) => response.json()).then((data) => {
+                    if("error" in data) {
+                        setAudioErrorMsg(data.error);
+                        return;
+                    }
+                });
+                payload = payload.map(el => {
+                    if (el.url === inp.url) {
+                        el.title = inp.title;
+                    }
+                    return el;
+                });
+            }
+        });
         userDispatcher({type: UserActionTypes.SET_AUDIO, payload: payload})
         setPopupContent("Library updated!");
         setShowPopup(true);
@@ -210,9 +197,9 @@ const SettingsLibrary = () => {
         }
 
         let formData = new FormData();
-        formData.append("audio", audioFile!);
-        formData.append("title", audioTitle);
-        csrfFetching("/user/audio/add", FetchingMethods.POST, FetchContentTypes.APPLICATION_JSON, formData).then((response) => response.json()).then((data: AudioFetchI | ErrorFetchI) => {
+        formData.append("audioFile", audioFile!);
+        formData.append("audioTitle", audioTitle);
+        csrfFetching("/user/audio/add", FetchingMethods.POST, FetchContentTypes.MULTIPART_FORM_DATA, formData).then((response) => response.json()).then((data: AudioFetchI | ErrorFetchI) => {
             if("errorMsg" in data) {
                 setAudioErrorMsg(data.errorMsg);
                 return;
