@@ -15,7 +15,7 @@ const SettingsAccount = () => {
                 <button className={classes.button}>Change</button>
             </Section>
             <Section title={"Change email"}>
-                <p className={classes.text}>Current email: <b>Email</b></p>
+                <p className={classes.text}>Current email: <b>{userState.email}</b></p>
                 <input type="text" placeholder="Enter new email" className={classes.input}/>
                 <button className={classes.button}>Change</button>
             </Section>

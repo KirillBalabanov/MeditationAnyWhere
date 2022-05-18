@@ -4,6 +4,7 @@ import com.kirillbalabanov.meditationanywhere.entity.UserEntity;
 import com.kirillbalabanov.meditationanywhere.exception.user.LoginException;
 import com.kirillbalabanov.meditationanywhere.exception.user.NoUserFoundException;
 import com.kirillbalabanov.meditationanywhere.exception.user.RegistrationException;
+import com.kirillbalabanov.meditationanywhere.model.UserModel;
 import com.kirillbalabanov.meditationanywhere.repository.UserRepository;
 import com.kirillbalabanov.meditationanywhere.util.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,6 +99,13 @@ public class UserService {
         userEntity.setActivated(true);
         userEntity.setActivationCode(null);
         userRepository.save(userEntity);
+    }
+
+    @Transactional(readOnly = true)
+    public UserModel getPrincipal(long userId) throws NoUserFoundException {
+        Optional<UserEntity> optional = userRepository.findById(userId);
+        if(optional.isEmpty()) throw new NoUserFoundException("No user found");
+        return UserModel.toModel(optional.get());
     }
 
     private void validateInput(String username, String password) throws RegistrationException {

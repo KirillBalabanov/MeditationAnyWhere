@@ -1,6 +1,6 @@
 export interface PrincipalI {
     username: string,
-    authenticated: boolean,
+    email: string,
 }
 
 export interface ErrorFetchI {

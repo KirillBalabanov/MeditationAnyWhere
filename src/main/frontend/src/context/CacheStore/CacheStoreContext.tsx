@@ -19,6 +19,7 @@ const headerReducerInit: HeaderState = {
 
 const userReducerInit: UserState = {
     username: null,
+    email: null,
     bio: null,
     avatar: null,
     registrationDate: null,

@@ -1,9 +1,12 @@
 package com.kirillbalabanov.meditationanywhere.controller;
 
 import com.kirillbalabanov.meditationanywhere.config.UserDet;
+import com.kirillbalabanov.meditationanywhere.exception.user.NoUserFoundException;
 import com.kirillbalabanov.meditationanywhere.model.AudioModel;
 import com.kirillbalabanov.meditationanywhere.model.ErrorModel;
+import com.kirillbalabanov.meditationanywhere.model.UserModel;
 import com.kirillbalabanov.meditationanywhere.service.FileService;
+import com.kirillbalabanov.meditationanywhere.service.UserService;
 import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,23 +22,28 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping(value = "/server")
 public class MainController {
     private final FileService fileService;
+    private final UserService userService;
 
-    public MainController(FileService fileService) {
+    public MainController(FileService fileService, UserService userService) {
         this.fileService = fileService;
+        this.userService = userService;
     }
 
     @GetMapping("/principal")
     public ResponseEntity<?> principal() {
-        HashMap<Object, Object> hashMap = new HashMap<>();
+
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (!(principal instanceof UserDet userDet)) {
-            hashMap.put("authenticated", false);
-            hashMap.put("username", "$anonymous");
-        } else {
-            hashMap.put("authenticated", true);
-            hashMap.put("username", userDet.getUsername());
+            return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(null);
         }
-        return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(hashMap);
+        UserModel userModel;
+        try {
+            userModel = userService.getPrincipal(userDet.getUserId());
+        } catch (NoUserFoundException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(userModel);
     }
 
     @GetMapping("/audio/default")

@@ -12,14 +12,14 @@ export const useGetPrincipal = (cacheStore: CacheStoreContextI, setIsLoading: Re
             const authReducer = cacheStore.authReducer;
             const userReducer = cacheStore.userReducer;
 
-            if (obj.authenticated) {
-                authReducer[1]({type: AuthActionTypes.LOGIN})
-                userReducer[1]({type: UserActionTypes.SET_USERNAME, payload: obj.username})
-            } else {
-                authReducer[1]({type: AuthActionTypes.LOGOUT})
-                userReducer[1]({type: UserActionTypes.RESET_ALL})
-            }
+            authReducer[1]({type: AuthActionTypes.LOGIN})
+            userReducer[1]({type: UserActionTypes.SET_PRINCIPAL, payload: obj})
 
+
+        }).catch(() => { // if null - not authenticated
+            cacheStore.authReducer[1]({type: AuthActionTypes.LOGOUT})
+            cacheStore.userReducer[1]({type: UserActionTypes.RESET_ALL})
+        }).then(() => {
             if (setIsLoading !== null) {
                 setIsLoading(false);
             }
