@@ -1,27 +1,45 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Section from "../../components/SettingsContentSection";
 import classes from "./SettingsAccount.module.css";
 import {useCacheStore} from "../../../../context/CacheStore/CacheStoreContext";
+import AccountFormPopup, {ValidationPopupType} from "./AccountFormPopup";
 
 const SettingsAccount = () => {
     const cacheStore = useCacheStore()!;
     const [userState] = cacheStore.userReducer;
 
+    const [popupShown, setPopupShown] = useState(false);
+    const [popupType, setPopupType] = useState<ValidationPopupType>(ValidationPopupType.DELETE_ACCOUNT);
+
     return (
         <div>
-            <Section title={"Change username"}>
-                <p className={classes.text}>Current username: <b>{userState.username}</b></p>
-                <input type="text" placeholder="Enter new username" className={classes.input}/>
-                <button className={classes.button}>Change</button>
-            </Section>
-            <Section title={"Change email"}>
-                <p className={classes.text}>Current email: <b>{userState.email}</b></p>
-                <input type="text" placeholder="Enter new email" className={classes.input}/>
-                <button className={classes.button}>Change</button>
-            </Section>
-            <Section title={"Delete account"}>
-                <button className={classes.delete}>Delete your account</button>
-            </Section>
+            <form>
+                <Section title={"Change username"}>
+                    <p className={classes.text}>Current username: <b>{userState.username}</b></p>
+                    <button className={classes.button} onClick={() => {
+                        setPopupType(ValidationPopupType.CHANGE_USERNAME);
+                        setPopupShown(true)
+                    }} type={"button"}>Change
+                    </button>
+                </Section>
+                <Section title={"Change email"}>
+                    <p className={classes.text}>Current email: <b>{userState.email}</b></p>
+                    <button className={classes.button} onClick={() => {
+                        setPopupType(ValidationPopupType.CHANGE_EMAIL);
+                        setPopupShown(true);
+                    }} type={"button"}>Change
+                    </button>
+                </Section>
+                <Section title={"Delete account"}>
+                    <button className={classes.delete} type={"button"} onClick={() => {
+                        setPopupShown(true);
+                        setPopupType(ValidationPopupType.DELETE_ACCOUNT);
+                    }}>Delete your account
+                    </button>
+                </Section>
+            </form>
+
+            <AccountFormPopup type={popupType} shown={popupShown} setShown={setPopupShown}></AccountFormPopup>
         </div>
     );
 };
