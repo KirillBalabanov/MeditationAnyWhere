@@ -1,4 +1,4 @@
-import {AudioInterface} from "../types/types";
+import {AudioInterface} from "../types/contextTypes";
 
 export enum ServerActionTypes {
     ADD_TOGGLE_AUDIO,
