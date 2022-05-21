@@ -1,8 +1,9 @@
-import {AudioInterface, AvatarInterface, BioInterface, StatsInterface} from "../types/types";
+import {AudioInterface, AvatarInterface, BioInterface, StatsInterface} from "../types/contextTypes";
 
 export enum UserActionTypes {
     SET_PRINCIPAL,
     SET_USERNAME,
+    SET_EMAIL,
     SET_BIO,
     SET_AVATAR,
     SET_REGISTRATION_DATE,
@@ -44,6 +45,10 @@ interface UserSetAudioAction {
     type: UserActionTypes.SET_AUDIO,
     payload: AudioInterface[],
 }
+interface UserSetEmailAction {
+    type: UserActionTypes.SET_EMAIL,
+    payload: string,
+}
 
 interface UserResetAudioAction {
     type: UserActionTypes.RESET_AUDIO,
@@ -58,7 +63,7 @@ interface UserResetAction {
 
 export type UserAction = UserSetPrincipalAction | UserSetBioAction |
     UserSetAvatarAction | UserSetRegistrationDateAction | UserSetStatsAction | UserSetAudioAction
-    | UserResetAction | UserResetAudioAction | UserSetUsernameAction;
+    | UserResetAction | UserResetAudioAction | UserSetUsernameAction | UserSetEmailAction;
 
 export interface UserState {
     username: string | null,
@@ -87,6 +92,8 @@ export const userReducer = (state: UserState, action: UserAction): UserState => 
             return {...state, audio: action.payload}
         case UserActionTypes.SET_STATS:
             return {...state, stats: action.payload}
+        case UserActionTypes.SET_EMAIL:
+            return {...state, email: action.payload}
 
         // resets
         case UserActionTypes.RESET_AUDIO:
