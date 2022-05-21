@@ -6,7 +6,7 @@ interface Error404Props {
     errorMsg?: any
 }
 
-const Error: FC<Error404Props> = React.memo(({errorMsg}) => {
+const ErrorPage: FC<Error404Props> = React.memo(({errorMsg}) => {
     return (
         <div className="error404">
             <div className="error404__text">
@@ -22,4 +22,4 @@ const Error: FC<Error404Props> = React.memo(({errorMsg}) => {
     );
 });
 
-export default Error;
+export default ErrorPage;
