@@ -1,33 +1,33 @@
 package com.kirillbalabanov.meditationanywhere.util.validator;
 
-import com.kirillbalabanov.meditationanywhere.exception.user.RegistrationException;
+import com.kirillbalabanov.meditationanywhere.exception.user.ValidationException;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class UserValidator {
+public final class UserValidator {
     static final int EMAIL_MAX_LEN = 320;
     static final int PASSWORD_MIN_LEN = 7;
 
     /**
-     * Validate username. Throws {@link RegistrationException} with message of invalid part of username.
+     * Validate username. Throws {@link ValidationException} with message of invalid part of username.
      */
-    public static void isValidUsername(String username) throws RegistrationException {
+    public static void isValidUsername(String username) throws ValidationException {
         if (!Patterns.USERNAME_PATTERN.getPattern().matcher(username).matches()) {
-            throw new RegistrationException("Invalid username.");
+            throw new ValidationException("Invalid username.");
         }
     }
 
-    public static void isValidPassword(String password) throws RegistrationException {
-        if(password.length() < PASSWORD_MIN_LEN) throw new RegistrationException("Invalid password length");
+    public static void isValidPassword(String password) throws ValidationException {
+        if(password.length() < PASSWORD_MIN_LEN) throw new ValidationException("Invalid password length");
         if (!Patterns.PASSWORD_PATTERN.getPattern().matcher(password).matches()) {
-            throw new RegistrationException("Invalid password.");
+            throw new ValidationException("Invalid password.");
         }
     }
 
-    public static void isValidEmail(String email) throws RegistrationException {
-        if(email.length() > EMAIL_MAX_LEN) throw new RegistrationException("Invalid email.");
-        if (!Patterns.EMAIL_PATTERN.getPattern().matcher(email).matches()) throw new RegistrationException("Invalid email.");
+    public static void isValidEmail(String email) throws ValidationException {
+        if(email.length() > EMAIL_MAX_LEN) throw new ValidationException("Invalid email.");
+        if (!Patterns.EMAIL_PATTERN.getPattern().matcher(email).matches()) throw new ValidationException("Invalid email.");
     }
 
     private static String groupByRegex(Pattern regex, String validationString) {

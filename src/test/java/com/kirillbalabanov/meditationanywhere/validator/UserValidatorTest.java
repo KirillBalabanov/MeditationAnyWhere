@@ -1,6 +1,6 @@
 package com.kirillbalabanov.meditationanywhere.validator;
 
-import com.kirillbalabanov.meditationanywhere.exception.user.RegistrationException;
+import com.kirillbalabanov.meditationanywhere.exception.user.ValidationException;
 import com.kirillbalabanov.meditationanywhere.util.validator.UserValidator;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -40,7 +40,7 @@ class UserValidatorTest {
         String invalid5 = "jjjjjjjjjjjjjjjjjjjjj";
         String invalid6 = "sdf>D>><";
 
-        assertThrows(RegistrationException.class, () -> {
+        assertThrows(ValidationException.class, () -> {
             UserValidator.isValidUsername(invalid1);
             UserValidator.isValidUsername(invalid2);
             UserValidator.isValidUsername(invalid3);
@@ -74,7 +74,7 @@ class UserValidatorTest {
         String invalid4 = "Jd";
         String invalid5 = "jjjjjjjjjjjjjjjjjjjjj";
 
-        assertThrows(RegistrationException.class, () -> {
+        assertThrows(ValidationException.class, () -> {
             UserValidator.isValidUsername(invalid1);
             UserValidator.isValidUsername(invalid2);
             UserValidator.isValidUsername(invalid3);
@@ -88,7 +88,7 @@ class UserValidatorTest {
         String invalid1 = "sd@cm.ua";
         String invalid2 = "s@c.c";
         String invalid3 = "j_j_j@j_j.c_____";
-        assertThrows(RegistrationException.class, () -> {
+        assertThrows(ValidationException.class, () -> {
             UserValidator.isValidUsername(invalid1);
             UserValidator.isValidUsername(invalid2);
             UserValidator.isValidUsername(invalid3);
@@ -101,7 +101,7 @@ class UserValidatorTest {
         String invalid2 = "j @m.com";
         String invalid3 = "j@ c.com";
         String invalid4 = "j@c .com";
-        assertThrows(RegistrationException.class, () -> {
+        assertThrows(ValidationException.class, () -> {
             UserValidator.isValidUsername(invalid1);
             UserValidator.isValidUsername(invalid2);
             UserValidator.isValidUsername(invalid3);
