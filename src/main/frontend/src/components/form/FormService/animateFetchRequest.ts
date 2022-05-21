@@ -1,18 +1,16 @@
 import React, {SetStateAction} from "react";
-import {FormStyles} from "../Form";
+import {FormState} from "../Form";
 
-export const animateFetchRequest = (setIsLoading: React.Dispatch<SetStateAction<boolean>>, setFormClasses: React.Dispatch<SetStateAction<FormStyles[]>>, failed: boolean) => {
+export const animateFetchRequest = (setFormClasses: React.Dispatch<SetStateAction<FormState>>, failed: boolean) => {
     // animation
     setTimeout(() => {
-        setFormClasses([]);
-        setIsLoading(false);
         if (failed) {
-            setFormClasses([FormStyles.failed]);
+            setFormClasses(FormState.FAILED);
         } else {
-            setFormClasses([FormStyles.succeed]);
+            setFormClasses(FormState.SUCCEED);
         }
         setTimeout(() => {
-            setFormClasses([]);
+            setFormClasses(FormState.DEFAULT);
         }, 500); // timeout for end of animation
     }, 300); // set timeout in case fetch request is very fast.
 };
