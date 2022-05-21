@@ -1,4 +1,4 @@
-import React, {FC, useCallback, useEffect, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import selectAudioIcon from "../../../images/selectAudioIcon.svg";
 import classes from "./AudioSelect.module.css";
 import Slider from "../../slider/Slider";
@@ -51,17 +51,13 @@ const AudioSelect: FC = () => {
                 userDispatcher({type: UserActionTypes.SET_AUDIO, payload: []})
             }).then(() => setUserAudioIsLoading(false));
         }
-
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-    const selectShownToggle = useCallback(() => {
-        setSelectShown(prev => !prev);
-    }, []);
 
     return (
         <div className={selectShown ? classes.select + " " + classes.selectShown : classes.select}>
             <div className={classes.title}>
-                <div className={classes.titleInner} onClick={selectShownToggle}>
+                <div className={classes.titleInner} onClick={() => setSelectShown(prev => !prev)}>
                     <img src={selectAudioIcon} alt=""/>
                     <p className={classes.titleText}>Select your audio</p>
                 </div>

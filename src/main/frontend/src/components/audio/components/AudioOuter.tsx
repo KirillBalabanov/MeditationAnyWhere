@@ -17,7 +17,7 @@ const AudioOuter: FC<AudioOuterProps> = ({audioUrl, audioElement, looped, childr
             {
                 errMsg !== ""
                     ?
-                    <p style={{color: "red", fontSize: "16px", display: "flex", alignItems: "center", justifyContent: "center", height: "100%"}}>{errMsg}</p>
+                    <p className={classes.audioError}>{errMsg}</p>
                     :
                     <div className={classes.audioInner}>
                         <AudioSource audioUrl={audioUrl} audioElement={audioElement} looped={looped} setAudioNotFoundError={setErrMsg}></AudioSource>

@@ -42,29 +42,18 @@ const AudioSelectLibraryAudio: FC<AudioSelectLibraryAudioProps> = ({url, title})
 
 
     const togglePlay = () => {
-        if (canPlay()) {
-            if (audioSelectContext?.currentAudioElement != null) {
-                audioSelectContext?.currentAudioElement?.pause(); // reset played element.
+        if (!isAudioPlaying) {
+            if (audioSelectContext?.currentAudioElement != null) { // reset previously played element.
+                audioSelectContext?.currentAudioElement?.pause();
                 if(audioSelectContext.currentAudioElement.played) audioSelectContext.currentAudioElement.currentTime = 0;
             }
             audioElement.current?.play();
         }
-        if (canPause()) {
+        else {
             audioElement.current?.pause();
         }
     }
 
-    const canPause = () => {
-        if(audioElement == null) return;
-        return isAudioPlaying;
-
-    };
-
-    const canPlay = () => {
-        if(audioElement == null) return;
-        return !isAudioPlaying;
-
-    };
 
     return (
         <div className={isAudioPlaying ? classes.libraryAudio + " " + classes.libraryAudioActive : classes.libraryAudio}
