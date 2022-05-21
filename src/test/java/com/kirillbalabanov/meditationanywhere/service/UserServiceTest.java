@@ -5,7 +5,7 @@ import com.kirillbalabanov.meditationanywhere.entity.StatsEntity;
 import com.kirillbalabanov.meditationanywhere.entity.UserEntity;
 import com.kirillbalabanov.meditationanywhere.exception.user.LoginException;
 import com.kirillbalabanov.meditationanywhere.exception.user.NoUserFoundException;
-import com.kirillbalabanov.meditationanywhere.exception.user.RegistrationException;
+import com.kirillbalabanov.meditationanywhere.exception.user.ValidationException;
 import com.kirillbalabanov.meditationanywhere.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
@@ -29,6 +29,9 @@ class UserServiceTest {
     private UserRepository userRepository;
     @MockBean
     private EmailSenderService emailSenderService;
+
+    @MockBean
+    private UUIDCryptor uuidCryptor;
     @Autowired
     private UserService userService;
 
@@ -41,7 +44,7 @@ class UserServiceTest {
         // userRepository returns already registered user
         Mockito.doReturn(Optional.of(new UserEntity())).when(userRepository).findByUsername(requestUsername);
 
-        assertThrows(RegistrationException.class, () -> userService.register(requestUsername, requestEmail, requestPassword));
+        assertThrows(ValidationException.class, () -> userService.register(requestUsername, requestEmail, requestPassword));
 
         Mockito.verify(userRepository, Mockito.times(1)).findByUsername(ArgumentMatchers.anyString());
     }
@@ -54,18 +57,20 @@ class UserServiceTest {
         // userRepository returns already registered user with email 'email'
         Mockito.doReturn(Optional.of(new UserEntity())).when(userRepository).findByEmail(requestEmail);
 
-        assertThrows(RegistrationException.class, () -> userService.register(requestUsername, requestEmail, requestPassword));
+        assertThrows(ValidationException.class, () -> userService.register(requestUsername, requestEmail, requestPassword));
 
         Mockito.verify(userRepository, Mockito.times(1)).findByEmail(ArgumentMatchers.anyString());
     }
     @Test
-    void register_SuccessRegistration() throws RegistrationException {
+    void register_SuccessRegistration() throws ValidationException {
         String requestUsername = "username";
         String requestEmail = "email@gmail.ua";
         String requestPassword = "password";
         String encodedPassword = "encodedPassword";
 
-        UserEntity registeredUserEntity = UserEntity.initUserEntity(requestUsername, encodedPassword, requestEmail, "ROLE_USER");
+        String activationCode = uuidCryptor.encrypt(requestUsername);
+
+        UserEntity registeredUserEntity = UserEntity.initUserEntity(requestUsername, encodedPassword, activationCode, requestEmail, "ROLE_USER");
         registeredUserEntity.setId(1);
 
         Mockito.doReturn(Optional.empty()).when(userRepository).findByUsername(requestUsername);
@@ -79,6 +84,7 @@ class UserServiceTest {
         Mockito.verify(userRepository, Mockito.times(1)).findByEmail(ArgumentMatchers.any());
         Mockito.verify(userRepository, Mockito.times(1)).save(ArgumentMatchers.any());
         Mockito.verify(passwordEncoder, Mockito.times(1)).encode(ArgumentMatchers.anyString());
+        Mockito.verify(uuidCryptor, Mockito.times(1)).encrypt(ArgumentMatchers.anyString());
         Mockito.verify(emailSenderService, Mockito.times(1))
                 .sendVerificationEmail(ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.anyString());
     }
