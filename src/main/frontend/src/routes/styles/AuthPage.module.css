@@ -1,9 +1,17 @@
+.auth {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 150px;
+}
+
 .auth__outer {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 100px;
     position: relative;
+    height: 400px;
+    width: 500px;
 }
 
 .auth__link {
