@@ -36,19 +36,44 @@ public class FileService {
     }
 
     public String createFileInUserDirectory(MultipartFile file, long id) throws IOException {
-        String fileName = UUID.randomUUID() + "." + file.getOriginalFilename();
+        String fileNameWithUUID = UUID.randomUUID() + "." + file.getOriginalFilename().replaceAll("[^A-Za-z1-9._]", "");
 
-        File fileInFileSys = new File(userFolderPath + "/" + id + "/" + fileName);
+        File fileInFileSys = new File(userFolderPath + "/" + id + "/" + fileNameWithUUID);
         if (!fileInFileSys.exists()) {
             fileInFileSys.mkdirs();
         }
         file.transferTo(fileInFileSys);
 
-        return fileName;
+        return fileNameWithUUID;
     }
 
-    public void deleteFileFromUserDirectory(String pathToFile) {
+    public void deleteFile(String pathToFile) {
         new File(pathToFile).delete();
+    }
+
+    public void deleteUserFolder(long userId) {
+        File userFolder = new File(userFolderPath + "/" + userId);
+        File[] files = userFolder.listFiles();
+        deleteAllFilesRecursively(files);
+        userFolder.delete();
+    }
+
+    private void deleteAllFilesRecursively(File[] files) {
+        for (File f : files) {
+            deleteFileRecursively(f);
+        }
+    }
+
+    private void deleteFileRecursively(File file) {
+        if (file.isDirectory()) {
+            File[] files = file.listFiles();
+            if (files != null) {
+                deleteAllFilesRecursively(files);
+            }
+
+            file.delete();
+        }
+        file.delete();
     }
 
     public String getUserFilePathInFileSys(String fileName, long id) {

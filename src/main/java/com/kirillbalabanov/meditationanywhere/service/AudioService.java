@@ -88,7 +88,7 @@ public class AudioService {
         Optional<AudioEntity> optional = userEntity.getAudioEntityList().stream().filter((el) -> el.getAudioUrl().equals(url)).findFirst();
         if (optional.isEmpty()) throw new AudioNotFoundException("Audio not found.");
         AudioEntity audioEntity = optional.get();
-        fileService.deleteFileFromUserDirectory(audioEntity.getAudioPath());
+        fileService.deleteFile(audioEntity.getAudioPath());
         userEntity.getAudioEntityList().remove(audioEntity);
         audioRepository.delete(audioEntity);
         return audioEntity;
