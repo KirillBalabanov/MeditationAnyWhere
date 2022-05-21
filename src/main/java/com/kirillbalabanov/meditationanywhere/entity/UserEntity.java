@@ -21,7 +21,7 @@ public class UserEntity {
     @Column(nullable = false)
     private boolean isActivated;
 
-    @Column(nullable = true)
+    @Column
     private String activationCode;
     @Column(nullable = false, unique = true)
     private String email;
@@ -46,7 +46,7 @@ public class UserEntity {
     /**
      * Fabric method used to create an instance of brand new UserEntity, which then has to be saved in db.
      */
-    public static UserEntity initUserEntity(String username, String email, String hashedPassword, String role) {
+    public static UserEntity initUserEntity(String username, String email, String activationCode, String hashedPassword, String role) {
         UserEntity userEntity = new UserEntity();
         userEntity.setUsername(username);
         userEntity.setEmail(email);
@@ -54,10 +54,10 @@ public class UserEntity {
         userEntity.setRole(role);
         userEntity.setStatsEntity(StatsEntity.initStatsEntity());
         userEntity.setActivated(false);
-        userEntity.setActivationCode(UUID.randomUUID().toString());
+        userEntity.setActivationCode(activationCode);
         userEntity.setRegistrationDate(new Date(new java.util.Date().getTime()));
         userEntity.setProfileEntity(ProfileEntity.initProfileEntity());
-        userEntity.setAudioEntityList(new ArrayList<AudioEntity>());
+        userEntity.setAudioEntityList(new ArrayList<>());
         return userEntity;
     }
 
