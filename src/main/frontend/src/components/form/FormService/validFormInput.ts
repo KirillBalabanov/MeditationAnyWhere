@@ -1,4 +1,4 @@
-import React from "react";
+import React, {SetStateAction} from "react";
 import {isValidEmail} from "../../../util/UserValidator/isValidEmail";
 import {isValidUsername} from "../../../util/UserValidator/isValidUsername";
 import {isValidPassword} from "../../../util/UserValidator/isValidPassword";
@@ -9,7 +9,7 @@ export enum ValidFormValidator {
     password
 }
 
-export const validFormInput = (e: React.FormEvent<HTMLInputElement>, validForm: ValidFormValidator, setErrorMsg: (msg: string) => void) => {
+export const validFormInput = (e: React.FormEvent<HTMLInputElement>, validForm: ValidFormValidator, setErrorMsg: React.Dispatch<SetStateAction<string | null>>) => {
     let val = (e.target as HTMLInputElement).value;
     try {
         switch (validForm) {
@@ -23,7 +23,7 @@ export const validFormInput = (e: React.FormEvent<HTMLInputElement>, validForm: 
                 isValidPassword(val);
                 break
         }
-        setErrorMsg("");
+        setErrorMsg(null);
     } catch (e) {
         if (e instanceof Error) setErrorMsg(e.message);
     }
