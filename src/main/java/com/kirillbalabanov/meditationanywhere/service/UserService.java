@@ -1,9 +1,7 @@
 package com.kirillbalabanov.meditationanywhere.service;
 
 import com.kirillbalabanov.meditationanywhere.entity.UserEntity;
-import com.kirillbalabanov.meditationanywhere.exception.user.LoginException;
-import com.kirillbalabanov.meditationanywhere.exception.user.NoUserFoundException;
-import com.kirillbalabanov.meditationanywhere.exception.user.RegistrationException;
+import com.kirillbalabanov.meditationanywhere.exception.user.*;
 import com.kirillbalabanov.meditationanywhere.model.UserModel;
 import com.kirillbalabanov.meditationanywhere.repository.UserRepository;
 import com.kirillbalabanov.meditationanywhere.util.validator.UserValidator;
@@ -20,28 +18,37 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailSenderService emailSenderService;
+    private final UUIDCryptor uuidCryptor;
+
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, EmailSenderService emailSenderService) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, EmailSenderService emailSenderService, UUIDCryptor uuidCryptor) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.emailSenderService = emailSenderService;
+        this.uuidCryptor = uuidCryptor;
     }
 
     /**
      * Registers current {@link UserEntity} in database.
      * Encrypts password with provided {@link PasswordEncoder}.
+     *
      * @return registered UserEntity.
-     * @throws RegistrationException if username or email is taken.
+     * @throws ValidationException if username or email is taken.
      */
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public UserEntity register(String username, String email, String password) throws RegistrationException {
+    public UserEntity register(String username, String email, String password) throws ValidationException {
 
-        validateInput(username, email, password);
-        if(userRepository.findByUsername(username).isPresent()) throw new RegistrationException("Username is taken.");
-        if(userRepository.findByEmail(email).isPresent()) throw new RegistrationException("Email is already registered.");
+        UserValidator.isValidUsername(username);
+        UserValidator.isValidEmail(email);
+        UserValidator.isValidPassword(password);
+        if (userRepository.findByUsername(username).isPresent()) throw new ValidationException("Username is taken.");
+        if (userRepository.findByEmail(email).isPresent())
+            throw new ValidationException("Email is already registered.");
 
-        UserEntity newUserEntity = UserEntity.initUserEntity(username, email, passwordEncoder.encode(password), "ROLE_USER");
+        String activationCode = uuidCryptor.encrypt(username);
+
+        UserEntity newUserEntity = UserEntity.initUserEntity(username, email, activationCode, passwordEncoder.encode(password), "ROLE_USER");
 
         emailSenderService.sendVerificationEmail(newUserEntity.getActivationCode(), email, username);
 
@@ -53,37 +60,42 @@ public class UserService {
 
     /**
      * Defines if user is able to log in. Throws exception if not.
-     * @param username username
+     *
+     * @param username    username
      * @param rawPassword input password
      * @throws NoUserFoundException - if there is no user in db.
-     * @throws LoginException - if password doesn't match or account is not verified.
+     * @throws LoginException       - if password doesn't match or account is not verified.
      */
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void isAbleToLogIn(String username, String rawPassword) throws NoUserFoundException, LoginException, RegistrationException {
-        validateInput(username, rawPassword);
+    public UserModel isAbleToLogIn(String username, String rawPassword) throws NoUserFoundException, LoginException, ValidationException, InvalidPasswordException {
+        UserValidator.isValidUsername(username);
+        UserValidator.isValidPassword(rawPassword);
         Optional<UserEntity> optional = userRepository.findByUsername(username);
-        if(optional.isEmpty()) throw new NoUserFoundException("User not found.");
+        if (optional.isEmpty()) throw new NoUserFoundException("User not found.");
         UserEntity userEntity = optional.get();
-        if (!passwordEncoder.matches(rawPassword, userEntity.getPassword())) throw new LoginException("Invalid password");
+        if (!passwordEncoder.matches(rawPassword, userEntity.getPassword()))
+            throw new InvalidPasswordException("Invalid password");
         if (!userEntity.isActivated()) throw new LoginException("Account is not verified");
+        return UserModel.toModel(userEntity);
     }
 
     /**
      * Return {@link UserEntity} if found, otherwise throws {@link NoUserFoundException}
+     *
      * @return {@link UserEntity}
      * @throws NoUserFoundException ResponseStatus not found
      */
     @Transactional(readOnly = true)
     public UserEntity findByUsername(String username) throws NoUserFoundException {
         Optional<UserEntity> optional = userRepository.findByUsername(username);
-        if(optional.isEmpty()) throw new NoUserFoundException("User " + "'" + username + "'" + " not found.");
+        if (optional.isEmpty()) throw new NoUserFoundException("User " + "'" + username + "'" + " not found.");
         return optional.get();
     }
 
     @Transactional(readOnly = true)
     public UserEntity findById(long id) throws NoUserFoundException {
         Optional<UserEntity> optional = userRepository.findById(id);
-        if(optional.isEmpty()) throw new NoUserFoundException("No user found.");
+        if (optional.isEmpty()) throw new NoUserFoundException("No user found.");
         return optional.get();
     }
 
@@ -92,9 +104,9 @@ public class UserService {
      * Throws {@link NoUserFoundException} if no user with given uuid is found.
      */
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void verifyUserByActivationCode(String activationCode) throws NoUserFoundException{
+    public void verifyUserByActivationCode(String activationCode) throws NoUserFoundException {
         Optional<UserEntity> optional = userRepository.findByActivationCode(activationCode);
-        if(optional.isEmpty()) throw new NoUserFoundException("Invalid activation code.");
+        if (optional.isEmpty()) throw new NoUserFoundException("Invalid activation code.");
         UserEntity userEntity = optional.get();
         userEntity.setActivated(true);
         userEntity.setActivationCode(null);
@@ -104,18 +116,59 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserModel getPrincipal(long userId) throws NoUserFoundException {
         Optional<UserEntity> optional = userRepository.findById(userId);
-        if(optional.isEmpty()) throw new NoUserFoundException("No user found");
+        if (optional.isEmpty()) throw new NoUserFoundException("No user found");
         return UserModel.toModel(optional.get());
     }
 
-    private void validateInput(String username, String password) throws RegistrationException {
-        UserValidator.isValidUsername(username);
-        UserValidator.isValidPassword(password);
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public UserModel changeUsername(long id, String newUsername, String rawPassword) throws ValidationException, NoUserFoundException, UsernameTakenException, InvalidPasswordException {
+        UserValidator.isValidUsername(newUsername);
+        Optional<UserEntity> optional = userRepository.findById(id);
+        if (optional.isEmpty()) throw new NoUserFoundException("No user found.");
+        UserEntity userEntity = optional.get();
+        if (!passwordEncoder.matches(rawPassword, userEntity.getPassword()))
+            throw new InvalidPasswordException("Invalid password.");
+
+        if (userRepository.findByUsername(newUsername).isPresent())
+            throw new UsernameTakenException("Username is taken.");
+        userEntity.setUsername(newUsername);
+        return UserModel.toModel(userRepository.save(userEntity));
     }
 
-    private void validateInput(String username, String email, String password) throws RegistrationException {
-        UserValidator.isValidUsername(username);
-        UserValidator.isValidEmail(email);
-        UserValidator.isValidPassword(password);
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public UserModel changeEmailRequest(long userId, String newEmail, String rawPassword) throws ValidationException, NoUserFoundException, InvalidPasswordException {
+        UserValidator.isValidEmail(newEmail);
+        Optional<UserEntity> optional = userRepository.findById(userId);
+        if (optional.isEmpty()) throw new NoUserFoundException("No user found.");
+        UserEntity userEntity = optional.get();
+        if (!passwordEncoder.matches(rawPassword, userEntity.getPassword()))
+            throw new InvalidPasswordException("Invalid password.");
+
+        if(userEntity.getEmail().equals(newEmail)) throw new ValidationException("Email already in use.");
+
+        String activationCode = uuidCryptor.encrypt(newEmail);
+
+        emailSenderService.sendChangeEmailVerificationTo(activationCode, newEmail, userEntity.getUsername());
+        userEntity.setActivationCode(activationCode);
+        userRepository.save(userEntity);
+        return UserModel.toModel(userEntity);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public UserModel changeEmailVerification(String encryptedCode, String password) throws NoUserFoundException, ValidationException, InvalidPasswordException {
+        Optional<UserEntity> optional = userRepository.findByActivationCode(encryptedCode);
+        if (optional.isEmpty()) throw new NoUserFoundException("Invalid code.");
+
+        String newEmail = uuidCryptor.decrypt(encryptedCode);
+        UserValidator.isValidEmail(newEmail);
+
+        UserEntity userEntity = optional.get();
+        if (!passwordEncoder.matches(password, userEntity.getPassword()))
+            throw new InvalidPasswordException("Invalid password.");
+
+        userEntity.setEmail(newEmail);
+        userEntity.setActivationCode(null);
+
+        return UserModel.toModel(userRepository.save(userEntity));
     }
 }
