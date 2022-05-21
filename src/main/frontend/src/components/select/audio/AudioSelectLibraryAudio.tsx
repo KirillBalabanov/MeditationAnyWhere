@@ -66,11 +66,14 @@ const AudioSelectLibraryAudio: FC<AudioSelectLibraryAudioProps> = ({url, title})
                         :
                         <div>
                             {title}
-                            <AudioSource audioUrl={url} audioElement={audioElement} looped={true} setAudioNotFoundError={setAudioNotFoundError}></AudioSource>
+                            <AudioSource audioUrl={url} audioElement={audioElement} looped={true}
+                                         setAudioNotFoundError={setAudioNotFoundError}></AudioSource>
                         </div>
                 }
             </div>
-            <div className={classes.libraryControls} onClick={(e) => e.preventDefault()}>
+            <div className={classes.libraryControls} onClick={(e) => {
+                e.preventDefault()
+            }}>
                 <AudioSelectVolume audioElement={audioElement}/>
                 {
                     isAudioPlaying
