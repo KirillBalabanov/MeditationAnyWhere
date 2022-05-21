@@ -20,10 +20,11 @@ const SettingsProfile: FC = () => {
     const [avatarPreviewUrl, setAvatarPreviewUrl] = useState<string | null>(null);
 
     const [deleteAvatar, setDeleteAvatar] = useState(false);
-    const [imageUploadFailed, setImageUploadFailed] = useState(false);
-    const [imageInputKey, setImageInputKey] = useState(Date.now());
-    const [imageUploadErrorMsg, setImageUploadErrorMsg] = useState("");
 
+    const [imageInputKey, setImageInputKey] = useState(Date.now());
+    const [imageUploadErrorMsg, setImageUploadErrorMsg] = useState<null | string>(null);
+
+    const [previewImage, setPreviewImage] = useState<null | File>(null);
     const [popupShown, setPopupShown] = useState(false);
     const [isDataLoading, setIsDataLoading] = useState(true);
 
@@ -49,19 +50,19 @@ const SettingsProfile: FC = () => {
 
     const imagePreview = (e: ChangeEvent) => {
         let fileReader = new FileReader();
+        setImageUploadErrorMsg(null);
+        setPreviewImage(null);
         // @ts-ignore
         let file = (e.target as HTMLInputElement).files[0];
         if(file == null) return;
 
         if (!file.type.match("image.*")) {
-            setImageUploadFailed(true);
             setImageInputKey(Date.now()); // reset file input
             setImageUploadErrorMsg("Invalid type");
             return;
         }
 
         if(file.size > 3_000_000) {
-            setImageUploadFailed(true);
             setImageInputKey(Date.now()); // reset file input
             setImageUploadErrorMsg("Image cannot exceed 3mb.");
             return;
@@ -71,37 +72,37 @@ const SettingsProfile: FC = () => {
             // @ts-ignore
             setAvatarPreviewUrl(fileReader.result);
         };
+        setPreviewImage(file);
         fileReader.readAsDataURL(file);
-        setImageUploadFailed(false);
+
     };
 
     const formSubmit = (e: FormEvent) => {
         e.preventDefault();
 
-        // @ts-ignore
-        let image: File = (e.currentTarget.querySelector("input[type=file]") as HTMLInputElement).files[0];
         let bioForm: string = e.currentTarget.querySelector("textarea")!.value;
 
-        if(image === null && bioForm === userState.bio?.bio && !deleteAvatar) { // in case no changes but user clicked the btn.
+
+        if(previewImage === null && bioForm === userState.bio?.bio && !deleteAvatar) { // in case no changes but user clicked the btn.
             return;
         }
 
         if(bioForm === userState.bio?.bio && deleteAvatar && userState.avatar?.url === null) return; // del but no avatar is set
-        if(imageUploadFailed) return;
+
+        setImageUploadErrorMsg(null);
 
         let formData = new FormData();
         formData.append("bio", bioForm);
         formData.append("deleteAvatar", deleteAvatar.toString());
-        formData.append("image", image);
+        if (previewImage !== null) {
+            formData.append("image", previewImage);
+        }
+
 
         csrfFetching("/user/profile/settings/update", FetchingMethods.PUT, FetchContentTypes.MULTIPART_FORM_DATA, formData).then((response) => response.json()).then((data: ProfileFetchI | ErrorFetchI) => {
             if ("errorMsg" in data) {
                 setImageUploadErrorMsg(data.errorMsg);
-                setImageUploadFailed(true);
                 return;
-            }
-            if (data.bio === null) {
-
             }
             userDispatcher({type: UserActionTypes.SET_BIO, payload: {bio: data.bio}});
             userDispatcher({type: UserActionTypes.SET_AVATAR, payload: {url: data.avatarUrl}})
@@ -109,6 +110,7 @@ const SettingsProfile: FC = () => {
             setPopupShown(true);
             setDeleteAvatar(false);
             setImageInputKey(Date.now()); // reset file input
+
         });
     }
 
@@ -130,7 +132,7 @@ const SettingsProfile: FC = () => {
                                     <input style={{display: "none"}} type={"file"} name={"image"}
                                            key={imageInputKey} onChange={imagePreview}/>
                                 </label>
-                                <p className={imageUploadFailed ? classes.uploadError + " " + classes.uploadErrorShown : classes.uploadError}>
+                                <p className={imageUploadErrorMsg !== null ? classes.uploadError + " " + classes.uploadErrorShown : classes.uploadError}>
                                     {imageUploadErrorMsg}
                                 </p>
                                 <SettingsDelBtn show={userState.avatar !== null && userState.avatar.url !== null} del={deleteAvatar} setDel={setDeleteAvatar} title={"Remove photo"}/>
