@@ -33,7 +33,7 @@ public class ProfileService {
         ProfileEntity profileEntity = userEntity.getProfileEntity();
 
         if (profileEntity.getAvatarPath() != null) {
-            fileService.deleteFileFromUserDirectory(profileEntity.getAvatarPath());
+            fileService.deleteFile(profileEntity.getAvatarPath());
         }
 
         String fileName = fileService.createFileInUserDirectory(image, id);
@@ -52,7 +52,7 @@ public class ProfileService {
         ProfileEntity profileEntity = userEntity.getProfileEntity();
 
         if (deleteAvatar && profileEntity.getAvatarPath() != null) {
-            fileService.deleteFileFromUserDirectory(profileEntity.getAvatarPath());
+            fileService.deleteFile(profileEntity.getAvatarPath());
             profileEntity.setAvatarUrl(null);
             profileEntity.setAvatarPath(null);
         }
