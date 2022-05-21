@@ -53,3 +53,7 @@ export interface AvatarFetchI {
 export interface VerificationFetchI {
     message: string
 }
+
+export interface EmailFetchI {
+    email: string,
+}
