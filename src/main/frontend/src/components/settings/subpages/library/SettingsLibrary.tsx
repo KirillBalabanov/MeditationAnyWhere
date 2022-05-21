@@ -11,7 +11,7 @@ import {isValidAudioName} from "../../../../util/AudioValidator/isValidAudioName
 import {useCacheStore} from "../../../../context/CacheStore/CacheStoreContext";
 import {UserActionTypes} from "../../../../reducer/userReducer";
 import {AudioFetchI, ErrorFetchI} from "../../../../types/serverTypes";
-import {AudioInterface} from "../../../../types/types";
+import {AudioInterface} from "../../../../types/contextTypes";
 import {csrfFetching, FetchContentTypes, FetchingMethods} from "../../../../util/Fetch/csrfFetching";
 
 interface formData {
