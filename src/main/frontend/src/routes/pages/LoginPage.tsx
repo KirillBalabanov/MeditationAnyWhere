@@ -2,7 +2,7 @@ import React, {FC, FormEvent, useState} from 'react';
 import classes from "../styles/AuthPage.module.css";
 import {Link} from "react-router-dom";
 import {useAuthRedirect} from "../../hooks/useAuthRedirect";
-import Form, {FormStyles} from "../../components/form/Form";
+import Form, {FormState} from "../../components/form/Form";
 import FormTitle from "../../components/form/FormTitle";
 import FormInput from "../../components/form/FormInput";
 import {validFormInput, ValidFormValidator} from "../../components/form/FormService/validFormInput";
@@ -10,9 +10,10 @@ import {animateFetchRequest} from "../../components/form/FormService/animateFetc
 import {isValidUsername} from "../../util/UserValidator/isValidUsername";
 import {isValidPassword} from "../../util/UserValidator/isValidPassword";
 import {useCacheStore} from "../../context/CacheStore/CacheStoreContext";
-import {ErrorFetchI, LoginFetchI} from "../../types/serverTypes";
+import {ErrorFetchI, UserFetchI} from "../../types/serverTypes";
 import {loginUser} from "../../context/CacheStore/CacheStoreService/loginUser";
 import {csrfFetching, FetchContentTypes, FetchingMethods} from "../../util/Fetch/csrfFetching";
+import FormInputContainer from "../../components/form/FormInputContainer";
 
 const LoginPage: FC = () => {
     const cacheStore = useCacheStore()!;
@@ -20,29 +21,27 @@ const LoginPage: FC = () => {
 
     useAuthRedirect(authState.auth);
 
-    const [isLoading, setIsLoading] = useState(false);
-    const [formClasses, setFormClasses] = useState<FormStyles[]>([]);
+    const [formState, setFormState] = useState<FormState>(FormState.DEFAULT);
 
-    const [errorMsg, setErrorMsg] = useState("");
+    const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
     const postLogin = (e: FormEvent) => {
         e.preventDefault();
-        let children = (e.target as Element).children;
-        let username = (children[1] as HTMLInputElement).value;
-        let password = (children[2] as HTMLInputElement).value;
-        let errorText = children[3] as HTMLParagraphElement;
+
+        let username = (e.currentTarget.querySelector("input[name=username]") as HTMLInputElement).value;
+        let password = (e.currentTarget.querySelector("input[name=password]") as HTMLInputElement).value;
         try {
             isValidUsername(username);
             isValidPassword(password);
-            errorText.textContent = "";
+            setErrorMsg(null);
         } catch (e) {
             if (e instanceof Error) {
-                errorText.textContent = e.message;
+                setErrorMsg(e.message);
             }
             return;
         }
-        setFormClasses([FormStyles.loading]);
-        setIsLoading(true);
+        setFormState(FormState.LOADING);
+
         let body = JSON.stringify({
             "username": username,
             "password": password
@@ -50,35 +49,38 @@ const LoginPage: FC = () => {
         csrfFetching("/user/auth/login", FetchingMethods.POST, FetchContentTypes.APPLICATION_JSON, body).then((response) => {
             if(!response.ok) return {errorMsg: "Error"}
             return response.json()
-        }).then((data: LoginFetchI | ErrorFetchI) => {
+        }).then((data: UserFetchI | ErrorFetchI) => {
             let failed: boolean = false;
             if ("errorMsg" in data) {
-                errorText.textContent = data["errorMsg"];
+                setErrorMsg(data["errorMsg"]);
                 failed = true;
             } else {
                 setTimeout(() => {
-                    loginUser(data.username, cacheStore);
-                }, 200); // for animation
+                    loginUser(data, cacheStore);
+                }, 1000); // for animation
 
             }
             // animation
-            animateFetchRequest(setIsLoading, setFormClasses, failed)
+            animateFetchRequest(setFormState, failed)
         });
     };
 
     return (
-        <div>
+        <div className={classes.auth}>
             <div className={classes.auth__outer}>
-                <Form formStyle={formClasses} submitCallback={postLogin} isLoadingRequest={isLoading}
+                <Form formState={formState} submitCallback={postLogin}
                       errorMsg={errorMsg} buttonTitle={"Log in"}>
 
                     <FormTitle title={"Create account"}></FormTitle>
-                    <FormInput placeholder={"Input username"} type={"text"} name={"username"}
-                               onInput={(e) => validFormInput(e, ValidFormValidator.username, setErrorMsg)}
-                    />
-                    <FormInput placeholder={"Input password"} type={"password"} name={"password"}
-                               onInput={(e) => validFormInput(e, ValidFormValidator.password, setErrorMsg)}
-                    />
+                    <FormInputContainer>
+                        <FormInput placeholder={"Input username"} type={"text"} name={"username"}
+                                   onInput={(e) => validFormInput(e, ValidFormValidator.username, setErrorMsg)}
+                        />
+                        <FormInput placeholder={"Input password"} type={"password"} name={"password"}
+                                   onInput={(e) => validFormInput(e, ValidFormValidator.password, setErrorMsg)}
+                        />
+                    </FormInputContainer>
+
                 </Form>
                 <Link to={"/registration"} className={classes.auth__link}>register</Link>
             </div>
