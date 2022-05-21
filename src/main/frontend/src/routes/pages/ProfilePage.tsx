@@ -1,6 +1,6 @@
 import React, {FC, useEffect, useState} from 'react';
 import {useParams} from "react-router-dom";
-import Error from "./Error";
+import ErrorPage from "./ErrorPage";
 import Loader from "../../components/loader/Loader";
 import classes from "../styles/ProfilePage.module.css";
 import Profile from "../../components/profile/Profile";
@@ -82,10 +82,10 @@ const ProfilePage: FC = () => {
             setProfile(data);
             setIsLoading(false)
         });
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
 
-    if(profileFetchError !== "") return (<Error errorMsg={profileFetchError}/>);
+    if(profileFetchError !== "") return (<ErrorPage errorMsg={profileFetchError}/>);
 
     return (
         <div>
