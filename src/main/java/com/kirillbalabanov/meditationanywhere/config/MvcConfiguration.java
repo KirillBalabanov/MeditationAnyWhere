@@ -26,10 +26,10 @@ public class MvcConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler(userFolderUrl + "/**").
-                setCacheControl(CacheControl.maxAge(1, TimeUnit.DAYS)).addResourceLocations("file:///" + userFolderPath + "/");
-        registry.addResourceHandler(serverFolderUrl + "/**").
-                setCacheControl(CacheControl.maxAge(120, TimeUnit.MINUTES)).addResourceLocations("file:///" + serverFolderPath + "/");
+        registry.addResourceHandler(userFolderUrl + "/**").setCacheControl(CacheControl.maxAge(1, TimeUnit.DAYS)).addResourceLocations("file:///" + userFolderPath + "/").
+                resourceChain(true).addResolver(new UrlResolver());
+        registry.addResourceHandler(serverFolderUrl + "/**").setCacheControl(CacheControl.maxAge(120, TimeUnit.MINUTES)).addResourceLocations("file:///" + serverFolderPath + "/").
+                resourceChain(true).addResolver(new UrlResolver());
 
     }
 }
