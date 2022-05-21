@@ -1,6 +1,5 @@
 package com.kirillbalabanov.meditationanywhere.model;
 
-import com.kirillbalabanov.meditationanywhere.entity.StatsEntity;
 import com.kirillbalabanov.meditationanywhere.entity.UserEntity;
 
 public class UserModel {
@@ -11,6 +10,7 @@ public class UserModel {
         this.username = username;
         this.email = email;
     }
+
 
     public static UserModel toModel(UserEntity ue) {
         return new UserModel(ue.getUsername(), ue.getEmail());
