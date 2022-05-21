@@ -81,9 +81,10 @@ public class UUIDCryptor {
     }
 
     public void shuffleBytes(byte[] bytes) {
-        // shuffle
         int shuffledBoundaryIndex = bytes.length - 1;
+
         NumberGenerator numberGenerator = new NumberGenerator(bytes.length / 2, bytes.length);
+
         for (int i = 0; i < bytes.length - 1; i++) {
             int randInd = numberGenerator.nextInt();
             byte temp = bytes[shuffledBoundaryIndex];
@@ -97,11 +98,7 @@ public class UUIDCryptor {
     public void deShuffleBytes(byte[] bytes) {
         int shuffledBoundaryIndex = 1;
 
-        NumberGenerator numberGenerator = new NumberGenerator(bytes.length / 2, bytes.length);
-        ArrayDeque<Integer> randIntStack = new ArrayDeque<>(); // pop rand int in reverse order.
-        for (int i = 0; i < bytes.length - 1; i++) {
-            randIntStack.addLast(numberGenerator.nextInt());
-        }
+        ArrayDeque<Integer> randIntStack = getRandIntStack(bytes.length / 2, bytes.length);
 
         for (int i = 0; i < bytes.length - 1; i++) {
             int randInd = randIntStack.pollLast();
@@ -113,6 +110,44 @@ public class UUIDCryptor {
         }
     }
 
+    public void shuffleChars(char[] chars) {
+        int shuffledBoundaryIndex = chars.length - 1;
+
+        NumberGenerator numberGenerator = new NumberGenerator(chars.length / 2, chars.length);
+
+        for (int i = 0; i < chars.length - 1; i++) {
+            int randInd = numberGenerator.nextInt();
+            char temp = chars[shuffledBoundaryIndex];
+            // swapping rand byte with shuffledBoundaryIndex byte
+            chars[shuffledBoundaryIndex] = chars[randInd];
+            chars[randInd] = temp;
+            shuffledBoundaryIndex--;
+        }
+    }
+
+    public void deShuffleChars(char[] chars) {
+        int shuffledBoundaryIndex = 1;
+
+        ArrayDeque<Integer> randIntStack = getRandIntStack(chars.length / 2, chars.length);
+
+        for (int i = 0; i < chars.length - 1; i++) {
+            int randInd = randIntStack.pollLast();
+            char temp = chars[shuffledBoundaryIndex];
+            // swapping rand byte with shuffledBoundaryIndex byte
+            chars[shuffledBoundaryIndex] = chars[randInd];
+            chars[randInd] = temp;
+            shuffledBoundaryIndex++;
+        }
+    }
+
+    private ArrayDeque<Integer> getRandIntStack(int seed, int module) {
+        NumberGenerator numberGenerator = new NumberGenerator(seed, module);
+        ArrayDeque<Integer> randIntStack = new ArrayDeque<>(); // pop rand int in reverse order.
+        for (int i = 0; i < module - 1; i++) {
+            randIntStack.addLast(numberGenerator.nextInt());
+        }
+        return randIntStack;
+    }
     static class NumberGenerator {
         private int seed;
         private final int multiplier = 737373;
@@ -137,5 +172,41 @@ public class UUIDCryptor {
             return seed;
         }
 
+    }
+
+    private static final char[] HEX_MAP = new char[] {
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+            'a', 'b', 'c', 'd', 'e', 'f'
+    };
+
+    public String hexEncryption(String input) {
+        byte[] bytes = input.getBytes(StandardCharsets.UTF_8);
+
+        char[] hexed = new char[bytes.length * 2];
+        int hexedPutIndex = 0;
+        for (byte b : bytes) {
+            int ch = b & 0xFF;
+            hexed[hexedPutIndex++] = HEX_MAP[(ch >>> 4) & 0x00F]; // xxxx_0000
+            hexed[hexedPutIndex++] = HEX_MAP[ch & 0x000F]; // 0000_xxxx
+        }
+
+        shuffleChars(hexed);
+
+        return new String(hexed);
+    }
+
+    public String hexDecryption(String encrypted) {
+        char[] chars = encrypted.toCharArray();
+        deShuffleChars(chars);
+
+        byte[] decryptedBytes = new byte[chars.length / 2];
+
+        int decryptPutIndex = 0;
+        for (int i = 0; i < chars.length;) {
+
+            decryptedBytes[decryptPutIndex++] = (byte) ((Character.digit(chars[i++], 16) << 4) | (Character.digit(chars[i++], 16)));
+
+        }
+        return new String(decryptedBytes, StandardCharsets.UTF_8);
     }
 }
