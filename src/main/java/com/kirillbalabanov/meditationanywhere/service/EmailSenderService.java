@@ -30,20 +30,32 @@ public class EmailSenderService {
      * Send verification email with http://serverip:port/activate/uuid link.
      * @param userUsername username of registered user.
      * @param userEmail email of registered user.
-     * @return true if email has been sent
      */
-    public boolean sendVerificationEmail(String userUuid, String userEmail, String userUsername) {
-        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+    public void sendVerificationEmail(String userUuid, String userEmail, String userUsername) {
         StringBuilder builder = new StringBuilder();
         builder.append("Hello ").append(userUsername).append("!");
         builder.append("\nWelcome to MeditationAnyWhere.");
         builder.append("\nPlease go to ").append(serverIp).append(":").append(serverPort).append("/verification/").append(userUuid).append(" to verify your account.");
+        sendEmailTo(userEmail, builder.toString(), "MeditationAnyWhere verification.");
+    }
+
+
+    public void sendChangeEmailVerificationTo(String uuid, String userEmail, String userUsername) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Hello ").append(userUsername).append("!");
+        builder.append("\nPlease go to ").append("http://").append(serverIp).append(":").append(serverPort).append("/change/email/").append(uuid).append(" and authenticate to change your email address!.");
+        builder.append("\nIf you do not want to change email just dont go to that link, its is only available for 1 day.");
+        sendEmailTo(userEmail, builder.toString(), "MeditationAnyWhere - change Email");
+    }
+
+    public void sendEmailTo(String userEmail, String body, String title) {
+        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+
         simpleMailMessage.setTo(userEmail);
-        simpleMailMessage.setText(builder.toString());
-        simpleMailMessage.setSubject("MeditationAnyWhere verification.");
+        simpleMailMessage.setText(body);
+        simpleMailMessage.setSubject(title);
         simpleMailMessage.setFrom(email);
         javaMailSender.send(simpleMailMessage);
-        return true;
     }
 
 }
