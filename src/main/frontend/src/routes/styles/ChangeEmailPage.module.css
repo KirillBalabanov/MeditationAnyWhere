@@ -14,3 +14,26 @@
     font-size: 16px;
     margin-bottom: 20px;
 }
+
+@media screen and (max-width: 800px){
+    .formOuter {
+        width: 400px;
+
+    }
+    .formText {
+        font-size: 14px;
+    }
+}
+
+@media screen and (max-width: 613px){
+    .formOuter {
+        width: 320px;
+        height: 200px;
+
+    }
+    .formText {
+        font-size: 12px;
+        padding: 0 10px;
+        text-align: center;
+    }
+}
