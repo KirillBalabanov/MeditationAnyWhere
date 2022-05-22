@@ -1,7 +1,6 @@
 .settings__outer {
     display: flex;
     margin-top: 100px;
-    min-height: 700px;
 }
 
 .settings {
@@ -13,7 +12,6 @@
 
 
 .settings__setting {
-    min-height: 700px;
     width: 700px;
     margin-top: -10px;
 }
@@ -46,5 +44,7 @@
     .settings__outer {
         margin-top: 30px;
     }
+    .settings__outer {
 
+    }
 }

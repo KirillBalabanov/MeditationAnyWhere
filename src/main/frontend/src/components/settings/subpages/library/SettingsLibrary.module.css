@@ -1,5 +1,5 @@
 .library {
-    min-height: 500px;
+
 }
 .libraryInner {
     height: 100%;
@@ -50,6 +50,8 @@
 }
 .preview {
     display: flex;
+    justify-content: space-between;
+
     align-items: center;
     flex-wrap: wrap;
     position: relative;
@@ -57,16 +59,20 @@
 .previewAudio {
     height: 50px;
     width: 400px;
+    display: flex;
+    align-items: center;
 }
 .removePreviewBtn {
     width: 30px;
     height: 30px;
-    margin-left: 10px;
-    position: absolute;
-    top: 10px;
-    right: -50px;
     transition: all .3s;
     border-radius: 50%;
+    margin: 0 0 0 10px;
+}
+.removePreviewBtn img {
+    object-fit: cover;
+    width: 30px;
+    height: 30px;
 }
 .removePreviewBtn:hover {
     box-shadow: 0 0 10px 0 red;
@@ -126,6 +132,30 @@
         padding-left: 10px;
         font-size: 14px;
     }
+    .previewInput {
+        font-size: 14px;
+    }
+}
 
-
+@media screen and (max-width: 500px){
+    .input {
+        height: 35px;
+    }
+    .previewAudio {
+        height: 35px;
+    }
+    .fileError {
+        font-size: 12px;
+    }
+    .removePreviewBtn {
+        top: 8px;
+        right: -30px;
+        width: 20px;
+        height: 20px;
+        margin-left: 7px;
+    }
+    .removePreviewBtn img {
+        width: 20px;
+        height: 20px;
+    }
 }

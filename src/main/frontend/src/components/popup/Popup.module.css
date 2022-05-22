@@ -73,3 +73,32 @@
     width: 100%;
 }
 
+@media screen and (max-width: 700px){
+    .popup__box {
+        width: 400px;
+        height: 300px;
+    }
+    .popup__info {
+        font-size: 18px;
+    }
+    .popup__confirm {
+        font-size: 14px;
+        bottom: 10px;
+    }
+    .popup__close {
+        width: 25px;
+        height: 25px;
+    }
+}
+
+
+@media screen and (max-width: 500px){
+    .popup__box {
+        width: 300px;
+        height: 250px;
+    }
+    .popup__close {
+        width: 20px;
+        height: 20px;
+    }
+}

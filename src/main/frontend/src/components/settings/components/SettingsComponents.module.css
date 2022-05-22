@@ -66,8 +66,8 @@ button {
 
 .settings__content{
     max-width: 700px;
-    height: 600px;
     position: relative;
+    padding-bottom: 20px;
 }
 
 .setting__title {
@@ -136,6 +136,11 @@ button {
     .profile__section {
         margin-bottom: 40px;
     }
+    .settings__content {
+        height: auto;
+    }
+
+
 }
 
 @media screen and (max-width: 400px){
@@ -160,9 +165,10 @@ button {
         font-size: 12px;
     }
     .profile__section {
-        margin-bottom: 30px;
+        margin-bottom: 20px;
     }
     .remove {
         margin-top: 25px;
     }
+
 }

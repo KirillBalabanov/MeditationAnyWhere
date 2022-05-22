@@ -243,12 +243,13 @@ const SettingsLibrary = () => {
                                             <div className={classes.preview}>
                                                 <div className={classes.previewAudio}>
                                                     <InlineAudio audioUrl={audioPreviewUrl}></InlineAudio>
+                                                    <button type={"button"} className={classes.removePreviewBtn}
+                                                            onClick={() => {
+                                                                setAudioPreviewUrl("");
+                                                                setAudioInputKey(Date.now());
+                                                            }}><img src={removeIcon} alt="remove"/></button>
                                                 </div>
-                                                <button type={"button"} className={classes.removePreviewBtn}
-                                                        onClick={() => {
-                                                            setAudioPreviewUrl("");
-                                                            setAudioInputKey(Date.now());
-                                                        }}><img src={removeIcon} alt="remove"/></button>
+
                                                 <input className={classes.previewInput} type="text" maxLength={20}
                                                        placeholder={"Enter file name"} onChange={(e) => {
                                                     setAddAllowed(false);
