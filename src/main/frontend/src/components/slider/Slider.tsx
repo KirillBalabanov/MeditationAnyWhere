@@ -31,18 +31,27 @@ const Slider: FC<SliderProps> = ({children}) => {
 
         let sliderDivRef = sliderDiv.current!;
 
-        setAmountOfElements(sliderInner.current!.children.length);
-        setElementWidth(sliderInner.current!.offsetWidth / sliderInner.current!.children.length);
+        const setWidth = () => {
+            setAmountOfElements(sliderInner.current!.children.length);
+            setElementWidth(sliderInner.current!.offsetWidth / sliderInner.current!.children.length);
+            setCurrentSlide(0);
+            setCurrentTranslate(0);
+        }
+
+        setWidth();
 
         sliderDivRef.addEventListener("mousedown", mouseDownHandler);
         sliderDivRef.addEventListener("touchstart", touchStartHandler);
 
-        return () => {
+        window.addEventListener("resize", setWidth);
 
+        return () => {
+            window.removeEventListener("resize", setWidth);
             sliderDivRef.removeEventListener("mousedown", mouseDownHandler);
             sliderDivRef.removeEventListener("touchstart", touchStartHandler);
         };
     }, []);
+
 
     const currentSlideTranslate = useMemo(() => {
         return currentSlide * (-elementWidth);
@@ -98,13 +107,12 @@ const Slider: FC<SliderProps> = ({children}) => {
 
 
     return (
-        <div className={classes.slider} style={{width: elementWidth !== 0 ? elementWidth + "px" : "auto"}} ref={sliderDiv}
+        <div className={classes.slider} ref={sliderDiv}
              onTouchEnd={draggingStop}
              onTouchMove={(e) => moveSlider(e.touches[0].pageX)}
         >
             <div className={classes.sliderInner}
                  style={{
-                     width: elementWidth !== 0 ? elementWidth * amountOfElements + "px" : "auto",
                      transform: "translateX(" + currentTranslate + "px)"
                  }}
                  ref={sliderInner}>

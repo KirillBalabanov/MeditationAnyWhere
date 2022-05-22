@@ -1,4 +1,5 @@
 .slider {
+    width: auto;
     overflow: hidden;
     display: flex;
     cursor: grabbing;
