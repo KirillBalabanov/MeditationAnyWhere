@@ -19,9 +19,9 @@ const TimerButton: FC = () => {
             {
                 timerState.isPlaying
                     ?
-                    <img src={btnStop} alt="stop"/>
+                    <img src={btnStop} alt="stop" className={classes.timer__btnImg}/>
                     :
-                    <img src={btnStart} alt="start"/>
+                    <img src={btnStart} alt="start" className={classes.timer__btnImg}/>
             }
 
         </div>

@@ -18,9 +18,12 @@ const Volume: FC<VolumeProps> = React.memo(({audioShown, setAudioShown, audioVol
              onMouseLeave={() => setAudioShown(false)}
         >
             <div className={classes.volumeImg} onMouseOver={() => setAudioShown(true)} onClick={() => {
-                if(muted) audioElement.current!.volume = audioVolume / 100;
-                else audioElement.current!.volume = 0
-                setMuted(!muted)
+                setMuted(prev => {
+                    if(muted) audioElement.current!.volume = audioVolume / 100;
+                    else audioElement.current!.volume = 0
+
+                    return !prev
+                })
             }}>
                 {
                     muted

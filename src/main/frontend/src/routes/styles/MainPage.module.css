@@ -1,3 +1,10 @@
 .main {
-    margin-top: 50px;
+    margin-top: 40px;
+    padding-bottom: 30px;
+}
+
+@media screen and (max-width: 613px){
+    .main {
+        margin-top: 20px;
+    }
 }

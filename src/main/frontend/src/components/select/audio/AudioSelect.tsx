@@ -58,7 +58,7 @@ const AudioSelect: FC = () => {
         <div className={selectShown ? classes.select + " " + classes.selectShown : classes.select}>
             <div className={classes.title}>
                 <div className={classes.titleInner} onClick={() => setSelectShown(prev => !prev)}>
-                    <img src={selectAudioIcon} alt=""/>
+                    <img src={selectAudioIcon} className={classes.selectImg} alt=""/>
                     <p className={classes.titleText}>Select your audio</p>
                 </div>
             </div>

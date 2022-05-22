@@ -37,3 +37,10 @@
 .dot.dotCur {
     background: white;
 }
+
+@media screen and (max-width: 613px) {
+    .dot {
+        width: 8px;
+        height: 8px;
+    }
+}
