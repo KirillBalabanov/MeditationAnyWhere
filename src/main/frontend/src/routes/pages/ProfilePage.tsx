@@ -119,6 +119,7 @@ const ProfilePage: FC = () => {
                         </div>
                     </div>
             }
+
         </div>
     );
 };

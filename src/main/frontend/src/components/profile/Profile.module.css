@@ -64,25 +64,31 @@
     width: 120px;
 }
 
+.profile__timeData div {
+    width: 100%;
+}
+
 .stats {
     display: flex;
     align-items: center;
-    background-color: #10131B;
     height: 150px;
     margin-top: 75px;
     border: 1px solid #2D2E32;
     border-radius: 7px;
     margin-left: 50px;
+    width: 100%;
+    justify-content: space-between;
+
 }
 .stats__box {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    width: 200px;
+    width: 100%;
+    height: 150px;
+
     text-align: center;
-    border-right: 1px solid #2D2E32;
-    height: 100%;
 }
 .stats__boxTitle {
     font-size: 18px;
@@ -97,4 +103,120 @@
     margin: 0;
     padding: 0;
     font-weight: bold;
+}
+
+@media screen and (max-width: 1300px) {
+    .stats {
+        height: 300px;
+        flex-wrap: wrap;
+    }
+    .stats__box {
+        width: 50%;
+    }
+}
+
+@media screen and (max-width: 1000px) {
+    .profile__infoAvatar {
+        width: 250px;
+        height: 250px;
+    }
+    .profile__infoAvatarOuter {
+        width: 250px;
+        height: 250px;
+    }
+    .profile__username {
+        font-size: 24px;
+        margin-top: 20px;
+    }
+    .profile__status {
+        font-size: 18px;
+    }
+    .profile__button {
+        padding: 6px 30px;
+        font-size: 16px;
+    }
+    .profile__timeData {
+        font-size: 14px;
+    }
+    .profile__info {
+        width: 300px;
+    }
+
+    .stats__boxTitle {
+        font-size: 14px;
+    }
+    .stats__boxData {
+        font-size: 28px;
+    }
+    .stats__box {
+        height: 120px;
+    }
+    .stats {
+        height: 240px;
+        margin-left: 40px;
+    }
+}
+
+@media screen and (max-width: 800px) {
+    .profile__info {
+        width: 100%;
+    }
+    .profile {
+        flex-wrap: wrap;
+
+    }
+    .profile__infoAvatarWrap {
+        width: 100%;
+    }
+    .profile__username {
+        width: 100%;
+    }
+    .profile__status {
+        width: 100%;
+    }
+    .stats {
+        margin-top: 20px;
+        height: 180px;
+        width: 100%;
+        margin-left: 0;
+    }
+    .stats__box {
+        height: 90px;
+    }
+}
+
+@media screen and (max-width: 613px) {
+    .profile__infoAvatar {
+        width: 200px;
+        height: 200px;
+    }
+    .profile__infoAvatarOuter {
+        width: 200px;
+        height: 200px;
+    }
+    .profile__username {
+        font-size: 18px;
+    }
+    .profile__status {
+        font-size: 16px;
+    }
+    .profile__button {
+        font-size: 14px;
+    }
+    .profile__timeData {
+        font-size: 12px;
+    }
+    .profile__timeIcon {
+        width: 25px;
+        height: 25px;
+    }
+    .profile__time {
+        margin-top: 20px;
+    }
+    .stats__boxData {
+        font-size: 22px;
+    }
+    .stats__boxTitle {
+        font-size: 14px;
+    }
 }
