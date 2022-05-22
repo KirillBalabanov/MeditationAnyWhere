@@ -32,6 +32,15 @@
     z-index: 1;
 }
 
+.loaderLoader {
+    opacity: 0;
+    transition: opacity 0.3s ease-out;
+}
+
+.loaderLoader.loading {
+    opacity: 1;
+}
+
 .loader.loading {
     height: 100%;
 }
@@ -98,4 +107,48 @@
 }
 .form__input:last-child {
     margin: 0;
+}
+
+
+@media screen and (max-width: 800px){
+    .form__title {
+        font-size: 26px;
+        margin: 10px 0 20px;
+        height: 30px;
+    }
+    .form__input {
+        padding: 7px 20px;
+    }
+    .form__error {
+        font-size: 14px;
+    }
+    .form__btnOuter {
+        height: 40px;
+        font-size: 16px;
+    }
+    .form__btn {
+        font-size: 16px;
+    }
+    .loader {
+        height: 40px;
+    }
+}
+
+@media screen and (max-width: 613px){
+    .form__title {
+        font-size: 22px;
+        margin-bottom: 10px;
+    }
+    .form__input {
+        padding: 4px 20px;
+        font-size: 14px;
+        margin-bottom: 20px;
+        width: 80%;
+    }
+    .form__error {
+        font-size: 12px;
+    }
+    .form__btn {
+        font-size: 14px;
+    }
 }

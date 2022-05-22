@@ -35,11 +35,13 @@ const Form: FC<FormProps> = (
             </div>
 
             <div className={formState === FormState.LOADING ? classes.loader + " " + classes.loading : classes.loader}>
-                {
-                    formState === FormState.LOADING
-                    &&
-                    <Loader/>
-                }
+                    <div className={formState === FormState.LOADING ? classes.loaderLoader + " " + classes.loading : classes.loaderLoader}>
+                        {
+                            formState === FormState.LOADING
+                            &&
+                            <Loader/>
+                        }
+                    </div>
             </div>
         </form>
     );
