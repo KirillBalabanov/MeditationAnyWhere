@@ -1,11 +1,17 @@
 .header {
+
+    height: 80px;
+    background-color: #13181F;
+
+}
+.headerInner {
+    height: 80px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 80px;
-    background-color: #13181F;
-    padding: 0 200px;
+    width: 100%;
     font-size: 18px;
+
 }
 .header__box {
     display: flex;
@@ -26,6 +32,7 @@
     object-fit: cover;
 }
 .user__menu {
+    overflow: hidden;
     cursor: default;
     margin: 0;
     padding: 0;
@@ -94,12 +101,59 @@
 .logo {
     background: none;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     padding: 7px 0 0;
+}
+.logoImg {
+    object-fit: cover;
+    width: 350px;
 }
 
 .logo img {
     width: 350px;
     object-fit: contain;
+}
+
+.headerLink {
+    font-size: 20px;
+}
+
+
+
+
+
+
+@media screen and (max-width: 800px){
+    .logoImg {
+        width: 250px !important;
+    }
+    .headerLink {
+        font-size: 16px;
+    }
+
+}
+
+
+@media screen and (max-width: 613px){
+    .logoImg {
+        width: 170px !important;
+    }
+    .headerLink {
+        font-size: 14px;
+    }
+    .header {
+        height: 60px;
+    }
+    .headerInner {
+        height: 60px;
+    }
+    .user__menuItem {
+        font-size: 12px;
+        padding: 0 10px;
+        min-height: 37px;
+    }
+    .user__menu {
+        width: 150px;
+    }
 }

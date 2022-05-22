@@ -56,46 +56,51 @@ const Header = () => {
     }
 
     return (
-        <header className={classes.header} style={{display: headerState.showHeader ? "flex" : "none"}}>
-            <Link to={"/"} className={classes.logo}>
-                <img src={logo} alt="logo"/>
-            </Link>
-            {
-                authState.auth
-                        ?
-                        <div className={classes.header__box} style={{display: isLoadingAvatar ? "none" : "flex"}}>
-                            {
-                                <div className={classes.header__user} onClick={() => {
-                                    setShowMenu(prev => !prev);
-                                }}>
-                                    <img src={userState.avatar === null || userState.avatar.url === null ? defaultAvatar : userState.avatar.url} alt="avatar" className={classes.header__userAvatar}/>
-                                    <img src={polygon} alt="polygon"/>
-                                </div>
-                            }
-                            <ul className={showMenu ? classes.user__menu + " " + classes.active : classes.user__menu}>
-                                <img src={polygonOnRectangle} alt="polygon" className={classes.user__menuPolygon}/>
-                                <li className={classes.user__menuItem}>
-                                    {userState.username}
-                                </li>
-                                <li className={classes.user__menuItem}
-                                    onClick={() => redirectTo("/profile/" + userState.username)}>
-                                    Go to profile
-                                </li>
-                                <li className={classes.user__menuItem}
-                                    onClick={() => redirectTo("/settings/profile")}>
-                                    Settings
-                                </li>
-                                <li className={classes.user__menuItem} onClick={() => {
-                                    logout();
-                                    redirectTo("/start");
-                                }}>
-                                    Log out
-                                </li>
-                            </ul>
-                        </div>
-                    :
-                    <Link to={"/login"}>log in</Link>
-            }
+
+        <header className={classes.header} style={{display: headerState.showHeader ? "block" : "none"}}>
+            <div className="container">
+                <div className={classes.headerInner}>
+                    <Link to={"/"} className={classes.logo}>
+                        <img src={logo} alt="logo" className={classes.logoImg}/>
+                    </Link>
+                    {
+                        authState.auth
+                            ?
+                            <div className={classes.header__box} style={{display: isLoadingAvatar ? "none" : "flex"}}>
+                                {
+                                    <div className={classes.header__user} onClick={() => {
+                                        setShowMenu(prev => !prev);
+                                    }}>
+                                        <img src={userState.avatar === null || userState.avatar.url === null ? defaultAvatar : userState.avatar.url} alt="avatar" className={classes.header__userAvatar}/>
+                                        <img src={polygon} alt="polygon"/>
+                                    </div>
+                                }
+                                <ul className={showMenu ? classes.user__menu + " " + classes.active : classes.user__menu}>
+                                    <img src={polygonOnRectangle} alt="polygon" className={classes.user__menuPolygon}/>
+                                    <li className={classes.user__menuItem}>
+                                        {userState.username}
+                                    </li>
+                                    <li className={classes.user__menuItem}
+                                        onClick={() => redirectTo("/profile/" + userState.username)}>
+                                        Go to profile
+                                    </li>
+                                    <li className={classes.user__menuItem}
+                                        onClick={() => redirectTo("/settings/profile")}>
+                                        Settings
+                                    </li>
+                                    <li className={classes.user__menuItem} onClick={() => {
+                                        logout();
+                                        redirectTo("/start");
+                                    }}>
+                                        Log out
+                                    </li>
+                                </ul>
+                            </div>
+                            :
+                            <Link to={"/login"} className={classes.headerLink}>log in</Link>
+                    }
+                </div>
+            </div>
         </header>
     );
 };
