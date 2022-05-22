@@ -31,11 +31,13 @@ const StartPage: FC = () => {
 
     return (
         <div className={classes.body} onMouseMove={mouseMoveHandler}>
-            <div className={classes.frame} style={{transform: "translate(" + x + "%, " + y + "%)"}}></div>
-            <div className={classes.start}>
-                <div className={classes.start__inner}>
-                    <h1 className={classes.start__title}>Meditation Any Where</h1>
-                    <Link to={"/"} className={classes.start__link}>start</Link>
+            <div className="container">
+                <div className={classes.frame} style={{transform: "translate(" + x + "%, " + y + "%)"}}></div>
+                <div className={classes.start}>
+                    <div className={classes.start__inner}>
+                        <h1 className={classes.start__title}>Meditation Any Where</h1>
+                        <Link to={"/"} className={classes.start__link}>start</Link>
+                    </div>
                 </div>
             </div>
         </div>
