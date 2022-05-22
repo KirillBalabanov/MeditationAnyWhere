@@ -7,7 +7,7 @@ interface ProfileBioProps {
 
 const ProfileBio: FC<ProfileBioProps> = React.memo(({bio}) => {
     return (
-        <div className={classes.profile__status}>
+        <div className={classes.profile__status} style={{display: bio === "" ? "none" : "block"}}>
             {bio}
         </div>
     );

@@ -201,6 +201,7 @@
         font-size: 16px;
     }
     .profile__button {
+        padding: 3px 20px;
         font-size: 14px;
     }
     .profile__timeData {
