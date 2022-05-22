@@ -33,17 +33,22 @@ const FormAudio = ({audioUrl, audioTitle, setUpdateAllowed}: FormAudioProps) => 
                 else setChanged(false);
                 setInputValue(e.target.value)
             }}/>
-            <p className={errorMsg==="" ? classes.error : classes.error + " " + classes.errorShown}>{errorMsg}</p>
-            <div className={classes.inlineAudio}>
-                <InlineAudio audioUrl={audioUrl}></InlineAudio>
+            <div className={classes.audioInner}>
+                <p className={errorMsg==="" ? classes.error : classes.error + " " + classes.errorShown}>{errorMsg}</p>
+                <div className={classes.inlineAudio}>
+                    <InlineAudio audioUrl={audioUrl}></InlineAudio>
+                </div>
+                <div className={classes.audioDeleteOuter}>
+                    <button style={{display: errorMsg!=="" ? "block" : "flex"}} type={"button"} className={deleteAudio ? classes.audioDelete + " " + classes.deleteSelected : classes.audioDelete}
+                            onClick={() => {
+                                setDeleteAudio(!deleteAudio);
+                                setUpdateAllowed(true);
+                            }}
+                            name={"deleteButton"} data-delete={deleteAudio ? 1 : 0}>delete audio
+                    </button>
+                </div>
+
             </div>
-            <button style={{display: errorMsg!=="" ? "block" : "flex"}} type={"button"} className={deleteAudio ? classes.audioDelete + " " + classes.deleteSelected : classes.audioDelete}
-                    onClick={() => {
-                        setDeleteAudio(!deleteAudio);
-                        setUpdateAllowed(true);
-                    }}
-            name={"deleteButton"} data-delete={deleteAudio ? 1 : 0}>delete audio
-            </button>
         </div>
     );
 };

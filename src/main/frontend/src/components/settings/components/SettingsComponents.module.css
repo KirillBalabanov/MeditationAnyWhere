@@ -11,7 +11,7 @@
     border-bottom: none;
 }
 .settings__optionInner {
-    height: 30px;
+    height: 100%;
     background: #0A121C;
     display: flex;
     align-items: center;
@@ -26,7 +26,7 @@
     position: absolute;
     background-color: #2196f3;;
     width: 3px;
-    height: 30px;
+    height: 100%;
     border-radius: 10px;
     left: -10px;
     top: 0;
@@ -44,8 +44,7 @@
 }
 
 .profile__section {
-    padding-bottom: 20px;
-    padding-top: 20px;
+    margin-bottom: 40px;
     position: relative;
 }
 .profile__sectionTitle {
@@ -66,16 +65,16 @@ button {
 }
 
 .settings__content{
-    min-width: 350px;
+    max-width: 700px;
     height: 600px;
     position: relative;
 }
 
 .setting__title {
     padding: 0 0 10px;
+    margin: 0 0 20px 0;
     border-bottom: 1px solid #2D2E32;
     font-size: 26px;
-    margin: 0;
 }
 
 .remove {
@@ -89,4 +88,81 @@ button {
 }
 .remove.removeSelected {
     border: 2px solid #853232;
+}
+
+@media screen and (max-width: 1000px){
+    .settings__content {
+        width: 100% !important;
+    }
+    .setting__title {
+        width: 30%;
+    }
+
+    .settings__option {
+        width: 150px;
+        border-bottom: none;
+        padding-bottom: 0;
+        margin-bottom: 0;
+        margin-right: 30px;
+    }
+    .settings__content {
+        width: 80%;
+    }
+
+}
+
+@media screen and (max-width: 613px){
+    .settings__optionText {
+        font-size: 14px;
+    }
+    .settings__option {
+        height: 20px;
+        width: 80px;
+    }
+    .settings__optionText {
+        padding-left: 10px;
+    }
+    .setting__title {
+        font-size: 16px;
+    }
+    .profile__sectionTitle {
+        font-size: 14px;
+    }
+    .remove {
+        font-size: 14px;
+        width: 120px;
+        margin-left: 40px;
+    }
+    .profile__section {
+        margin-bottom: 40px;
+    }
+}
+
+@media screen and (max-width: 400px){
+    .settings__optionInner {
+        width: 100%;
+    }
+    .settings__optionText {
+        font-size: 12px;
+    }
+    .settings__option {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+    .settings__option:last-child {
+        margin-bottom: 0;
+    }
+    .setting__title {
+        font-size: 14px;
+        width: 40%;
+    }
+    .profile__sectionTitle {
+        font-size: 12px;
+    }
+    .profile__section {
+        margin-bottom: 30px;
+    }
+    .remove {
+        margin-top: 25px;
+    }
 }

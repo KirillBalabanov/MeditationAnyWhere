@@ -44,3 +44,21 @@
     background: #2196f3;
     height: 30px !important;
 }
+
+@media screen and (max-width: 613px){
+    .bio {
+        font-size: 12px;
+    }
+    .updateProfile {
+        font-size: 14px;
+        width: 120px;
+        height: 25px !important;
+    }
+}
+
+@media screen and (max-width: 400px){
+    .bio {
+        font-size: 10px;
+    }
+
+}

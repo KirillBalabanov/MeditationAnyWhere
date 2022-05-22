@@ -12,12 +12,12 @@ const PlayButton: FC<ButtonProps> = React.memo(({isPlaying, setIsPlaying, audioE
     return (
         <button type={"button"}
                 className={isPlaying ? classes.playBtn + " " + classes.playHide : classes.playBtn + " " + classes.playShown}
-                onClick={() => {
-                    audioElement.current!.play();
-                    setIsPlaying(true);
-                }}
+
         >
-            <img src={startBtn} alt="start"/>
+            <img src={startBtn} alt="start" className={classes.playBtnImg}  onClick={() => {
+                audioElement.current!.play();
+                setIsPlaying(true);
+            }}/>
         </button>
     );
 });

@@ -7,12 +7,11 @@ const StopButton: FC<ButtonProps> = ({isPlaying, setIsPlaying, audioElement}: Bu
     return (
         <button type={"button"}
                 className={isPlaying ? classes.playBtn + " " + classes.playShown : classes.playBtn + " " + classes.playHide}
-                onClick={() => {
-                    audioElement.current!.pause();
-                    setIsPlaying(false);
-                }}
         >
-            <img src={stopBtn} alt="stop"/>
+            <img src={stopBtn} alt="stop" className={classes.playBtnImg} onClick={() => {
+                audioElement.current!.pause();
+                setIsPlaying(false);
+            }}/>
         </button>
     );
 };

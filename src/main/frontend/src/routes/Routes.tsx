@@ -6,7 +6,7 @@ import ErrorPage from "./pages/ErrorPage";
 import MainPage from "./pages/MainPage";
 import React from "react";
 import ProfilePage from "./pages/ProfilePage";
-import Settings from "./pages/Settings";
+import SettingsPage from "./pages/SettingsPage";
 import {Navigate} from "react-router-dom";
 import ChangeEmailPage from "./pages/ChangeEmailPage";
 
@@ -25,7 +25,7 @@ export const appRoutes: RouteI[] = [
     {path: "/", component: <MainPage></MainPage>},
 
     // private routes
-    {path: "/settings/:setting", component: <Settings/>},
+    {path: "/settings/:setting", component: <SettingsPage/>},
     {path: "/settings", component: <Navigate to={"/settings/profile"}/>},
 
     // 404 handler

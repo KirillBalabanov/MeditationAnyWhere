@@ -1,0 +1,50 @@
+.settings__outer {
+    display: flex;
+    margin-top: 100px;
+    min-height: 700px;
+}
+
+.settings {
+    width: 300px;
+    margin-right: 50px;
+    padding-right: 50px;
+    border-right: 1px solid #2D2E32;
+}
+
+
+.settings__setting {
+    min-height: 700px;
+    width: 700px;
+    margin-top: -10px;
+}
+
+@media screen and (max-width: 1000px){
+    .settings__outer {
+        flex-wrap: wrap;
+        margin-top: 50px;
+    }
+    .settings {
+        width: 100%;
+        border-bottom: 1px solid #2D2E32;
+        border-right: none;
+        display: flex;
+        align-items: center;
+        margin-bottom: 40px;
+        padding-bottom: 40px;
+        padding-right: 0;
+        margin-right: 0;
+    }
+
+}
+
+@media screen and (max-width: 613px){
+    .settings {
+        margin-bottom: 30px;
+        padding-bottom: 30px;
+        flex-wrap: wrap;
+    }
+    .settings__outer {
+        margin-top: 30px;
+    }
+
+}

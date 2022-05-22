@@ -12,7 +12,7 @@ interface InlineAudioProps {
 }
 
 const InlineAudio: FC<InlineAudioProps> = ({audioUrl}) => {
-    const {isPlaying, setIsPlaying, currentTime, setCurrentTime, duration, setDuration, audioShown, setAudioShown, audioVolume, setAudioVolume, audioElement} = useAudio();
+    const {isPlaying, setIsPlaying, currentTime, setCurrentTime, duration, setDuration, audioVolume, setAudioVolume, audioElement} = useAudio();
 
     useEffect(() => {
         let dur = 0;
@@ -34,7 +34,7 @@ const InlineAudio: FC<InlineAudioProps> = ({audioUrl}) => {
             <StopButton isPlaying={isPlaying} setIsPlaying={setIsPlaying} audioElement={audioElement}></StopButton>
             <Controls>
                 <Bar audioElement={audioElement} currentTime={currentTime} setCurrentTime={setCurrentTime} duration={duration}></Bar>
-                <Volume audioShown={audioShown} setAudioShown={setAudioShown}
+                <Volume
                         audioVolume={audioVolume} setAudioVolume={setAudioVolume} audioElement={audioElement}></Volume>
             </Controls>
         </AudioOuter>

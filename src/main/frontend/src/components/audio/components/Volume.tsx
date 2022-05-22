@@ -4,20 +4,17 @@ import volume from "../../../images/volume.svg";
 import volumeMuted from "../../../images/volumeMuted.svg";
 
 interface VolumeProps {
-    audioShown: boolean,
-    setAudioShown: (b: boolean) => void,
     audioVolume: number,
     setAudioVolume: (n: number) => void,
     audioElement: React.RefObject<HTMLAudioElement>,
 }
 
-const Volume: FC<VolumeProps> = React.memo(({audioShown, setAudioShown, audioVolume, setAudioVolume, audioElement}) => {
+const Volume: FC<VolumeProps> = React.memo(({audioVolume, setAudioVolume, audioElement}) => {
     const [muted, setMuted] = useState(false);
     return (
-        <div className={audioShown ? classes.volumeOuter + " " + classes.volumeOuterFull : classes.volumeOuter}
-             onMouseLeave={() => setAudioShown(false)}
+        <div className={classes.volumeOuter + " " + classes.volumeOuterFull}
         >
-            <div className={classes.volumeImg} onMouseOver={() => setAudioShown(true)} onClick={() => {
+            <div className={classes.volumeImg} onClick={() => {
                 setMuted(prev => {
                     if(muted) audioElement.current!.volume = audioVolume / 100;
                     else audioElement.current!.volume = 0
@@ -36,7 +33,7 @@ const Volume: FC<VolumeProps> = React.memo(({audioShown, setAudioShown, audioVol
             </div>
 
             <input min={0} max={100} step={5} value={audioVolume} type="range"
-                   className={audioShown ? classes.volume + " " + classes.volumeShown : classes.volume}
+                   className={classes.volume + " " + classes.volumeShown}
                    onChange={(e) => {
                        // @ts-ignore
                        let vol = Number(e.target.value);

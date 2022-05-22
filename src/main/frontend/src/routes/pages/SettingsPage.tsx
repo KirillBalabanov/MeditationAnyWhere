@@ -1,6 +1,6 @@
 import React, {FC} from 'react';
 import {useNavigate, useParams} from "react-router-dom";
-import classes from "../styles/Settings.module.css";
+import classes from "../styles/SettingsPage.module.css";
 import SettingsProfile from "../../components/settings/subpages/profile/SettingsProfile";
 import SettingsAccount from "../../components/settings/subpages/account/SettingsAccount";
 import SettingsLibrary from "../../components/settings/subpages/library/SettingsLibrary";
@@ -14,7 +14,7 @@ export enum SettingOptions {
     library = "library",
 }
 
-const Settings: FC = () => {
+const SettingsPage: FC = () => {
     const setting = useParams()["setting"];
 
     const cacheStore = useCacheStore()!;
@@ -42,4 +42,4 @@ const Settings: FC = () => {
     );
 };
 
-export default Settings;
+export default SettingsPage;

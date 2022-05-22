@@ -7,7 +7,7 @@
 
 .input {
     background: #0D091F;
-    width: 400px;
+    width: 90%;
     height: 50px;
     display: flex;
     cursor: pointer;
@@ -43,7 +43,7 @@
 }
 
 .addForm{
-    width: 400px;
+    width: 70%;
     margin: 20px 0 20px;
     padding-bottom: 20px;
     border-bottom: 1px solid #2D2E32;
@@ -98,7 +98,7 @@
     margin-top: 30px;
     font-size: 14px;
     background: #2196f3;
-    width: 100px;
+    width: 120px;
     height: 25px;
 }
 
@@ -108,4 +108,24 @@
     height: 25px;
     margin-top: 0;
     font-size: 14px;
+}
+
+@media screen and (max-width: 1000px){
+    .addForm {
+        width: 90%;
+    }
+
+}
+
+@media screen and (max-width: 613px){
+    .inputImg {
+        width: 25px;
+        height: 25px;
+    }
+    .inputText {
+        padding-left: 10px;
+        font-size: 14px;
+    }
+
+
 }
