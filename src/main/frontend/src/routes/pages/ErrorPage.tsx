@@ -8,17 +8,20 @@ interface Error404Props {
 
 const ErrorPage: FC<Error404Props> = React.memo(({errorMsg}) => {
     return (
-        <div className="error404">
-            <div className="error404__text">
-                {errorMsg
-                ?
-                errorMsg.toString()
-                :
-                "404 page not found."}
+        <div className={"error404Outer"}>
+            <div className="error404">
+                <div className="error404__text">
+                    {errorMsg
+                        ?
+                        errorMsg.toString()
+                        :
+                        "404 page not found."}
+                </div>
+                <img src={sadSmile} alt="sad smile" className="error404__image"/>
+                <Link to={"/"} className="error404__link">Go to main page</Link>
             </div>
-            <img src={sadSmile} alt="sad smile" className="error404__image"/>
-            <Link to={"/"} className="error404__link">Go to main page</Link>
         </div>
+
     );
 });
 
