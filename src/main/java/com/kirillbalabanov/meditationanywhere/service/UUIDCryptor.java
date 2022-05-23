@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
-import java.util.TreeSet;
+import java.util.Random;
 
 @Component
 public class UUIDCryptor {
@@ -83,10 +83,10 @@ public class UUIDCryptor {
     public void shuffleBytes(byte[] bytes) {
         int shuffledBoundaryIndex = bytes.length - 1;
 
-        NumberGenerator numberGenerator = new NumberGenerator(bytes.length / 2, bytes.length);
+        Random numberGenerator = new Random(bytes.length);
 
         for (int i = 0; i < bytes.length - 1; i++) {
-            int randInd = numberGenerator.nextInt();
+            int randInd = Math.abs(numberGenerator.nextInt() % (shuffledBoundaryIndex + 1));
             byte temp = bytes[shuffledBoundaryIndex];
             // swapping rand byte with shuffledBoundaryIndex byte
             bytes[shuffledBoundaryIndex] = bytes[randInd];
@@ -98,7 +98,7 @@ public class UUIDCryptor {
     public void deShuffleBytes(byte[] bytes) {
         int shuffledBoundaryIndex = 1;
 
-        ArrayDeque<Integer> randIntStack = getRandIntStack(bytes.length / 2, bytes.length);
+        ArrayDeque<Integer> randIntStack = getRandIntStack(bytes.length, bytes.length);
 
         for (int i = 0; i < bytes.length - 1; i++) {
             int randInd = randIntStack.pollLast();
@@ -113,10 +113,10 @@ public class UUIDCryptor {
     public void shuffleChars(char[] chars) {
         int shuffledBoundaryIndex = chars.length - 1;
 
-        NumberGenerator numberGenerator = new NumberGenerator(chars.length / 2, chars.length);
+        Random numberGenerator = new Random(chars.length);
 
         for (int i = 0; i < chars.length - 1; i++) {
-            int randInd = numberGenerator.nextInt();
+            int randInd = Math.abs(numberGenerator.nextInt() % (shuffledBoundaryIndex + 1));
             char temp = chars[shuffledBoundaryIndex];
             // swapping rand byte with shuffledBoundaryIndex byte
             chars[shuffledBoundaryIndex] = chars[randInd];
@@ -128,7 +128,7 @@ public class UUIDCryptor {
     public void deShuffleChars(char[] chars) {
         int shuffledBoundaryIndex = 1;
 
-        ArrayDeque<Integer> randIntStack = getRandIntStack(chars.length / 2, chars.length);
+        ArrayDeque<Integer> randIntStack = getRandIntStack(chars.length, chars.length);
 
         for (int i = 0; i < chars.length - 1; i++) {
             int randInd = randIntStack.pollLast();
@@ -140,38 +140,14 @@ public class UUIDCryptor {
         }
     }
 
-    private ArrayDeque<Integer> getRandIntStack(int seed, int module) {
-        NumberGenerator numberGenerator = new NumberGenerator(seed, module);
+    private ArrayDeque<Integer> getRandIntStack(int seed, int len) {
+        Random numberGenerator = new Random(seed);
         ArrayDeque<Integer> randIntStack = new ArrayDeque<>(); // pop rand int in reverse order.
-        for (int i = 0; i < module - 1; i++) {
-            randIntStack.addLast(numberGenerator.nextInt());
+        int shuffleBoundary = len - 1;
+        for (int i = 0; i < len - 1; i++) {
+            randIntStack.addLast(Math.abs(numberGenerator.nextInt() % (shuffleBoundary-- + 1)));
         }
         return randIntStack;
-    }
-    static class NumberGenerator {
-        private int seed;
-        private final int multiplier = 737373;
-        private int increment = 13;
-        private final int module;
-        private final TreeSet<Integer> duplicates;
-
-        public NumberGenerator(int seed, int module) {
-            this.seed = seed;
-            this.module = module;
-            this.duplicates = new TreeSet<>();
-        }
-
-        public int nextInt() {
-            if(duplicates.size() == module) duplicates.clear();
-
-            do {
-                seed = Math.abs((seed * multiplier + increment)) % module;
-                increment = Math.abs(increment + 1) % module;
-            } while (duplicates.contains(seed));
-            duplicates.add(seed);
-            return seed;
-        }
-
     }
 
     private static final char[] HEX_MAP = new char[] {
