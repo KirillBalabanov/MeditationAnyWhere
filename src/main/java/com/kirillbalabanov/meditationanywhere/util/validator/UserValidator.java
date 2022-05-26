@@ -1,6 +1,6 @@
 package com.kirillbalabanov.meditationanywhere.util.validator;
 
-import com.kirillbalabanov.meditationanywhere.exception.user.ValidationException;
+import com.kirillbalabanov.meditationanywhere.exception.validation.ValidationException;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

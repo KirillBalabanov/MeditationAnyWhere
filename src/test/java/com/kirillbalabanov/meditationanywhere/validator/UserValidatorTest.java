@@ -1,6 +1,6 @@
 package com.kirillbalabanov.meditationanywhere.validator;
 
-import com.kirillbalabanov.meditationanywhere.exception.user.ValidationException;
+import com.kirillbalabanov.meditationanywhere.exception.validation.ValidationException;
 import com.kirillbalabanov.meditationanywhere.util.validator.UserValidator;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
