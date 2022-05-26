@@ -1,5 +1,5 @@
 .library {
-
+    width: 500px;
 }
 .libraryInner {
     height: 100%;
@@ -43,7 +43,7 @@
 }
 
 .addForm{
-    width: 70%;
+    width: 90%;
     margin: 20px 0 20px;
     padding-bottom: 20px;
     border-bottom: 1px solid #2D2E32;
@@ -58,7 +58,7 @@
 }
 .previewAudio {
     height: 50px;
-    width: 400px;
+    width: 100%;
     display: flex;
     align-items: center;
 }
@@ -117,6 +117,9 @@
 }
 
 @media screen and (max-width: 1000px){
+    .library {
+        width: auto;
+    }
     .addForm {
         width: 90%;
     }
