@@ -1,7 +1,7 @@
 package com.kirillbalabanov.meditationanywhere.exception.user;
 
-public class LoginException extends Exception {
-    public LoginException(String message) {
+public class UserException extends Exception {
+    public UserException(String message) {
         super(message);
     }
 }
