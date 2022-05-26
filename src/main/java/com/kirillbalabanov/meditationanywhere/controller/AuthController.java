@@ -52,9 +52,9 @@ public class AuthController {
         String username = usernamePasswordModel.username();
         String password = usernamePasswordModel.password();
 
-        UserModel userModel;
+        UserEntity userEntity;
         try {
-            userModel = userService.isAbleToLogIn(username, password);
+            userEntity = userService.isAbleToLogIn(username, password);
         } catch (Exception e) {
             return ResponseEntity.ok().body(ErrorModel.fromMessage(e.getMessage()));
         }
@@ -64,7 +64,7 @@ public class AuthController {
                 password);
         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 
-        return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(userModel);
+        return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(UserModel.toModel(userEntity));
     }
 
     @PostMapping("/logout")
