@@ -1,6 +1,8 @@
 package com.kirillbalabanov.meditationanywhere.exception.audio;
 
-public class InvalidAudioTitleException extends Exception {
+import com.kirillbalabanov.meditationanywhere.exception.validation.ValidationException;
+
+public class InvalidAudioTitleException extends ValidationException {
     public InvalidAudioTitleException(String message) {
         super(message);
     }
