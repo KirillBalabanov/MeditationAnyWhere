@@ -1,6 +1,7 @@
 package com.kirillbalabanov.meditationanywhere.controller;
 
 import com.kirillbalabanov.meditationanywhere.config.UserDet;
+import com.kirillbalabanov.meditationanywhere.entity.UserEntity;
 import com.kirillbalabanov.meditationanywhere.exception.user.NoUserFoundException;
 import com.kirillbalabanov.meditationanywhere.model.EmailModel;
 import com.kirillbalabanov.meditationanywhere.model.ErrorModel;
@@ -34,55 +35,55 @@ public class UserController {
     @PutMapping("/change/username")
     public ResponseEntity<?> changeUsername(@RequestBody UsernamePasswordModel usernameModel) {
         UserDet userDet = (UserDet) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        UserModel userModel;
+        UserEntity userEntity;
         try {
-            userModel = userService.changeUsername(userDet.getUserId(), usernameModel.username(), usernameModel.password());
+            userEntity = userService.changeUsername(userDet.getUserId(), usernameModel.username(), usernameModel.password());
         } catch (Exception e) {
             return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(ErrorModel.fromMessage(e.getMessage()));
         }
-        return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(userModel);
+        return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(UserModel.toModel(userEntity));
     }
 
     @PutMapping("/change/email")
     public ResponseEntity<?> changeEmailRequest(@RequestBody EmailPasswordModel emailPasswordModel) {
         UserDet userDet = (UserDet) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        UserModel userModel;
+        UserEntity userEntity;
         try {
-            userModel = userService.changeEmailRequest(userDet.getUserId(), emailPasswordModel.email(), emailPasswordModel.password());
+            userEntity = userService.changeEmailRequest(userDet.getUserId(), emailPasswordModel.email(), emailPasswordModel.password());
         } catch (Exception e) {
             return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(ErrorModel.fromMessage(e.getMessage()));
         }
-        return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(userModel);
+        return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(UserModel.toModel(userEntity));
     }
 
     @PutMapping("/change/email/verify")
     public ResponseEntity<?> changeEmailVerification(@RequestBody CodePasswordModel codePasswordModel) {
-        UserModel userModel;
+        UserEntity userEntity;
         try {
-            userModel = userService.changeEmailVerification(codePasswordModel.code(), codePasswordModel.password());
+            userEntity = userService.changeEmailVerification(codePasswordModel.code(), codePasswordModel.password());
         } catch (Exception e) {
             return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(ErrorModel.fromMessage(e.getMessage()));
         }
-        return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(userModel);
+        return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(UserModel.toModel(userEntity));
     }
 
     @GetMapping("/change/email/code-exists/{code}")
     public ResponseEntity<?> codeExists(@PathVariable String code) {
-        EmailModel emailModel;
+        String encryptedCode;
         try {
-            emailModel = userService.getEmailByCode(code);
+            encryptedCode = userService.getEmailByCode(code);
         } catch (NoUserFoundException e) {
             return ResponseEntity.ok().cacheControl(CacheControl.noCache()).body(ErrorModel.fromMessage(e.getMessage()));
         }
-        return ResponseEntity.ok().cacheControl(CacheControl.noCache()).body(emailModel);
+        return ResponseEntity.ok().cacheControl(CacheControl.noCache()).body(EmailModel.toModel(encryptedCode));
     }
 
     @DeleteMapping("/delete/account")
     public ResponseEntity<?> deleteUser(@RequestBody PasswordModel passwordModel, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         UserDet userDet = (UserDet) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        UserModel deletedModel;
+        UserEntity deletedEntity;
         try {
-            deletedModel = userService.deleteAccountByUserId(userDet.getUserId(), passwordModel.password());
+            deletedEntity = userService.deleteUserAccount(userDet.getUserId(), passwordModel.password());
         } catch (Exception e) {
             return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(ErrorModel.fromMessage(e.getMessage()));
         }
@@ -90,7 +91,7 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         new SecurityContextLogoutHandler().logout(httpServletRequest, httpServletResponse, authentication);
 
-        return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(deletedModel);
+        return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(UserModel.toModel(deletedEntity));
     }
 
 }
