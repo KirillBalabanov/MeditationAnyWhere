@@ -61,7 +61,7 @@ const AccountFormPopup: FC<PopupProps> = ({setShown, shown, type}) => {
                 let username = (e.currentTarget.querySelector("input[name=username]") as HTMLInputElement).value;
                 try {
                     isValidUsername(username);
-                    if(username === userState.username) throw Error("Please change username");
+                    if(username === userState.username) throw new Error("Please change username");
                 } catch (e) {
                     if (e instanceof Error) {
                         setErrorMsg(e.message);
@@ -91,7 +91,7 @@ const AccountFormPopup: FC<PopupProps> = ({setShown, shown, type}) => {
                 let email = (e.currentTarget.querySelector("input[name=email]") as HTMLInputElement).value;
                 try {
                     isValidEmail(email);
-                    if(email === userState.email) throw Error("Please change email");
+                    if(email === userState.email) throw new Error("Please change email");
                 } catch (e) {
                     if (e instanceof Error) {
                         setErrorMsg(e.message);
@@ -103,7 +103,7 @@ const AccountFormPopup: FC<PopupProps> = ({setShown, shown, type}) => {
                     password: password,
                 }
                 setFormState(FormState.LOADING);
-                csrfFetching("/user/change/email", FetchingMethods.PUT, FetchContentTypes.APPLICATION_JSON, JSON.stringify(emailModel))
+                csrfFetching("/user/change/email/request", FetchingMethods.PUT, FetchContentTypes.APPLICATION_JSON, JSON.stringify(emailModel))
                     .then((response) => response.json()).then((data: UserFetchI | ErrorFetchI) => {
                     let failed = true;
                     if ("errorMsg" in data) {
