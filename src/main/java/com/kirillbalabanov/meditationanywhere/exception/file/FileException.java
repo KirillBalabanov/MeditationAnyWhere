@@ -1,7 +1,11 @@
 package com.kirillbalabanov.meditationanywhere.exception.file;
 
-public class FileException extends Exception {
+public class FileException extends RuntimeException {
     public FileException(String message) {
         super(message);
+    }
+
+    public FileException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

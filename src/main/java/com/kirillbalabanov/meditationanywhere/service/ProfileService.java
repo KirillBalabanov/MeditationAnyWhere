@@ -2,7 +2,6 @@ package com.kirillbalabanov.meditationanywhere.service;
 
 import com.kirillbalabanov.meditationanywhere.entity.ProfileEntity;
 import com.kirillbalabanov.meditationanywhere.entity.UserEntity;
-import com.kirillbalabanov.meditationanywhere.exception.user.NoUserFoundException;
 import com.kirillbalabanov.meditationanywhere.model.AvatarModel;
 import com.kirillbalabanov.meditationanywhere.model.ProfileModel;
 import com.kirillbalabanov.meditationanywhere.repository.ProfileRepository;
@@ -11,8 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 
 @Service
 public class ProfileService {
@@ -28,7 +25,7 @@ public class ProfileService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public ProfileEntity updateProfileSettings(long id, String bio, MultipartFile image) throws NoUserFoundException, IOException {
+    public ProfileEntity updateProfileSettings(long id, String bio, MultipartFile image) {
         UserEntity userEntity = userService.findById(id);
         ProfileEntity profileEntity = userEntity.getProfileEntity();
 
@@ -46,7 +43,7 @@ public class ProfileService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public ProfileEntity updateProfileSettings(long id, String bio, boolean deleteAvatar) throws NoUserFoundException {
+    public ProfileEntity updateProfileSettings(long id, String bio, boolean deleteAvatar) {
         UserEntity userEntity = userService.findById(id);
 
         ProfileEntity profileEntity = userEntity.getProfileEntity();
@@ -61,14 +58,14 @@ public class ProfileService {
     }
 
     @Transactional(readOnly = true)
-    public ProfileModel getProfileModel(long userId) throws NoUserFoundException {
+    public ProfileModel getProfileModel(long userId) {
 
         UserEntity userEntity = userService.findById(userId);
         return ProfileModel.toModel(userEntity.getProfileEntity());
     }
 
     @Transactional(readOnly = true)
-    public AvatarModel getAvatar(long userId) throws NoUserFoundException {
+    public AvatarModel getAvatar(long userId) {
 
         UserEntity userEntity = userService.findById(userId);
         ProfileEntity profileEntity = userEntity.getProfileEntity();

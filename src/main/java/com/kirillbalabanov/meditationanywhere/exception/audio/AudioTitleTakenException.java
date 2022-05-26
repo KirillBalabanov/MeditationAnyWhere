@@ -4,4 +4,8 @@ public class AudioTitleTakenException extends AudioException {
     public AudioTitleTakenException(String message) {
         super(message);
     }
+
+    public AudioTitleTakenException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

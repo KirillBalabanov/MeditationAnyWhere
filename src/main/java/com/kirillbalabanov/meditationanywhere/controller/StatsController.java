@@ -5,6 +5,7 @@ import com.kirillbalabanov.meditationanywhere.entity.StatsEntity;
 import com.kirillbalabanov.meditationanywhere.exception.user.NoUserFoundException;
 import com.kirillbalabanov.meditationanywhere.model.ErrorModel;
 import com.kirillbalabanov.meditationanywhere.model.StatsModel;
+import com.kirillbalabanov.meditationanywhere.model.frontend.SessionEndModel;
 import com.kirillbalabanov.meditationanywhere.service.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,14 +25,8 @@ public class StatsController {
     }
 
     @PutMapping("/updateStats")
-    public ResponseEntity<?> updateStats(@RequestBody Map<String, String> map) throws NoUserFoundException {
-        if (map.size() != 1) {
-            return ResponseEntity.ok().body(ErrorModel.fromMessage("Invalid arguments."));
-        }
-
-        // getting session's minListened, fetched by js.
-        int minListened = Integer.parseInt(map.get("minListened"));
-
+    public ResponseEntity<?> updateStats(@RequestBody SessionEndModel sessionEndModel) {
+        int minListened = Integer.parseInt(sessionEndModel.minListened());
         UserDet principal = (UserDet) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         StatsEntity statsEntity = statsService.updateStats(minListened, principal.getUserId());
         return ResponseEntity.ok().body(StatsModel.toModel(statsEntity));

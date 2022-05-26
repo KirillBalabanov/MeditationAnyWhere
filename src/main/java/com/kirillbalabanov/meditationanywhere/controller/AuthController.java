@@ -4,6 +4,7 @@ import com.kirillbalabanov.meditationanywhere.entity.UserEntity;
 import com.kirillbalabanov.meditationanywhere.exception.user.NoUserFoundException;
 import com.kirillbalabanov.meditationanywhere.model.ErrorModel;
 import com.kirillbalabanov.meditationanywhere.model.UserModel;
+import com.kirillbalabanov.meditationanywhere.model.frontend.RegistrationModel;
 import com.kirillbalabanov.meditationanywhere.model.frontend.UsernamePasswordModel;
 import com.kirillbalabanov.meditationanywhere.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,19 +31,10 @@ public class AuthController {
     }
 
     @PostMapping("/registration")
-    public ResponseEntity<?> registration(@RequestBody HashMap<String, String> hm) {
-        if(hm.size() != 3) return ResponseEntity.badRequest().body("Invalid request params");
+    public ResponseEntity<?> registration(@RequestBody RegistrationModel registrationModel) {
 
-        String username = hm.get("username");
-        String email = hm.get("email");
-        String password = hm.get("password");
+        UserEntity registeredUser = userService.register(registrationModel.username(), registrationModel.email(), registrationModel.password());
 
-        UserEntity registeredUser;
-        try {
-            registeredUser = userService.register(username, email, password);
-        } catch (Exception e) {
-            return ResponseEntity.ok().body(ErrorModel.fromMessage(e.getMessage()));
-        }
         return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(UserModel.toModel(registeredUser));
     }
 
@@ -52,12 +44,7 @@ public class AuthController {
         String username = usernamePasswordModel.username();
         String password = usernamePasswordModel.password();
 
-        UserEntity userEntity;
-        try {
-            userEntity = userService.isAbleToLogIn(username, password);
-        } catch (Exception e) {
-            return ResponseEntity.ok().body(ErrorModel.fromMessage(e.getMessage()));
-        }
+        UserEntity userEntity = userService.isAbleToLogIn(username, password);
 
         // set auth.
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(username,
@@ -77,11 +64,9 @@ public class AuthController {
     @GetMapping("/verification/{activationCode}")
     public ResponseEntity<?> verification(@PathVariable String activationCode) {
         HashMap<String, String> hashMap = new HashMap<>();
-        try {
-            userService.verifyUserByActivationCode(activationCode);
-        } catch (NoUserFoundException e) {
-            return ResponseEntity.ok().body(ErrorModel.fromMessage(e.getMessage()));
-        }
+
+        userService.verifyUserByActivationCode(activationCode);
+
         hashMap.put("message", "Account is successfully activated!");
         return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(hashMap);
     }

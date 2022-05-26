@@ -2,8 +2,8 @@ package com.kirillbalabanov.meditationanywhere.controller;
 
 import com.kirillbalabanov.meditationanywhere.config.UserDet;
 import com.kirillbalabanov.meditationanywhere.entity.AudioEntity;
+import com.kirillbalabanov.meditationanywhere.exception.validation.ValidationException;
 import com.kirillbalabanov.meditationanywhere.model.AudioModel;
-import com.kirillbalabanov.meditationanywhere.model.ErrorModel;
 import com.kirillbalabanov.meditationanywhere.model.frontend.AudioFileModel;
 import com.kirillbalabanov.meditationanywhere.service.AudioService;
 import com.kirillbalabanov.meditationanywhere.util.validator.ContentTypeValidator;
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping(value = "/user/audio")
@@ -33,28 +32,18 @@ public class AudioController {
         String audioTitle = audioFileModel.audioTitle();
         MultipartFile audioFile = audioFileModel.audioFile();
 
-        if (audioFile == null || !ContentTypeValidator.isValidAudio(audioFile.getContentType())) {
-            return ResponseEntity.badRequest().body("Invalid arguments");
-        }
+        if (audioFile == null || !ContentTypeValidator.isValidAudio(audioFile.getContentType())) throw new ValidationException("Invalid type");
+
         UserDet userDet = (UserDet) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        AudioEntity audioEntity;
-        try {
-            audioEntity = audioService.addAudio(userDet.getUserId(), audioFile, audioTitle);
-        } catch (Exception e) {
-            return ResponseEntity.ok().body(ErrorModel.fromMessage(e.getMessage()));
-        }
+        AudioEntity audioEntity = audioService.addAudio(userDet.getUserId(), audioFile, audioTitle);
+
         return ResponseEntity.ok().body(AudioModel.toModel(audioEntity));
     }
 
     @GetMapping(value = "/get")
     public ResponseEntity<?> getAudioArray() {
         UserDet userDet = (UserDet) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        AudioModel[] audioModels;
-        try {
-            audioModels = audioService.getUserAudioInArrayModels(userDet.getUserId());
-        } catch (Exception e) {
-            return ResponseEntity.ok().body(ErrorModel.fromMessage(e.getMessage()));
-        }
+        AudioModel[] audioModels = audioService.getUserAudioInArrayModels(userDet.getUserId());
 
         return ResponseEntity.ok().cacheControl(CacheControl.noCache().cachePrivate()).body(audioModels);
     }
@@ -64,12 +53,8 @@ public class AudioController {
         String newTitle = audioModel.getAudioTitle();
         String audioUrl = audioModel.getAudioUrl();
         UserDet userDet = (UserDet) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        AudioEntity audioEntity;
-        try {
-            audioEntity = audioService.updateAudioTitle(userDet.getUserId(), audioUrl, newTitle);
-        } catch (Exception e) {
-            return ResponseEntity.ok().body(ErrorModel.fromMessage(e.getMessage()));
-        }
+        AudioEntity audioEntity = audioService.updateAudioTitle(userDet.getUserId(), audioUrl, newTitle);
+
         return ResponseEntity.ok().body(AudioModel.toModel(audioEntity));
     }
 
@@ -77,12 +62,8 @@ public class AudioController {
     public ResponseEntity<?> deleteAudio(@RequestBody HashMap<String, String> audioObj) {
         String audioUrl = audioObj.get("url");
         UserDet userDet = (UserDet) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        AudioEntity deleted;
-        try {
-            deleted = audioService.deleteUserAudioByUrl(userDet.getUserId(), audioUrl);
-        } catch (Exception e) {
-            return ResponseEntity.ok().body(ErrorModel.fromMessage(e.getMessage()));
-        }
+        AudioEntity deleted = audioService.deleteUserAudioByUrl(userDet.getUserId(), audioUrl);
+
         return ResponseEntity.ok().body(AudioModel.toModel(deleted));
     }
 

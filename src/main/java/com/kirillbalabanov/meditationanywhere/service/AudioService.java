@@ -5,7 +5,6 @@ import com.kirillbalabanov.meditationanywhere.entity.UserEntity;
 import com.kirillbalabanov.meditationanywhere.exception.audio.AudioNotFoundException;
 import com.kirillbalabanov.meditationanywhere.exception.audio.AudioTitleTakenException;
 import com.kirillbalabanov.meditationanywhere.exception.audio.InvalidAudioTitleException;
-import com.kirillbalabanov.meditationanywhere.exception.user.NoUserFoundException;
 import com.kirillbalabanov.meditationanywhere.model.AudioModel;
 import com.kirillbalabanov.meditationanywhere.repository.AudioRepository;
 import com.kirillbalabanov.meditationanywhere.util.validator.TitleValidator;
@@ -14,7 +13,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.Optional;
 
 @Service
@@ -32,7 +30,7 @@ public class AudioService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public AudioEntity addAudio(long userId, MultipartFile audioFile, String audioTitle) throws NoUserFoundException, IOException, AudioTitleTakenException {
+    public AudioEntity addAudio(long userId, MultipartFile audioFile, String audioTitle) {
         UserEntity userEntity = userService.findById(userId);
 
         if(userEntity.getAudioEntityList().stream().anyMatch((el) -> el.getAudioTitle().equals(audioTitle))) {
@@ -50,14 +48,14 @@ public class AudioService {
     }
 
     @Transactional(readOnly = true)
-    public AudioModel[] getUserAudioInArrayModels(long userId) throws NoUserFoundException {
+    public AudioModel[] getUserAudioInArrayModels(long userId) {
         UserEntity userEntity = userService.findById(userId);
         if(userEntity.getAudioEntityList().size() == 0) return null;
         return userEntity.getAudioEntityList().stream().map(AudioModel::toModel).toArray(AudioModel[]::new);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public AudioEntity updateAudioTitle(long userId, String url, String title) throws NoUserFoundException, AudioNotFoundException, InvalidAudioTitleException, AudioTitleTakenException {
+    public AudioEntity updateAudioTitle(long userId, String url, String title) {
         if(!TitleValidator.isValidAudioTitle(title)) throw new InvalidAudioTitleException("Invalid audio title");
         UserEntity userEntity = userService.findById(userId);
         if(userEntity.getAudioEntityList().stream().anyMatch((el) -> el.getAudioTitle().equals(title))) {
@@ -75,7 +73,7 @@ public class AudioService {
     }
 
     @Transactional(readOnly = true)
-    public AudioEntity findUserAudioByUrl(long userId, String url) throws NoUserFoundException, AudioNotFoundException {
+    public AudioEntity findUserAudioByUrl(long userId, String url) {
         UserEntity userEntity = userService.findById(userId);
         Optional<AudioEntity> optional = userEntity.getAudioEntityList().stream().filter((el) -> el.getAudioUrl().equals(url)).findFirst();
         if(optional.isEmpty()) throw new AudioNotFoundException("Audio not found.");
@@ -83,7 +81,7 @@ public class AudioService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public AudioEntity deleteUserAudioByUrl(long userId, String url) throws NoUserFoundException, AudioNotFoundException {
+    public AudioEntity deleteUserAudioByUrl(long userId, String url) {
         UserEntity userEntity = userService.findById(userId);
         Optional<AudioEntity> optional = userEntity.getAudioEntityList().stream().filter((el) -> el.getAudioUrl().equals(url)).findFirst();
         if (optional.isEmpty()) throw new AudioNotFoundException("Audio not found.");

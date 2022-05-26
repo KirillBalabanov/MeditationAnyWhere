@@ -34,7 +34,7 @@ public class StatsService {
      * @return updates StatsEntity.
      */
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public StatsEntity updateStats(int minutesListened, long userId) throws NoUserFoundException {
+    public StatsEntity updateStats(int minutesListened, long userId) {
         Optional<UserEntity> optionalUserEntity = userRepository.findById(userId);
         if(optionalUserEntity.isEmpty()) throw new NoUserFoundException("User not found.");
 

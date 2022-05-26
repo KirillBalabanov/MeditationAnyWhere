@@ -35,14 +35,18 @@ public class FileService {
         this.serverToggleAudioRelativePath = serverToggleAudioRelativePath;
     }
 
-    public String createFileInUserDirectory(MultipartFile file, long id) throws IOException {
+    public String createFileInUserDirectory(MultipartFile file, long id) {
         String fileNameWithUUID = UUID.randomUUID() + "." + file.getOriginalFilename().replaceAll("[^A-Za-z1-9._]", "");
 
         File fileInFileSys = new File(userFolderPath + "/" + id + "/" + fileNameWithUUID);
         if (!fileInFileSys.exists()) {
             fileInFileSys.mkdirs();
         }
-        file.transferTo(fileInFileSys);
+        try {
+            file.transferTo(fileInFileSys);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         return fileNameWithUUID;
     }
@@ -84,7 +88,7 @@ public class FileService {
         return userFolderUrl + "/" + id + "/" + fileName;
     }
 
-    public AudioModel[] getServerAudioDefaultArray() throws AudioNotFoundException, FolderNotExistsException {
+    public AudioModel[] getServerAudioDefaultArray() {
         File defaultAudioFolder = new File(serverFolderPath + serverDefaultAudioPackRelativePath + "/");
         if(!defaultAudioFolder.exists()) throw new FolderNotExistsException("Folder doesn't exist");
         File[] audio = defaultAudioFolder.listFiles();
@@ -99,7 +103,7 @@ public class FileService {
         return models;
     }
 
-    public AudioModel getServerToggleAudio() throws FolderNotExistsException, AudioNotFoundException {
+    public AudioModel getServerToggleAudio() {
         File folder = new File(serverFolderPath + serverToggleAudioRelativePath);
         if(!folder.exists()) throw new FolderNotExistsException("Folder doesn't exist");
         File[] files = folder.listFiles();
