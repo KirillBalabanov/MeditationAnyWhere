@@ -47,7 +47,6 @@ const LoginPage: FC = () => {
             "password": password
         });
         csrfFetching("/user/auth/login", FetchingMethods.POST, FetchContentTypes.APPLICATION_JSON, body).then((response) => {
-            if(!response.ok) return {errorMsg: "Error"}
             return response.json()
         }).then((data: UserFetchI | ErrorFetchI) => {
             let failed: boolean = false;
@@ -62,7 +61,7 @@ const LoginPage: FC = () => {
             }
             // animation
             animateFetchRequest(setFormState, failed)
-        });
+        })
     };
 
     return (
@@ -71,7 +70,7 @@ const LoginPage: FC = () => {
                 <Form formState={formState} submitCallback={postLogin}
                       errorMsg={errorMsg} buttonTitle={"Log in"}>
 
-                    <FormTitle title={"Create account"}></FormTitle>
+                    <FormTitle title={"Log in"}></FormTitle>
                     <FormInputContainer>
                         <FormInput placeholder={"Input username"} type={"text"} name={"username"}
                                    onInput={(e) => validFormInput(e, ValidFormValidator.username, setErrorMsg)}
