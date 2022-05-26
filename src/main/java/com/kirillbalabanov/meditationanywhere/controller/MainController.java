@@ -1,6 +1,7 @@
 package com.kirillbalabanov.meditationanywhere.controller;
 
 import com.kirillbalabanov.meditationanywhere.config.UserDet;
+import com.kirillbalabanov.meditationanywhere.entity.UserEntity;
 import com.kirillbalabanov.meditationanywhere.exception.user.NoUserFoundException;
 import com.kirillbalabanov.meditationanywhere.model.AudioModel;
 import com.kirillbalabanov.meditationanywhere.model.ErrorModel;
@@ -35,14 +36,14 @@ public class MainController {
         if (!(principal instanceof UserDet userDet)) {
             return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(null);
         }
-        UserModel userModel;
+        UserEntity userEntity;
         try {
-            userModel = userService.getPrincipal(userDet.getUserId());
+            userEntity = userService.getPrincipal(userDet.getUserId());
         } catch (NoUserFoundException e) {
             return ResponseEntity.badRequest().body(null);
         }
 
-        return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(userModel);
+        return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(UserModel.toModel(userEntity));
     }
 
     @GetMapping("/audio/default")
