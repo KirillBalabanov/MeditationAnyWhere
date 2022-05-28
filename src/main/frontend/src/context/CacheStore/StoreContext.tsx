@@ -1,11 +1,12 @@
-import React, {createContext, Dispatch, FC, useContext, useReducer, useState} from 'react';
+import React, {createContext, Dispatch, FC, useContext, useEffect, useReducer, useState} from 'react';
 import {ContextProviderInterface} from "../ContextProviderInterface";
 import Loader from "../../components/loader/Loader";
-import {useGetPrincipal} from "../../hooks/useRefteshAuth";
 import {AuthAction, authReducer, AuthState} from "../../reducer/authReducer";
 import {HeaderAction, headerReducer, HeaderState} from "../../reducer/headerReducer";
 import {UserAction, userReducer, UserState} from "../../reducer/userReducer";
 import {ServerAction, serverReducer, ServerState} from "../../reducer/serverReducer";
+import {useLocation} from "react-router-dom";
+import {fetchPrincipal} from "./CacheStoreService/fetchPrincipal";
 
 
 const authReducerInit: AuthState = {
@@ -59,8 +60,15 @@ export const StoreProvider: FC<ContextProviderInterface> = ({children}) => {
         userReducer: userReducerImp,
         serverReducer: serverReducerImp,
     }
-    // get principal
-    useGetPrincipal(storeContextI, setIsLoadingPrincipal);
+
+    let location = useLocation();
+
+    useEffect(() => {
+        // fetch principal on route change
+        fetchPrincipal(storeContextI, setIsLoadingPrincipal);
+    }, [location]);
+
+
 
     if(isLoadingPrincipal) return (<Loader></Loader>)
 

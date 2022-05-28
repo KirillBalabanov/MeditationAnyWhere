@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import {Link, useNavigate} from "react-router-dom";
 import logo from "../../images/logo.svg";
 
@@ -10,7 +10,7 @@ import {useStore} from "../../context/CacheStore/StoreContext";
 import {logoutUser} from "../../context/CacheStore/CacheStoreService/logoutUser";
 import {csrfFetching, FetchingMethods} from "../../util/Fetch/csrfFetching";
 
-const Header = () => {
+const Header: FC = React.memo(() => {
     const cacheStore = useStore()!;
     const [authState] = cacheStore.authReducer;
     const [userState,] = cacheStore.userReducer;
@@ -66,13 +66,15 @@ const Header = () => {
                                     <li className={classes.user__menuItem}>
                                         {userState.username}
                                     </li>
-                                    <li className={classes.user__menuItem}
-                                        onClick={() => redirectTo("/profile/" + userState.username)}>
-                                        Go to profile
+                                    <li className={classes.user__menuItem}>
+                                        <Link to={"/profile/" + userState.username}>
+                                            Go to profile
+                                        </Link>
                                     </li>
-                                    <li className={classes.user__menuItem}
-                                        onClick={() => redirectTo("/settings/profile")}>
-                                        Settings
+                                    <li className={classes.user__menuItem}>
+                                        <Link to={"/settings/profile"}>
+                                            Settings
+                                        </Link>
                                     </li>
                                     <li className={classes.user__menuItem} onClick={() => {
                                         logout();
@@ -89,6 +91,6 @@ const Header = () => {
             </div>
         </header>
     );
-};
+});
 
 export default Header;

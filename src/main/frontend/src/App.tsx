@@ -9,8 +9,8 @@ import {StoreProvider} from "./context/CacheStore/StoreContext";
 const App: FC = () => {
 
     return (
-        <StoreProvider>
-            <BrowserRouter>
+        <BrowserRouter>
+            <StoreProvider>
                 <Header/>
                 <Routes>
                     {appRoutes.map((route) => {
@@ -19,8 +19,8 @@ const App: FC = () => {
                         )
                     })}
                 </Routes>
-            </BrowserRouter>
-        </StoreProvider>
+            </StoreProvider>
+        </BrowserRouter>
     );
 };
 
