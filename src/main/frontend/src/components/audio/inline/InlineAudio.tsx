@@ -30,8 +30,8 @@ const InlineAudio: FC<InlineAudioProps> = ({audioUrl}) => {
 
     return (
         <AudioOuter audioUrl={audioUrl} audioElement={audioElement} setIsAudioPlaying={setIsPlaying}>
-            <PlayButton isPlaying={isPlaying} setIsPlaying={setIsPlaying} audioElement={audioElement}></PlayButton>
-            <StopButton isPlaying={isPlaying} setIsPlaying={setIsPlaying} audioElement={audioElement}></StopButton>
+            <PlayButton isPlaying={isPlaying} audioElement={audioElement}></PlayButton>
+            <StopButton isPlaying={isPlaying} audioElement={audioElement}></StopButton>
             <Controls>
                 <Bar audioElement={audioElement} currentTime={currentTime} setCurrentTime={setCurrentTime} duration={duration}></Bar>
                 <Volume
