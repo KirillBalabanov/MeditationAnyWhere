@@ -29,13 +29,13 @@ const InlineAudio: FC<InlineAudioProps> = ({audioUrl}) => {
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
-        <AudioOuter audioUrl={audioUrl} audioElement={audioElement}>
+        <AudioOuter audioUrl={audioUrl} audioElement={audioElement} setIsAudioPlaying={setIsPlaying}>
             <PlayButton isPlaying={isPlaying} setIsPlaying={setIsPlaying} audioElement={audioElement}></PlayButton>
             <StopButton isPlaying={isPlaying} setIsPlaying={setIsPlaying} audioElement={audioElement}></StopButton>
             <Controls>
                 <Bar audioElement={audioElement} currentTime={currentTime} setCurrentTime={setCurrentTime} duration={duration}></Bar>
                 <Volume
-                        audioVolume={audioVolume} setAudioVolume={setAudioVolume} audioElement={audioElement}></Volume>
+                        audioVolume={audioVolume} setAudioVolume={setAudioVolume} audioElement={audioElement} setAudioVolumeInPercents={setAudioVolume}></Volume>
             </Controls>
         </AudioOuter>
     );
