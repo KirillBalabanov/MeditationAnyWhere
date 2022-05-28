@@ -33,7 +33,7 @@ const Header: FC = React.memo(() => {
         else if (!authState.auth) {
             setIsLoadingAvatar(false);
         }
-    }, [userState.avatar]);
+    }, [userState.avatar]); // eslint-disable-line react-hooks/exhaustive-deps
 
     function logout() {
         if (!authState.auth) return;
@@ -66,16 +66,12 @@ const Header: FC = React.memo(() => {
                                     <li className={classes.user__menuItem}>
                                         {userState.username}
                                     </li>
-                                    <li className={classes.user__menuItem}>
-                                        <Link to={"/profile/" + userState.username}>
-                                            Go to profile
-                                        </Link>
-                                    </li>
-                                    <li className={classes.user__menuItem}>
-                                        <Link to={"/settings/profile"}>
-                                            Settings
-                                        </Link>
-                                    </li>
+                                    <Link to={"/profile/" + userState.username} className={classes.user__menuItem} onClick={() => setShowMenu(false)}>
+                                        Go to profile
+                                    </Link>
+                                    <Link to={"/settings/profile"} className={classes.user__menuItem} onClick={() => setShowMenu(false)}>
+                                        Settings
+                                    </Link>
                                     <li className={classes.user__menuItem} onClick={() => {
                                         logout();
                                         redirectTo("/start");

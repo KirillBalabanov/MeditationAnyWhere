@@ -1,6 +1,14 @@
+import React from "react";
+
 export interface AudioInterface {
     title: string,
     url: string,
+}
+
+export interface AudioWithRefInterface {
+    title: string,
+    url: string,
+    ref: React.RefObject<HTMLAudioElement>
 }
 
 export interface StatsInterface {

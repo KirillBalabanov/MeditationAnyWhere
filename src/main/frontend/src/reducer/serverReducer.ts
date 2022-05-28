@@ -1,4 +1,4 @@
-import {AudioInterface} from "../types/contextTypes";
+import {AudioInterface, AudioWithRefInterface} from "../types/contextTypes";
 
 export enum ServerActionTypes {
     ADD_TOGGLE_AUDIO,
@@ -7,7 +7,7 @@ export enum ServerActionTypes {
 
 interface ServerAddToggleAudioAction {
     type: ServerActionTypes.ADD_TOGGLE_AUDIO
-    payload: AudioInterface,
+    payload: AudioWithRefInterface,
 }
 interface ServerAddDefaultAudioAction {
     type: ServerActionTypes.ADD_DEFAULT_AUDIO
@@ -19,7 +19,7 @@ interface ServerAddDefaultAudioAction {
 export type ServerAction = ServerAddToggleAudioAction | ServerAddDefaultAudioAction;
 
 export interface ServerState {
-    toggleAudio: AudioInterface | null,
+    toggleAudio: AudioWithRefInterface | null,
     defaultAudio: AudioInterface[] | null,
 }
 

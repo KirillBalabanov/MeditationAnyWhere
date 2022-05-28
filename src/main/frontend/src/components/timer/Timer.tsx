@@ -42,7 +42,7 @@ const Timer:FC = () => {
             return response.json()
         }).then((data: ErrorFetchI | AudioFetchI) => {
             if("errorMsg" in data) return;
-            serverDispatcher({type: ServerActionTypes.ADD_TOGGLE_AUDIO, payload: {url: data.audioUrl, title: data.audioTitle}})
+            serverDispatcher({type: ServerActionTypes.ADD_TOGGLE_AUDIO, payload: {url: data.audioUrl, title: data.audioTitle, ref: toggleAudioElement}})
         });
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 

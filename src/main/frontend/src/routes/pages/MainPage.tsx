@@ -7,6 +7,7 @@ import TimerButton from "../../components/timer/TimerButton";
 import AudioSelect from "../../components/select/audio/AudioSelect";
 import {TimerContextProvider} from "../../context/TimerContext";
 import {AudioSelectContextProvider} from "../../context/AudioSelectContext";
+import TimerToggleAudioVolume from "../../components/timer/TimerToggleAudioVolume";
 
 const MainPage: FC = () => {
 
@@ -30,7 +31,9 @@ const MainPage: FC = () => {
                             <TimerSelectItem timerValue={50}></TimerSelectItem>
                             <TimerSelectItem timerValue={60}></TimerSelectItem>
                         </TimerSelect>
+                        <TimerToggleAudioVolume/>
                         <AudioSelect></AudioSelect>
+
                     </AudioSelectContextProvider>
                     <TimerButton></TimerButton>
                 </TimerContextProvider>

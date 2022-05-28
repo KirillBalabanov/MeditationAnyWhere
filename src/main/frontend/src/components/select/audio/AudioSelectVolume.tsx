@@ -13,8 +13,6 @@ const AudioSelectVolume: FC<AudioSelectVolumeProps> = React.memo(({audioElement}
 
     const [muted, setMuted] = useState(false);
 
-
-
     useEffect(() => {
         const volumeChangeHandler = () => {
             setAudioVolumeInPercents(audioElement.current!.volume * 100);

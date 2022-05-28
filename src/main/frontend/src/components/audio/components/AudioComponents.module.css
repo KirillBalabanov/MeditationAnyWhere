@@ -91,14 +91,13 @@
     align-items: center;
     object-fit: cover;
     transition: all .4s ease-out;
-    padding-left: 10px;
     height: 50%;
-    width: 7%;
+    width: 40%;
     cursor: pointer;
 
 }
 .volumeOuter.volumeOuterFull {
-    width: 30%;
+    width: 100%;
 }
 .volumeImg {
     height: 100%;
