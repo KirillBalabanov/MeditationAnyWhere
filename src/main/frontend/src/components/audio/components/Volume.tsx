@@ -22,10 +22,14 @@ const Volume: FC<VolumeProps> = React.memo(({audioVolume, setAudioVolume, audioE
 
         let ref = audioElement.current!;
 
-        ref.addEventListener("volumechange", volumeChangeHandler);
+        if (ref !== null) {
+            ref.addEventListener("volumechange", volumeChangeHandler);
+        }
 
         return () => {
-            ref.removeEventListener("volumechange", volumeChangeHandler);
+            if (ref !== null) {
+                ref.removeEventListener("volumechange", volumeChangeHandler);
+            }
         }
 
     }, []);
