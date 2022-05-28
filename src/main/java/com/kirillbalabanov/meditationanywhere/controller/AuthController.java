@@ -1,6 +1,7 @@
 package com.kirillbalabanov.meditationanywhere.controller;
 
 import com.kirillbalabanov.meditationanywhere.entity.UserEntity;
+import com.kirillbalabanov.meditationanywhere.model.PrincipalModel;
 import com.kirillbalabanov.meditationanywhere.model.UserModel;
 import com.kirillbalabanov.meditationanywhere.model.frontend.RegistrationModel;
 import com.kirillbalabanov.meditationanywhere.model.frontend.UsernamePasswordModel;
@@ -53,7 +54,7 @@ public class AuthController {
         Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(UserModel.toModel(userEntity));
+        return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(PrincipalModel.toModel(userEntity));
     }
 
     @PostMapping("/logout")

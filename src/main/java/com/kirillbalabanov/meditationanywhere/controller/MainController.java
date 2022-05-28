@@ -3,6 +3,7 @@ package com.kirillbalabanov.meditationanywhere.controller;
 import com.kirillbalabanov.meditationanywhere.config.UserDet;
 import com.kirillbalabanov.meditationanywhere.entity.UserEntity;
 import com.kirillbalabanov.meditationanywhere.model.AudioModel;
+import com.kirillbalabanov.meditationanywhere.model.PrincipalModel;
 import com.kirillbalabanov.meditationanywhere.model.UserModel;
 import com.kirillbalabanov.meditationanywhere.service.FileService;
 import com.kirillbalabanov.meditationanywhere.service.UserService;
@@ -37,7 +38,7 @@ public class MainController {
 
         UserEntity userEntity = userService.getPrincipal(userDet.getUserId());
 
-        return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(UserModel.toModel(userEntity));
+        return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(PrincipalModel.toModel(userEntity));
     }
 
     @GetMapping("/audios/default")
