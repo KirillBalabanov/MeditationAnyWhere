@@ -33,7 +33,6 @@ const MainPage: FC = () => {
                         </TimerSelect>
                         <TimerToggleAudioVolume/>
                         <AudioSelect></AudioSelect>
-
                     </AudioSelectContextProvider>
                     <TimerButton></TimerButton>
                 </TimerContextProvider>

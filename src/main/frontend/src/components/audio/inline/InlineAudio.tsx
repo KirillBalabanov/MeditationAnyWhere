@@ -6,6 +6,7 @@ import PlayButton from "../components/PlayButton";
 import StopButton from "../components/StopButton";
 import AudioOuter from "../components/AudioOuter";
 import {useAudio} from "../components/useAudio";
+import classes from "./InlineAudio.module.css";
 
 interface InlineAudioProps {
     audioUrl: string | null,
@@ -34,8 +35,10 @@ const InlineAudio: FC<InlineAudioProps> = ({audioUrl}) => {
             <StopButton isPlaying={isPlaying} audioElement={audioElement}></StopButton>
             <Controls>
                 <Bar audioElement={audioElement} currentTime={currentTime} setCurrentTime={setCurrentTime} duration={duration}></Bar>
-                <Volume
+                <div className={classes.volumeOuter}>
+                    <Volume
                         audioVolume={audioVolume} setAudioVolume={setAudioVolume} audioElement={audioElement} setAudioVolumeInPercents={setAudioVolume}></Volume>
+                </div>
             </Controls>
         </AudioOuter>
     );

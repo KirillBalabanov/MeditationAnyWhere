@@ -91,7 +91,7 @@
     align-items: center;
     object-fit: cover;
     transition: all .4s ease-out;
-    height: 50%;
+    height: 100%;
     width: 40%;
     cursor: pointer;
 

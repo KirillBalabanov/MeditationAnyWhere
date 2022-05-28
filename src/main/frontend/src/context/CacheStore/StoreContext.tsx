@@ -66,7 +66,7 @@ export const StoreProvider: FC<ContextProviderInterface> = ({children}) => {
     useEffect(() => {
         // fetch principal on route change
         fetchPrincipal(storeContextI, setIsLoadingPrincipal);
-    }, [location]);
+    }, [location]); // eslint-disable-line react-hooks/exhaustive-deps
 
 
 
