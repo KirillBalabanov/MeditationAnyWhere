@@ -10,14 +10,14 @@ import {animateFetchRequest} from "../../components/form/FormService/animateFetc
 import {isValidEmail} from "../../util/UserValidator/isValidEmail";
 import {isValidUsername} from "../../util/UserValidator/isValidUsername";
 import {isValidPassword} from "../../util/UserValidator/isValidPassword";
-import {useCacheStore} from "../../context/CacheStore/CacheStoreContext";
+import {useStore} from "../../context/CacheStore/StoreContext";
 import {ErrorFetchI, UserFetchI} from "../../types/serverTypes";
 import {csrfFetching, FetchContentTypes, FetchingMethods} from "../../util/Fetch/csrfFetching";
 import FormInputContainer from "../../components/form/FormInputContainer";
 
 
 const RegistrationPage: FC = () => {
-    const cacheStore = useCacheStore()!;
+    const cacheStore = useStore()!;
     const [authState] = cacheStore.authReducer;
 
     useAuthRedirect(authState.auth);

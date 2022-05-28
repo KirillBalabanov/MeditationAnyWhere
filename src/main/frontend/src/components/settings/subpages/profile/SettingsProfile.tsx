@@ -7,13 +7,13 @@ import PopupRectangle from "../../../popup/PopupRectangle";
 import Popup from "../../../popup/Popup";
 import {AbsolutePositionX, AbsolutePositionY} from "../../../../types/componentTypes";
 import SettingsDelBtn from "../../components/SettingsDelBtn";
-import {useCacheStore} from "../../../../context/CacheStore/CacheStoreContext";
+import {useStore} from "../../../../context/CacheStore/StoreContext";
 import {ErrorFetchI, ProfileFetchI} from "../../../../types/serverTypes";
 import {UserActionTypes} from "../../../../reducer/userReducer";
 import {csrfFetching, FetchContentTypes, FetchingMethods} from "../../../../util/Fetch/csrfFetching";
 
 const SettingsProfile: FC = () => {
-    const cacheStore = useCacheStore()!;
+    const cacheStore = useStore()!;
     const [userState, userDispatcher] = cacheStore.userReducer;
 
 
@@ -31,17 +31,11 @@ const SettingsProfile: FC = () => {
     const [rectangleShown, setRectangleShown] = useState(false);
 
     useEffect(() => {
-
-        if (userState.avatar === null || userState.bio === null) { // fetch from server and add to cache
-            fetch("/users/current/settings").then((response) => response.json()).then((data: ProfileFetchI) => {
-                userDispatcher({type: UserActionTypes.SET_AVATAR, payload: {url: data.avatarUrl}})
-                userDispatcher({type: UserActionTypes.SET_BIO, payload: {bio: data.bio}})
-                setIsDataLoading(false)
-            });
-        } else {
-            setIsDataLoading(false);
-        }
-
+        fetch("/users/current/settings").then((response) => response.json()).then((data: ProfileFetchI) => {
+            userDispatcher({type: UserActionTypes.SET_AVATAR, payload: {url: data.avatarUrl}})
+            userDispatcher({type: UserActionTypes.SET_BIO, payload: {bio: data.bio}})
+            setIsDataLoading(false)
+        });
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     useEffect(() => {

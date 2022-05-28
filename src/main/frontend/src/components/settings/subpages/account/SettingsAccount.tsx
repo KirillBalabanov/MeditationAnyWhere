@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
 import Section from "../../components/SettingsContentSection";
 import classes from "./SettingsAccount.module.css";
-import {useCacheStore} from "../../../../context/CacheStore/CacheStoreContext";
+import {useStore} from "../../../../context/CacheStore/StoreContext";
 import AccountFormPopup, {ValidationPopupType} from "./AccountFormPopup";
 
 const SettingsAccount = () => {
-    const cacheStore = useCacheStore()!;
+    const cacheStore = useStore()!;
     const [userState] = cacheStore.userReducer;
 
     const [popupShown, setPopupShown] = useState(false);

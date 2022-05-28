@@ -2,13 +2,13 @@ import React, {FC, useEffect, useState} from 'react';
 import {Link} from "react-router-dom";
 
 import classes from "../styles/StartPage.module.css";
-import {useCacheStore} from "../../context/CacheStore/CacheStoreContext";
+import {useStore} from "../../context/CacheStore/StoreContext";
 import {HeaderActionTypes} from "../../reducer/headerReducer";
 
 const speed = 0.003;
 
 const StartPage: FC = () => {
-    const cacheStore = useCacheStore()!;
+    const cacheStore = useStore()!;
     const [, headerDispatcher] = cacheStore.headerReducer;
 
     const [x, setX] = useState(0);

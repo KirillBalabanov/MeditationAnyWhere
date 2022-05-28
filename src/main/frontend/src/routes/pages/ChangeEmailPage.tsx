@@ -13,13 +13,13 @@ import {isValidPassword} from "../../util/UserValidator/isValidPassword";
 import {csrfFetching, FetchContentTypes, FetchingMethods} from "../../util/Fetch/csrfFetching";
 import {animateFetchRequest} from "../../components/form/FormService/animateFetchRequest";
 import ErrorPage from "./ErrorPage";
-import {useCacheStore} from "../../context/CacheStore/CacheStoreContext";
+import {useStore} from "../../context/CacheStore/StoreContext";
 import {UserActionTypes} from "../../reducer/userReducer";
 
 const ChangeEmailPage = () => {
     let code: string = useParams()["code"]!;
 
-    const cacheStore = useCacheStore()!;
+    const cacheStore = useStore()!;
     const [, userDispatcher] = cacheStore.userReducer;
 
     const [formState, setFormState] = useState(FormState.DEFAULT);

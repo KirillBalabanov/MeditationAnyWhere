@@ -6,7 +6,7 @@ import AudioSelectLibrary from "./AudioSelectLibrary";
 import AudioSelectLibraryAudio from "./AudioSelectLibraryAudio";
 import {Link} from "react-router-dom";
 import Loader from "../../loader/Loader";
-import {useCacheStore} from "../../../context/CacheStore/CacheStoreContext";
+import {useStore} from "../../../context/CacheStore/StoreContext";
 import {AudioFetchI, ErrorFetchI} from "../../../types/serverTypes";
 import {UserActionTypes} from "../../../reducer/userReducer";
 import {ServerActionTypes} from "../../../reducer/serverReducer";
@@ -14,7 +14,7 @@ import {ServerActionTypes} from "../../../reducer/serverReducer";
 const AudioSelect: FC = () => {
     const [selectShown, setSelectShown] = useState(false);
 
-    const cacheStore = useCacheStore()!;
+    const cacheStore = useStore()!;
     const [authState] = cacheStore.authReducer;
     const [userState, userDispatcher] = cacheStore.userReducer;
     const [serverState, serverDispatcher] = cacheStore.serverReducer;
@@ -25,32 +25,30 @@ const AudioSelect: FC = () => {
 
     useEffect(() => {
         // server audio url
-        if (serverState.defaultAudio !== null) { // is in cache
-            setServerAudioIsLoading(false);
-        } else {
-            fetch("/server/audios/default").then((response) => response.json()).then((data: AudioFetchI[] | ErrorFetchI) => {
-                if("errorMsg" in data) return;
-                serverDispatcher({type: ServerActionTypes.ADD_DEFAULT_AUDIO, payload: data.map(el => {
-                        return {url: el.audioUrl, title: el.audioTitle}
-                    })})
-            }).catch(() => { // catch in case server return null
-                userDispatcher({type: UserActionTypes.SET_AUDIO, payload: []})
-            }).then(() => setServerAudioIsLoading(false));
-        }
+        fetch("/server/audios/default").then((response) => response.json()).then((data: AudioFetchI[] | ErrorFetchI) => {
+            if("errorMsg" in data) return;
+            serverDispatcher({type: ServerActionTypes.ADD_DEFAULT_AUDIO, payload: data.map(el => {
+                    return {url: el.audioUrl, title: el.audioTitle}
+                })})
+        }).catch(() => { // catch in case server return null
+            userDispatcher({type: UserActionTypes.SET_AUDIO, payload: []})
+        }).then(() => setServerAudioIsLoading(false));
+
 
         // user audio url
-        if (userState.audio !== null || !authState.auth) { // is in cache or user not authenticated
+        if (!authState.auth) {
             setUserAudioIsLoading(false);
-        } else {
-            fetch("/users/current/audios").then((response) => response.json()).then((data: AudioFetchI[] | ErrorFetchI) => {
-                if("errorMsg" in data) return;
-                userDispatcher({type: UserActionTypes.SET_AUDIO, payload: data.map(el => {
-                        return {url: el.audioUrl, title: el.audioTitle}
-                    })})
-            }).catch(() => { // catch in case server return null
-                userDispatcher({type: UserActionTypes.SET_AUDIO, payload: []})
-            }).then(() => setUserAudioIsLoading(false));
+            return;
         }
+        fetch("/users/current/audios").then((response) => response.json()).then((data: AudioFetchI[] | ErrorFetchI) => {
+            if("errorMsg" in data) return;
+            userDispatcher({type: UserActionTypes.SET_AUDIO, payload: data.map(el => {
+                    return {url: el.audioUrl, title: el.audioTitle}
+                })})
+        }).catch(() => { // catch in case server return null
+            userDispatcher({type: UserActionTypes.SET_AUDIO, payload: []})
+        }).then(() => setUserAudioIsLoading(false));
+
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
 

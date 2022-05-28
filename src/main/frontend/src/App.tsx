@@ -3,13 +3,13 @@ import './routes/styles/App.css';
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Header from "./components/header/Header";
 import {appRoutes} from "./routes/Routes";
-import {CacheStoreProvider} from "./context/CacheStore/CacheStoreContext";
+import {StoreProvider} from "./context/CacheStore/StoreContext";
 
 
 const App: FC = () => {
 
     return (
-        <CacheStoreProvider>
+        <StoreProvider>
             <BrowserRouter>
                 <Header/>
                 <Routes>
@@ -20,7 +20,7 @@ const App: FC = () => {
                     })}
                 </Routes>
             </BrowserRouter>
-        </CacheStoreProvider>
+        </StoreProvider>
     );
 };
 

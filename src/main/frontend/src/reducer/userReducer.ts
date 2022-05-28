@@ -1,4 +1,5 @@
 import {AudioInterface, AvatarInterface, BioInterface, StatsInterface} from "../types/contextTypes";
+import {PrincipalI} from "../types/serverTypes";
 
 export enum UserActionTypes {
     SET_PRINCIPAL,
@@ -16,10 +17,7 @@ export enum UserActionTypes {
 
 interface UserSetPrincipalAction {
     type: UserActionTypes.SET_PRINCIPAL,
-    payload: {
-        username: string,
-        email: string,
-    },
+    payload: PrincipalI,
 }
 interface UserSetUsernameAction {
     type: UserActionTypes.SET_USERNAME,
@@ -79,7 +77,7 @@ export const userReducer = (state: UserState, action: UserAction): UserState => 
     switch (action.type) {
         // add
         case UserActionTypes.SET_PRINCIPAL:
-            return {...state, username: action.payload.username, email: action.payload.email}
+            return {...state, username: action.payload.username, email: action.payload.email, avatar: {url: action.payload.avatarUrl}}
         case UserActionTypes.SET_USERNAME:
             return {...state, username: action.payload}
         case UserActionTypes.SET_BIO:

@@ -1,6 +1,7 @@
 export interface PrincipalI {
     username: string,
     email: string,
+    avatarUrl: string,
 }
 
 export interface ErrorFetchI {

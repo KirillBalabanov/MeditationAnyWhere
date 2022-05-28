@@ -5,7 +5,7 @@ import {timerLenDefault} from "./TimerService/timerLenDefault";
 import Popup from "../popup/Popup";
 import AudioSource from "../audio/components/AudioSource";
 import {useAudioSelectContext} from "../../context/AudioSelectContext";
-import {useCacheStore} from "../../context/CacheStore/CacheStoreContext";
+import {useStore} from "../../context/CacheStore/StoreContext";
 import {AudioFetchI, ErrorFetchI, StatsFetchI} from "../../types/serverTypes";
 import {useTimerContextReducer} from "../../context/TimerContext";
 import {TimerActionTypes} from "../../reducer/timerReducer";
@@ -17,7 +17,7 @@ const Timer:FC = () => {
 
     const [timerState, timerDispatcher] = useTimerContextReducer()!;
 
-    const cacheStore = useCacheStore()!;
+    const cacheStore = useStore()!;
     const [authState] = cacheStore.authReducer;
     const [, userDispatcher] = cacheStore.userReducer;
     const [serverState, serverDispatcher] = cacheStore.serverReducer;
@@ -38,9 +38,6 @@ const Timer:FC = () => {
 
 
     useEffect(() => {
-        if(serverState.defaultAudio !== null) { // is in cache
-            return;
-        }
         fetch("/server/audios/toggle").then((response) => {
             return response.json()
         }).then((data: ErrorFetchI | AudioFetchI) => {

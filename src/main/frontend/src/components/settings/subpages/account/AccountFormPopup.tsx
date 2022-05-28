@@ -10,7 +10,7 @@ import FormInputContainer from "../../../form/FormInputContainer";
 import {csrfFetching, FetchContentTypes, FetchingMethods} from "../../../../util/Fetch/csrfFetching";
 import {ChangeEmailModel, ChangeUsernameModel, PasswordModel} from "../../../../types/frontendTypes";
 import {ErrorFetchI, UserFetchI} from "../../../../types/serverTypes";
-import {useCacheStore} from "../../../../context/CacheStore/CacheStoreContext";
+import {useStore} from "../../../../context/CacheStore/StoreContext";
 import {UserActionTypes} from "../../../../reducer/userReducer";
 import {animateFetchRequest} from "../../../form/FormService/animateFetchRequest";
 import {isValidPassword} from "../../../../util/UserValidator/isValidPassword";
@@ -36,7 +36,7 @@ const AccountFormPopup: FC<PopupProps> = ({setShown, shown, type}) => {
 
     let navigateFunction = useNavigate();
 
-    const cacheStore = useCacheStore()!;
+    const cacheStore = useStore()!;
     const [userState, userDispatcher] = cacheStore.userReducer;
     const [, authDispatcher] = cacheStore.authReducer;
 

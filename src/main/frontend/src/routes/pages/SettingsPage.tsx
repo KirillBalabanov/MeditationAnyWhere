@@ -6,7 +6,7 @@ import SettingsAccount from "../../components/settings/subpages/account/Settings
 import SettingsLibrary from "../../components/settings/subpages/library/SettingsLibrary";
 import SettingsOption from "../../components/settings/components/SettingsOption";
 import SettingsContent from "../../components/settings/components/SettingsContent";
-import {useCacheStore} from "../../context/CacheStore/CacheStoreContext";
+import {useStore} from "../../context/CacheStore/StoreContext";
 
 export enum SettingOptions {
     profile = "profile",
@@ -17,7 +17,7 @@ export enum SettingOptions {
 const SettingsPage: FC = () => {
     const setting = useParams()["setting"];
 
-    const cacheStore = useCacheStore()!;
+    const cacheStore = useStore()!;
     const [authState] = cacheStore.authReducer;
 
     let navigateFunction = useNavigate();

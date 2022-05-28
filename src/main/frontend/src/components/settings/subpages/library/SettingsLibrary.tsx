@@ -8,7 +8,7 @@ import removeIcon from "../../../../images/removeIcon.svg";
 import Loader from "../../../loader/Loader";
 import Popup from "../../../popup/Popup";
 import {isValidAudioName} from "../../../../util/AudioValidator/isValidAudioName";
-import {useCacheStore} from "../../../../context/CacheStore/CacheStoreContext";
+import {useStore} from "../../../../context/CacheStore/StoreContext";
 import {UserActionTypes} from "../../../../reducer/userReducer";
 import {AudioFetchI, ErrorFetchI} from "../../../../types/serverTypes";
 import {AudioInterface} from "../../../../types/contextTypes";
@@ -23,7 +23,7 @@ interface formData {
 
 const SettingsLibrary = () => {
 
-    const cacheStore = useCacheStore()!;
+    const cacheStore = useStore()!;
 
     const [userState, userDispatcher] = cacheStore.userReducer;
 
@@ -45,10 +45,6 @@ const SettingsLibrary = () => {
     const [errorUpdateMsg, setErrorUpdateMsg] = useState("");
 
     useEffect(() => {
-        if(userState.audio !== null) {
-            setIsLoading(false);
-            return;
-        } // is in cache
         fetch("/users/current/audios").then((response) => response.json()).then((data: AudioFetchI[]) => {
             userDispatcher({type: UserActionTypes.SET_AUDIO, payload: data.map(el => {
                     return {url: el.audioUrl, title: el.audioTitle}

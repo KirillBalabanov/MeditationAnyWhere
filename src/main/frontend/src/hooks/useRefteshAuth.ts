@@ -1,10 +1,10 @@
 import React, {SetStateAction, useEffect} from "react";
-import {CacheStoreContextI} from "../context/CacheStore/CacheStoreContext";
+import {StoreContextI} from "../context/CacheStore/StoreContext";
 import {AuthActionTypes} from "../reducer/authReducer";
 import {PrincipalI} from "../types/serverTypes";
 import {UserActionTypes} from "../reducer/userReducer";
 
-export const useGetPrincipal = (cacheStore: CacheStoreContextI, setIsLoading: React.Dispatch<SetStateAction<boolean>> | null = null) => {
+export const useGetPrincipal = (cacheStore: StoreContextI, setIsLoading: React.Dispatch<SetStateAction<boolean>> | null = null) => {
     useEffect(() => {
         fetch("/server/principal").then((response) => {
             return response.json()
@@ -14,7 +14,6 @@ export const useGetPrincipal = (cacheStore: CacheStoreContextI, setIsLoading: Re
 
             authReducer[1]({type: AuthActionTypes.LOGIN})
             userReducer[1]({type: UserActionTypes.SET_PRINCIPAL, payload: obj})
-
 
         }).catch(() => { // if null - not authenticated
             cacheStore.authReducer[1]({type: AuthActionTypes.LOGOUT})

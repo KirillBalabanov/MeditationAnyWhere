@@ -4,7 +4,7 @@ import defaultAvatar from "../../../images/defaultAvatar.svg";
 import PopupRectangle from "../../popup/PopupRectangle";
 import {useNavigate} from "react-router-dom";
 import {AbsolutePositionX, AbsolutePositionY} from "../../../types/componentTypes";
-import {useCacheStore} from "../../../context/CacheStore/CacheStoreContext";
+import {useStore} from "../../../context/CacheStore/StoreContext";
 
 interface ProfileAvatarProps {
     avatarUrl: string | null,
@@ -14,7 +14,7 @@ interface ProfileAvatarProps {
 const ProfileAvatar: FC<ProfileAvatarProps> = ({avatarUrl, username}) => {
     let navigateFunction = useNavigate();
     const [popupShown, setPopupShown] = useState(false);
-    const cacheStore = useCacheStore()!;
+    const cacheStore = useStore()!;
 
     let isAuthUserPage: boolean = username === cacheStore.userReducer[0].username;
 

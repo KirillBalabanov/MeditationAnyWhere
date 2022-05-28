@@ -9,14 +9,14 @@ import {validFormInput, ValidFormValidator} from "../../components/form/FormServ
 import {animateFetchRequest} from "../../components/form/FormService/animateFetchRequest";
 import {isValidUsername} from "../../util/UserValidator/isValidUsername";
 import {isValidPassword} from "../../util/UserValidator/isValidPassword";
-import {useCacheStore} from "../../context/CacheStore/CacheStoreContext";
-import {ErrorFetchI, UserFetchI} from "../../types/serverTypes";
+import {useStore} from "../../context/CacheStore/StoreContext";
+import {ErrorFetchI, PrincipalI} from "../../types/serverTypes";
 import {loginUser} from "../../context/CacheStore/CacheStoreService/loginUser";
 import {csrfFetching, FetchContentTypes, FetchingMethods} from "../../util/Fetch/csrfFetching";
 import FormInputContainer from "../../components/form/FormInputContainer";
 
 const LoginPage: FC = () => {
-    const cacheStore = useCacheStore()!;
+    const cacheStore = useStore()!;
     const [authState] = cacheStore.authReducer;
 
     useAuthRedirect(authState.auth);
@@ -48,7 +48,7 @@ const LoginPage: FC = () => {
         });
         csrfFetching("/users/auth/login", FetchingMethods.POST, FetchContentTypes.APPLICATION_JSON, body).then((response) => {
             return response.json()
-        }).then((data: UserFetchI | ErrorFetchI) => {
+        }).then((data: PrincipalI | ErrorFetchI) => {
             let failed: boolean = false;
             if ("errorMsg" in data) {
                 setErrorMsg(data["errorMsg"]);

@@ -32,20 +32,20 @@ const serverReducerInit: ServerState = {
     defaultAudio: null,
 }
 
-export interface CacheStoreContextI {
+export interface StoreContextI {
     authReducer: [AuthState, Dispatch<AuthAction>],
     headerReducer: [HeaderState, Dispatch<HeaderAction>],
     userReducer: [UserState, Dispatch<UserAction>],
     serverReducer: [ServerState, Dispatch<ServerAction>],
 }
 
-const CacheStoreContext = createContext<CacheStoreContextI | null>(null);
+const StoreContext = createContext<StoreContextI | null>(null);
 
-export const useCacheStore = () => {
-    return useContext(CacheStoreContext);
+export const useStore = () => {
+    return useContext(StoreContext);
 }
 
-export const CacheStoreProvider: FC<ContextProviderInterface> = ({children}) => {
+export const StoreProvider: FC<ContextProviderInterface> = ({children}) => {
     const [isLoadingPrincipal, setIsLoadingPrincipal] = useState(true);
 
     const authReducerImp: [AuthState, Dispatch<AuthAction>] = useReducer(authReducer, authReducerInit);
@@ -53,20 +53,20 @@ export const CacheStoreProvider: FC<ContextProviderInterface> = ({children}) => 
     const userReducerImp: [UserState, Dispatch<UserAction>] = useReducer(userReducer, userReducerInit);
     const serverReducerImp: [ServerState, Dispatch<ServerAction>] = useReducer(serverReducer, serverReducerInit);
 
-    const cacheStoreContextImp: CacheStoreContextI = {
+    const storeContextI: StoreContextI = {
         authReducer: authReducerImp,
         headerReducer: headerReducerImp,
         userReducer: userReducerImp,
         serverReducer: serverReducerImp,
     }
     // get principal
-    useGetPrincipal(cacheStoreContextImp, setIsLoadingPrincipal);
+    useGetPrincipal(storeContextI, setIsLoadingPrincipal);
 
     if(isLoadingPrincipal) return (<Loader></Loader>)
 
     return (
-        <CacheStoreContext.Provider value={cacheStoreContextImp}>
+        <StoreContext.Provider value={storeContextI}>
             {children}
-        </CacheStoreContext.Provider>
+        </StoreContext.Provider>
     );
 };

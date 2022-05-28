@@ -6,16 +6,14 @@ import defaultAvatar from "../../images/defaultAvatar.svg";
 import polygon from "../../images/polygon.svg";
 import polygonOnRectangle from "../../images/polygonOnRectangle.svg"
 import classes from "./Header.module.css";
-import {useCacheStore} from "../../context/CacheStore/CacheStoreContext";
-import {AvatarFetchI, ErrorFetchI} from "../../types/serverTypes";
-import {UserActionTypes} from "../../reducer/userReducer";
+import {useStore} from "../../context/CacheStore/StoreContext";
 import {logoutUser} from "../../context/CacheStore/CacheStoreService/logoutUser";
 import {csrfFetching, FetchingMethods} from "../../util/Fetch/csrfFetching";
 
 const Header = () => {
-    const cacheStore = useCacheStore()!;
+    const cacheStore = useStore()!;
     const [authState] = cacheStore.authReducer;
-    const [userState, userDispatcher] = cacheStore.userReducer;
+    const [userState,] = cacheStore.userReducer;
     const [headerState] = cacheStore.headerReducer;
 
     const [showMenu, setShowMenu] = useState(false);
@@ -29,30 +27,18 @@ const Header = () => {
     };
 
     useEffect(() => {
-        setShowMenu(false);
-        setIsLoadingAvatar(true);
-        if(userState.avatar !== null){
+        if (userState.avatar !== null) {
             setIsLoadingAvatar(false);
-            return;
-        } // in cache
-
-        if (authState.auth) {
-            fetch("/users/current/avatar").then((response) => response.json()).then((data: AvatarFetchI | ErrorFetchI) => {
-                if ("errorMsg" in data) {
-                    return;
-                }
-                userDispatcher({type: UserActionTypes.SET_AVATAR, payload: {url: data.avatarUrl}})
-                setIsLoadingAvatar(false);
-            });
         }
-    }, [headerState.reloadHeader]); // eslint-disable-line react-hooks/exhaustive-deps
+        else if (!authState.auth) {
+            setIsLoadingAvatar(false);
+        }
+    }, [userState.avatar]);
 
     function logout() {
         if (!authState.auth) return;
 
         csrfFetching("/users/auth/logout", FetchingMethods.POST, null, null).then(() => logoutUser(cacheStore));
-
-
     }
 
     return (
