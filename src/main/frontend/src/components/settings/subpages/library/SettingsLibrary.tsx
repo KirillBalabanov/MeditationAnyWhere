@@ -49,7 +49,7 @@ const SettingsLibrary = () => {
             setIsLoading(false);
             return;
         } // is in cache
-        fetch("/user/audio/get").then((response) => response.json()).then((data: AudioFetchI[]) => {
+        fetch("/users/current/audios").then((response) => response.json()).then((data: AudioFetchI[]) => {
             userDispatcher({type: UserActionTypes.SET_AUDIO, payload: data.map(el => {
                     return {url: el.audioUrl, title: el.audioTitle}
                 })})
@@ -148,7 +148,7 @@ const SettingsLibrary = () => {
         let payload: AudioInterface[] = userState.audio!;
         inputs.forEach((inp) => {
             if (inp.delete === "1") {
-                csrfFetching("/user/audio/del", FetchingMethods.DELETE, FetchContentTypes.APPLICATION_JSON, JSON.stringify({"url": inp.url})).then((response) => response.json()).then((data) => {
+                csrfFetching("/users/current/audio/delete", FetchingMethods.DELETE, FetchContentTypes.APPLICATION_JSON, JSON.stringify({"url": inp.url})).then((response) => response.json()).then((data) => {
                     if("error" in data) {
                         setAudioErrorMsg(data.error);
                         userDispatcher({type: UserActionTypes.RESET_AUDIO})
@@ -158,7 +158,7 @@ const SettingsLibrary = () => {
                 payload = payload.filter(el => el.url !== inp.url);
             }
             else if (inp.changed === "1") {
-                csrfFetching("/user/audio/update", FetchingMethods.PUT, FetchContentTypes.APPLICATION_JSON,
+                csrfFetching("/users/current/audio/update", FetchingMethods.PUT, FetchContentTypes.APPLICATION_JSON,
                     JSON.stringify({audioTitle: inp.title, audioUrl: inp.url})).then((response) => response.json()).then((data) => {
                     if("error" in data) {
                         setAudioErrorMsg(data.error);
@@ -199,7 +199,7 @@ const SettingsLibrary = () => {
         let formData = new FormData();
         formData.append("audioFile", audioFile!);
         formData.append("audioTitle", audioTitle);
-        csrfFetching("/user/audio/add", FetchingMethods.POST, FetchContentTypes.MULTIPART_FORM_DATA, formData).then((response) => response.json()).then((data: AudioFetchI | ErrorFetchI) => {
+        csrfFetching("/users/current/audio/add", FetchingMethods.POST, FetchContentTypes.MULTIPART_FORM_DATA, formData).then((response) => response.json()).then((data: AudioFetchI | ErrorFetchI) => {
             if("errorMsg" in data) {
                 setAudioErrorMsg(data.errorMsg);
                 return;

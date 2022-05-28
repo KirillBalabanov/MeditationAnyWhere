@@ -17,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.HashMap;
 
 @RestController
-@RequestMapping(value = "/user/audio")
+@RequestMapping(value = "/users/current")
 public class AudioController {
 
     private final AudioService audioService;
@@ -27,7 +27,7 @@ public class AudioController {
     }
 
 
-    @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/audio/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> addAudio(@ModelAttribute AudioFileModel audioFileModel) {
         String audioTitle = audioFileModel.audioTitle();
         MultipartFile audioFile = audioFileModel.audioFile();
@@ -40,7 +40,7 @@ public class AudioController {
         return ResponseEntity.ok().body(AudioModel.toModel(audioEntity));
     }
 
-    @GetMapping(value = "/get")
+    @GetMapping(value = "/audios")
     public ResponseEntity<?> getAudioArray() {
         UserDet userDet = (UserDet) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         AudioModel[] audioModels = audioService.getUserAudioInArrayModels(userDet.getUserId());
@@ -48,7 +48,7 @@ public class AudioController {
         return ResponseEntity.ok().cacheControl(CacheControl.noCache().cachePrivate()).body(audioModels);
     }
 
-    @PutMapping(value = "/update")
+    @PutMapping(value = "/audio/update")
     public ResponseEntity<?> updateTitle(@RequestBody AudioModel audioModel) {
         String newTitle = audioModel.getAudioTitle();
         String audioUrl = audioModel.getAudioUrl();
@@ -58,7 +58,7 @@ public class AudioController {
         return ResponseEntity.ok().body(AudioModel.toModel(audioEntity));
     }
 
-    @DeleteMapping("/del")
+    @DeleteMapping("/audio/delete")
     public ResponseEntity<?> deleteAudio(@RequestBody HashMap<String, String> audioObj) {
         String audioUrl = audioObj.get("url");
         UserDet userDet = (UserDet) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

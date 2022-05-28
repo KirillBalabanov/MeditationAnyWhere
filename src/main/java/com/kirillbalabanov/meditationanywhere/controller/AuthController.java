@@ -1,8 +1,6 @@
 package com.kirillbalabanov.meditationanywhere.controller;
 
 import com.kirillbalabanov.meditationanywhere.entity.UserEntity;
-import com.kirillbalabanov.meditationanywhere.exception.user.NoUserFoundException;
-import com.kirillbalabanov.meditationanywhere.model.ErrorModel;
 import com.kirillbalabanov.meditationanywhere.model.UserModel;
 import com.kirillbalabanov.meditationanywhere.model.frontend.RegistrationModel;
 import com.kirillbalabanov.meditationanywhere.model.frontend.UsernamePasswordModel;
@@ -10,6 +8,7 @@ import com.kirillbalabanov.meditationanywhere.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,13 +20,15 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 
 @RestController
-@RequestMapping(value = "/user/auth")
+@RequestMapping(value = "/users/auth")
 public class AuthController {
     private final UserService userService;
+    private final AuthenticationManager authenticationManager;
 
     @Autowired
-    public AuthController(UserService userService) {
+    public AuthController(UserService userService, AuthenticationManager authenticationManager) {
         this.userService = userService;
+        this.authenticationManager = authenticationManager;
     }
 
     @PostMapping("/registration")
@@ -49,7 +50,8 @@ public class AuthController {
         // set auth.
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(username,
                 password);
-        SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+        Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(UserModel.toModel(userEntity));
     }
@@ -61,11 +63,11 @@ public class AuthController {
 
         return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(null);
     }
-    @GetMapping("/verification/{activationCode}")
-    public ResponseEntity<?> verification(@PathVariable String activationCode) {
+    @GetMapping("/verification")
+    public ResponseEntity<?> verification(@RequestParam String code) {
         HashMap<String, String> hashMap = new HashMap<>();
 
-        userService.verifyUserByActivationCode(activationCode);
+        userService.verifyUserByActivationCode(code);
 
         hashMap.put("message", "Account is successfully activated!");
         return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(hashMap);

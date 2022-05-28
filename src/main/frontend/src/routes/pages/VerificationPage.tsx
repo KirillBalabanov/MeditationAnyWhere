@@ -11,7 +11,7 @@ const VerificationPage: FC = () => {
 
     const [verificationData, setVerificationData] = useState<VerificationFetchI | null | ErrorFetchI>(null);
 
-    useFetching<VerificationFetchI | ErrorFetchI | null>("/user/auth/verification/" + activationCode, setIsLoading, setVerificationData);
+    useFetching<VerificationFetchI | ErrorFetchI | null>("/users/auth/verification?code=" + activationCode, setIsLoading, setVerificationData);
 
     return (
         <div className={classes.verification}>

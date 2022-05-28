@@ -40,14 +40,14 @@ public class MainController {
         return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(UserModel.toModel(userEntity));
     }
 
-    @GetMapping("/audio/default")
+    @GetMapping("/audios/default")
     public ResponseEntity<?> getServerAudioDefault() {
         AudioModel[] audios = fileService.getServerAudioDefaultArray();
 
         return ResponseEntity.ok().cacheControl(CacheControl.maxAge(120, TimeUnit.MINUTES).cachePublic().mustRevalidate()).body(audios);
     }
 
-    @GetMapping("/audio/toggle")
+    @GetMapping("/audios/toggle")
     public ResponseEntity<?> getServetToggleAudio() {
         AudioModel audioModel = fileService.getServerToggleAudio();
         return ResponseEntity.ok().cacheControl(CacheControl.maxAge(120, TimeUnit.MINUTES).cachePublic().mustRevalidate()).body(audioModel);

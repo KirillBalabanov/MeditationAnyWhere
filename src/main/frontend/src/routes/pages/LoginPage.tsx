@@ -46,7 +46,7 @@ const LoginPage: FC = () => {
             "username": username,
             "password": password
         });
-        csrfFetching("/user/auth/login", FetchingMethods.POST, FetchContentTypes.APPLICATION_JSON, body).then((response) => {
+        csrfFetching("/users/auth/login", FetchingMethods.POST, FetchContentTypes.APPLICATION_JSON, body).then((response) => {
             return response.json()
         }).then((data: UserFetchI | ErrorFetchI) => {
             let failed: boolean = false;

@@ -48,7 +48,7 @@ const ChangeEmailPage = () => {
             password: password,
         }
         setFormState(FormState.LOADING);
-        csrfFetching("/user/change/email/verify", FetchingMethods.PUT, FetchContentTypes.APPLICATION_JSON, JSON.stringify(codePasswordModel))
+        csrfFetching("/users/current/change/email/verify", FetchingMethods.PUT, FetchContentTypes.APPLICATION_JSON, JSON.stringify(codePasswordModel))
             .then((response) => response.json()).then((data: UserFetchI | ErrorFetchI) => {
             let failed = true;
             if ("errorMsg" in data) {
@@ -67,7 +67,7 @@ const ChangeEmailPage = () => {
     };
 
     useEffect(() => {
-        fetch("/user/change/email/code-exists/" + code).then((response) => response.json()).then((data: EmailFetchI | ErrorFetchI) => {
+        fetch("/users/current/change/email/code?=code" + code).then((response) => response.json()).then((data: EmailFetchI | ErrorFetchI) => {
             if ("errorMsg" in data) {
                 setIsCodeInvalid(true);
             } else {

@@ -73,7 +73,7 @@ const AccountFormPopup: FC<PopupProps> = ({setShown, shown, type}) => {
                     password: password,
                 }
                 setFormState(FormState.LOADING);
-                csrfFetching("/user/change/username", FetchingMethods.PUT, FetchContentTypes.APPLICATION_JSON, JSON.stringify(usernameModel))
+                csrfFetching("/users/current/change/username", FetchingMethods.PUT, FetchContentTypes.APPLICATION_JSON, JSON.stringify(usernameModel))
                     .then((response) => response.json()).then((data: UserFetchI | ErrorFetchI) => {
                         let failed = true;
                         if ("errorMsg" in data) {
@@ -103,7 +103,7 @@ const AccountFormPopup: FC<PopupProps> = ({setShown, shown, type}) => {
                     password: password,
                 }
                 setFormState(FormState.LOADING);
-                csrfFetching("/user/change/email/request", FetchingMethods.PUT, FetchContentTypes.APPLICATION_JSON, JSON.stringify(emailModel))
+                csrfFetching("/users/current/change/email/request", FetchingMethods.PUT, FetchContentTypes.APPLICATION_JSON, JSON.stringify(emailModel))
                     .then((response) => response.json()).then((data: UserFetchI | ErrorFetchI) => {
                     let failed = true;
                     if ("errorMsg" in data) {
@@ -122,7 +122,7 @@ const AccountFormPopup: FC<PopupProps> = ({setShown, shown, type}) => {
                     password: password,
                 }
                 setFormState(FormState.LOADING);
-                csrfFetching("/user/delete/account", FetchingMethods.DELETE, FetchContentTypes.APPLICATION_JSON, JSON.stringify(passwordModel))
+                csrfFetching("/users/current/delete", FetchingMethods.DELETE, FetchContentTypes.APPLICATION_JSON, JSON.stringify(passwordModel))
                     .then((response) => response.json()).then((data: ErrorFetchI | UserFetchI) => {
                     let failed = true;
                     if ("errorMsg" in data) {

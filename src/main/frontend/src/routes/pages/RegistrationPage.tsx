@@ -56,7 +56,7 @@ const RegistrationPage: FC = () => {
             "password": password
         })
 
-        csrfFetching("/user/auth/registration", FetchingMethods.POST, FetchContentTypes.APPLICATION_JSON, body).then((response) => {
+        csrfFetching("/users/auth/registration", FetchingMethods.POST, FetchContentTypes.APPLICATION_JSON, body).then((response) => {
             return response.json()
         }).then((data: UserFetchI | ErrorFetchI) => {
             let failed: boolean = false;

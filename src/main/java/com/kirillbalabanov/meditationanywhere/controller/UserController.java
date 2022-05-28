@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users/current")
 public class UserController {
 
     private final UserService userService;
@@ -56,14 +56,14 @@ public class UserController {
         return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(UserModel.toModel(userEntity));
     }
 
-    @GetMapping("/change/email/code/{code}")
-    public ResponseEntity<?> codeExists(@PathVariable String code) {
+    @GetMapping("/change/email/code")
+    public ResponseEntity<?> codeExists(@RequestParam String code) {
         String encryptedCode = userService.getEmailByCode(code);
 
         return ResponseEntity.ok().cacheControl(CacheControl.noCache()).body(EmailModel.toModel(encryptedCode));
     }
 
-    @DeleteMapping("/delete/account")
+    @DeleteMapping("/delete")
     public ResponseEntity<?> deleteUser(@RequestBody PasswordModel passwordModel, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         UserDet userDet = (UserDet) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 

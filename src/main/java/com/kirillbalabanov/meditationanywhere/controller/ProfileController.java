@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/user/profile")
+@RequestMapping("/users")
 public class ProfileController {
 
     private final UserService userService;
@@ -38,7 +38,7 @@ public class ProfileController {
         return ResponseEntity.ok().cacheControl(CacheControl.noCache().cachePublic()).body(UserProfileModel.toModel(userEntity, userEntity.getStatsEntity(), userEntity.getProfileEntity()));
     }
 
-    @PutMapping(value = "/settings/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "/current/settings/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updateProfileSettings(@RequestParam(value = "bio") String bio,
                                                    @RequestParam(value = "deleteAvatar") String delete,
                                                    @RequestParam(value = "image", required = false) MultipartFile image) {
@@ -63,7 +63,7 @@ public class ProfileController {
         return ResponseEntity.ok().body(ProfileModel.toModel(profileEntity));
     }
 
-    @GetMapping("/settings/get")
+    @GetMapping("/current/settings")
     public ResponseEntity<?> getProfileEntitySettings() {
         UserDet userDet = (UserDet) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
@@ -72,7 +72,7 @@ public class ProfileController {
         return ResponseEntity.ok().cacheControl(CacheControl.noCache().cachePrivate()).body(profileModel);
     }
 
-    @GetMapping("/avatar/get")
+    @GetMapping("/current/avatar")
     public ResponseEntity<?> avatarUrl() {
         UserDet userDet = (UserDet) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 

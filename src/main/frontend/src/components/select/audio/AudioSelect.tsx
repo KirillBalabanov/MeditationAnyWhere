@@ -28,7 +28,7 @@ const AudioSelect: FC = () => {
         if (serverState.defaultAudio !== null) { // is in cache
             setServerAudioIsLoading(false);
         } else {
-            fetch("/server/audio/default").then((response) => response.json()).then((data: AudioFetchI[] | ErrorFetchI) => {
+            fetch("/server/audios/default").then((response) => response.json()).then((data: AudioFetchI[] | ErrorFetchI) => {
                 if("errorMsg" in data) return;
                 serverDispatcher({type: ServerActionTypes.ADD_DEFAULT_AUDIO, payload: data.map(el => {
                         return {url: el.audioUrl, title: el.audioTitle}
@@ -42,7 +42,7 @@ const AudioSelect: FC = () => {
         if (userState.audio !== null || !authState.auth) { // is in cache or user not authenticated
             setUserAudioIsLoading(false);
         } else {
-            fetch("/user/audio/get").then((response) => response.json()).then((data: AudioFetchI[] | ErrorFetchI) => {
+            fetch("/users/current/audios").then((response) => response.json()).then((data: AudioFetchI[] | ErrorFetchI) => {
                 if("errorMsg" in data) return;
                 userDispatcher({type: UserActionTypes.SET_AUDIO, payload: data.map(el => {
                         return {url: el.audioUrl, title: el.audioTitle}

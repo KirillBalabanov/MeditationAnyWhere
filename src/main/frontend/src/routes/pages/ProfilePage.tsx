@@ -49,7 +49,7 @@ const ProfilePage: FC = () => {
                 return;
             }
             // fetch to cache
-            fetch("/user/profile/" + usernameUrl).then((response) => response.json()).then((data: ErrorFetchI | UserProfileFetchI) => {
+            fetch("/users/" + usernameUrl).then((response) => response.json()).then((data: ErrorFetchI | UserProfileFetchI) => {
                 if ("errorMsg" in data) {
                     setProfileFetchError(data.errorMsg);
                     return;
@@ -74,7 +74,7 @@ const ProfilePage: FC = () => {
         }
 
         // page of another user
-        fetch("/user/profile/" + usernameUrl).then((response) => response.json()).then((data: ErrorFetchI | UserProfileFetchI) => {
+        fetch("/users/" + usernameUrl).then((response) => response.json()).then((data: ErrorFetchI | UserProfileFetchI) => {
             if ("errorMsg" in data) {
                 setProfileFetchError(data.errorMsg);
                 return;

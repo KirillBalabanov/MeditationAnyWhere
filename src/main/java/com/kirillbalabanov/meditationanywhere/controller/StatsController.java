@@ -2,21 +2,19 @@ package com.kirillbalabanov.meditationanywhere.controller;
 
 import com.kirillbalabanov.meditationanywhere.config.UserDet;
 import com.kirillbalabanov.meditationanywhere.entity.StatsEntity;
-import com.kirillbalabanov.meditationanywhere.exception.user.NoUserFoundException;
-import com.kirillbalabanov.meditationanywhere.model.ErrorModel;
 import com.kirillbalabanov.meditationanywhere.model.StatsModel;
 import com.kirillbalabanov.meditationanywhere.model.frontend.SessionEndModel;
 import com.kirillbalabanov.meditationanywhere.service.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/user/stats")
+@RequestMapping(value = "/users/current/stats")
 public class StatsController {
     private final StatsService statsService;
 

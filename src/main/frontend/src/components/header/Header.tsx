@@ -37,7 +37,7 @@ const Header = () => {
         } // in cache
 
         if (authState.auth) {
-            fetch("/user/profile/avatar/get").then((response) => response.json()).then((data: AvatarFetchI | ErrorFetchI) => {
+            fetch("/users/current/avatar").then((response) => response.json()).then((data: AvatarFetchI | ErrorFetchI) => {
                 if ("errorMsg" in data) {
                     return;
                 }
@@ -50,7 +50,7 @@ const Header = () => {
     function logout() {
         if (!authState.auth) return;
 
-        csrfFetching("/user/auth/logout", FetchingMethods.POST, null, null).then(() => logoutUser(cacheStore));
+        csrfFetching("/users/auth/logout", FetchingMethods.POST, null, null).then(() => logoutUser(cacheStore));
 
 
     }
