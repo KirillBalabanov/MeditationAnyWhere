@@ -32,7 +32,7 @@ const Volume: FC<VolumeProps> = React.memo(({audioVolume, setAudioVolume, audioE
             }
         }
 
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
         <div className={classes.volumeOuter + " " + classes.volumeOuterFull}

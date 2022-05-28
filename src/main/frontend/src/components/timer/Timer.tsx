@@ -120,7 +120,7 @@ const Timer:FC = () => {
                         newTimerValue: timerVal,
                         newTimerLen: timerLen,
                     }})
-            }, 100);
+            }, 1000);
 
             timerDispatcher({type: TimerActionTypes.PLAY, payload: {
                 interval: interval

@@ -33,7 +33,7 @@ const AudioOuter: FC<AudioOuterProps> = ({audioUrl, audioElement,
             ref.removeEventListener("play", playHandler);
             ref.removeEventListener("pause", pauseHandler);
         };
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
         <div className={classes.audioOuter}>
