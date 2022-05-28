@@ -24,7 +24,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/user/audio/**", "/user/profile/settings/**", "/user/profile/avatar/get", "/user/stats/**", "/user/auth/logout").authenticated()
+                .antMatchers("users/current/**", "/user/auth/logout").authenticated()
             .anyRequest().permitAll()
                 .and()
             .formLogin().disable()
