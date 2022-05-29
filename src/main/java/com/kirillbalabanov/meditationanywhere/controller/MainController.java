@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.concurrent.TimeUnit;
 
 @RestController
-@RequestMapping(value = "/server")
+@RequestMapping(value = "/api/server")
 public class MainController {
     private final FileService fileService;
     private final UserService userService;

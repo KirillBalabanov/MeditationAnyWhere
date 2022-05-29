@@ -38,7 +38,7 @@ const Timer:FC = () => {
 
 
     useEffect(() => {
-        fetch("/server/audios/toggle").then((response) => {
+        fetch("/api/server/audios/toggle").then((response) => {
             return response.json()
         }).then((data: ErrorFetchI | AudioFetchI) => {
             if("errorMsg" in data) return;
@@ -80,7 +80,7 @@ const Timer:FC = () => {
             if (authState.auth) { // update user stats
                 let body = JSON.stringify({minListened: timerState.minListened})
 
-                csrfFetching("/users/current/stats/updateStats", FetchingMethods.PUT, FetchContentTypes.APPLICATION_JSON, body).then((response) => response.json()).then((data: ErrorFetchI | StatsFetchI) => {
+                csrfFetching("/api/users/current/stats/updateStats", FetchingMethods.PUT, FetchContentTypes.APPLICATION_JSON, body).then((response) => response.json()).then((data: ErrorFetchI | StatsFetchI) => {
                     if ("errorMsg" in data) {
                         return;
                     }

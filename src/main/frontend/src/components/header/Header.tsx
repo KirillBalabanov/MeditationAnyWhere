@@ -38,7 +38,7 @@ const Header: FC = React.memo(() => {
     function logout() {
         if (!authState.auth) return;
 
-        csrfFetching("/users/auth/logout", FetchingMethods.POST, null, null).then(() => logoutUser(cacheStore));
+        csrfFetching("/api/users/auth/logout", FetchingMethods.POST, null, null).then(() => logoutUser(cacheStore));
     }
 
     return (

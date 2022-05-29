@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 
 @RestController
-@RequestMapping(value = "/users/auth")
+@RequestMapping(value = "/api/users/auth")
 public class AuthController {
     private final UserService userService;
     private final AuthenticationManager authenticationManager;

@@ -31,7 +31,7 @@ const SettingsProfile: FC = () => {
     const [rectangleShown, setRectangleShown] = useState(false);
 
     useEffect(() => {
-        fetch("/users/current/settings").then((response) => response.json()).then((data: ProfileFetchI) => {
+        fetch("/api/users/current/settings").then((response) => response.json()).then((data: ProfileFetchI) => {
             userDispatcher({type: UserActionTypes.SET_AVATAR, payload: {url: data.avatarUrl}})
             userDispatcher({type: UserActionTypes.SET_BIO, payload: {bio: data.bio}})
             setIsDataLoading(false)
@@ -93,7 +93,7 @@ const SettingsProfile: FC = () => {
         }
 
 
-        csrfFetching("/users/current/settings/update", FetchingMethods.PUT, FetchContentTypes.MULTIPART_FORM_DATA, formData).then((response) => response.json()).then((data: ProfileFetchI | ErrorFetchI) => {
+        csrfFetching("/api/users/current/settings/update", FetchingMethods.PUT, FetchContentTypes.MULTIPART_FORM_DATA, formData).then((response) => response.json()).then((data: ProfileFetchI | ErrorFetchI) => {
             if ("errorMsg" in data) {
                 setImageUploadErrorMsg(data.errorMsg);
                 return;

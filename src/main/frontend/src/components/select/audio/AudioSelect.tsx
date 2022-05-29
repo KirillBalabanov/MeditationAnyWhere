@@ -25,7 +25,7 @@ const AudioSelect: FC = () => {
 
     useEffect(() => {
         // server audio url
-        fetch("/server/audios/default").then((response) => response.json()).then((data: AudioFetchI[] | ErrorFetchI) => {
+        fetch("/api/server/audios/default").then((response) => response.json()).then((data: AudioFetchI[] | ErrorFetchI) => {
             if("errorMsg" in data) return;
             serverDispatcher({type: ServerActionTypes.ADD_DEFAULT_AUDIO, payload: data.map(el => {
                     return {url: el.audioUrl, title: el.audioTitle}
@@ -40,7 +40,7 @@ const AudioSelect: FC = () => {
             setUserAudioIsLoading(false);
             return;
         }
-        fetch("/users/current/audios").then((response) => response.json()).then((data: AudioFetchI[] | ErrorFetchI) => {
+        fetch("/api/users/current/audios").then((response) => response.json()).then((data: AudioFetchI[] | ErrorFetchI) => {
             if("errorMsg" in data) return;
             userDispatcher({type: UserActionTypes.SET_AUDIO, payload: data.map(el => {
                     return {url: el.audioUrl, title: el.audioTitle}

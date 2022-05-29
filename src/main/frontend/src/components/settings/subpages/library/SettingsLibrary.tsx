@@ -144,7 +144,7 @@ const SettingsLibrary = () => {
         let payload: AudioInterface[] = userState.audio!;
         inputs.forEach((inp) => {
             if (inp.delete === "1") {
-                csrfFetching("/users/current/audio/delete", FetchingMethods.DELETE, FetchContentTypes.APPLICATION_JSON, JSON.stringify({"url": inp.url})).then((response) => response.json()).then((data) => {
+                csrfFetching("/api/users/current/audio/delete", FetchingMethods.DELETE, FetchContentTypes.APPLICATION_JSON, JSON.stringify({"url": inp.url})).then((response) => response.json()).then((data) => {
                     if("error" in data) {
                         setAudioErrorMsg(data.error);
                         userDispatcher({type: UserActionTypes.RESET_AUDIO})
@@ -154,7 +154,7 @@ const SettingsLibrary = () => {
                 payload = payload.filter(el => el.url !== inp.url);
             }
             else if (inp.changed === "1") {
-                csrfFetching("/users/current/audio/update", FetchingMethods.PUT, FetchContentTypes.APPLICATION_JSON,
+                csrfFetching("/api/users/current/audio/update", FetchingMethods.PUT, FetchContentTypes.APPLICATION_JSON,
                     JSON.stringify({audioTitle: inp.title, audioUrl: inp.url})).then((response) => response.json()).then((data) => {
                     if("error" in data) {
                         setAudioErrorMsg(data.error);
@@ -195,7 +195,7 @@ const SettingsLibrary = () => {
         let formData = new FormData();
         formData.append("audioFile", audioFile!);
         formData.append("audioTitle", audioTitle);
-        csrfFetching("/users/current/audio/add", FetchingMethods.POST, FetchContentTypes.MULTIPART_FORM_DATA, formData).then((response) => response.json()).then((data: AudioFetchI | ErrorFetchI) => {
+        csrfFetching("/api/users/current/audio/add", FetchingMethods.POST, FetchContentTypes.MULTIPART_FORM_DATA, formData).then((response) => response.json()).then((data: AudioFetchI | ErrorFetchI) => {
             if("errorMsg" in data) {
                 setAudioErrorMsg(data.errorMsg);
                 return;

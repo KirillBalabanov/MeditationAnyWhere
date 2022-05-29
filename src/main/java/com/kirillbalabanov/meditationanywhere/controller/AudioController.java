@@ -17,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.HashMap;
 
 @RestController
-@RequestMapping(value = "/users/current")
+@RequestMapping(value = "/api/users/current")
 public class AudioController {
 
     private final AudioService audioService;

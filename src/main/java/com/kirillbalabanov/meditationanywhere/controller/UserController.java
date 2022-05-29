@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @RestController
-@RequestMapping("/users/current")
+@RequestMapping("/api/users/current")
 public class UserController {
 
     private final UserService userService;

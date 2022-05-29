@@ -28,7 +28,7 @@ const ProfilePage: FC = () => {
     const [profileFetchError, setProfileFetchError] = useState("");
 
     useEffect(() => {
-        fetch("/users/" + usernameUrl).then((response) => response.json()).then((data: ErrorFetchI | UserProfileFetchI) => {
+        fetch("/api/users/" + usernameUrl).then((response) => response.json()).then((data: ErrorFetchI | UserProfileFetchI) => {
             if ("errorMsg" in data) {
                 setProfileFetchError(data.errorMsg);
                 return;
