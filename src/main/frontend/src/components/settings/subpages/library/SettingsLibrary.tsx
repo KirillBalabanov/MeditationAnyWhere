@@ -45,7 +45,7 @@ const SettingsLibrary = () => {
     const [errorUpdateMsg, setErrorUpdateMsg] = useState("");
 
     useEffect(() => {
-        fetch("/users/current/audios").then((response) => response.json()).then((data: AudioFetchI[]) => {
+        fetch("/api/users/current/audios").then((response) => response.json()).then((data: AudioFetchI[]) => {
             userDispatcher({type: UserActionTypes.SET_AUDIO, payload: data.map(el => {
                     return {url: el.audioUrl, title: el.audioTitle}
                 })})

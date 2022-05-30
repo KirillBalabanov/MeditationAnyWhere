@@ -5,7 +5,7 @@ import {PrincipalI} from "../../../types/serverTypes";
 import {UserActionTypes} from "../../../reducer/userReducer";
 
 export const fetchPrincipal = (cacheStore: StoreContextI, setIsLoading: React.Dispatch<SetStateAction<boolean>> | null = null) => {
-    fetch("/server/principal").then((response) => {
+    fetch("/api/server/principal").then((response) => {
         return response.json()
     }).then((obj: PrincipalI) => {
         const authReducer = cacheStore.authReducer;

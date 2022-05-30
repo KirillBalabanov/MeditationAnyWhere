@@ -4,7 +4,6 @@ import com.kirillbalabanov.meditationanywhere.config.UserDet;
 import com.kirillbalabanov.meditationanywhere.entity.UserEntity;
 import com.kirillbalabanov.meditationanywhere.model.AudioModel;
 import com.kirillbalabanov.meditationanywhere.model.PrincipalModel;
-import com.kirillbalabanov.meditationanywhere.model.UserModel;
 import com.kirillbalabanov.meditationanywhere.service.FileService;
 import com.kirillbalabanov.meditationanywhere.service.UserService;
 import org.springframework.http.CacheControl;

@@ -16,7 +16,7 @@ interface csrfTokenI {
 }
 
 export const csrfFetching = (endpoint: RequestInfo, method: FetchingMethods, contentType: FetchContentTypes | null = null, body: BodyInit | null = null): Promise<Response> => {
-    return fetch("/server/csrf").then((response) => response.json()).then((data: csrfTokenI) => {
+    return fetch("/api/server/csrf").then((response) => response.json()).then((data: csrfTokenI) => {
         let request: RequestInit = {
             method: method,
             headers: {
