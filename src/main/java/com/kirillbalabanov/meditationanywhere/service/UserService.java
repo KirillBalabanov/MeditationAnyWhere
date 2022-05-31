@@ -1,5 +1,7 @@
 package com.kirillbalabanov.meditationanywhere.service;
 
+import com.kirillbalabanov.meditationanywhere.entity.ProfileEntity;
+import com.kirillbalabanov.meditationanywhere.entity.StatsEntity;
 import com.kirillbalabanov.meditationanywhere.entity.UserEntity;
 import com.kirillbalabanov.meditationanywhere.exception.auth.InvalidPasswordException;
 import com.kirillbalabanov.meditationanywhere.exception.auth.UserNotVerifiedException;
@@ -11,11 +13,17 @@ import com.kirillbalabanov.meditationanywhere.model.UserModel;
 import com.kirillbalabanov.meditationanywhere.repository.UserRepository;
 import com.kirillbalabanov.meditationanywhere.util.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -64,9 +72,6 @@ public class UserService {
         UserEntity newUserEntity = UserEntity.initUserEntity(username, email, activationCode, passwordEncoder.encode(password), "ROLE_USER");
 
         emailSenderService.sendVerificationEmail(newUserEntity.getActivationCode(), email, username);
-
-        newUserEntity.getStatsEntity().setUserEntity(newUserEntity); // bind stats to user
-        newUserEntity.getProfileEntity().setUserEntity(newUserEntity); // bind profile to user
 
         return userRepository.save(newUserEntity);
     }
@@ -120,6 +125,13 @@ public class UserService {
         UserEntity userEntity = optional.get();
         userEntity.setActivated(true);
         userEntity.setActivationCode(null);
+
+        userEntity.setStatsEntity(StatsEntity.initStatsEntity());
+        userEntity.setProfileEntity(ProfileEntity.initProfileEntity());
+        userEntity.setAudioEntityList(new ArrayList<>());
+        userEntity.getStatsEntity().setUserEntity(userEntity); // bind stats to user
+        userEntity.getProfileEntity().setUserEntity(userEntity); // bind profile to user
+
         userRepository.save(userEntity);
     }
 
@@ -254,4 +266,13 @@ public class UserService {
 
         return userEntity;
     }
+
+    @Scheduled(cron = "0 33 12 ? * ?")
+    @Async
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void scheduledTask () {
+        java.sql.Date twoDaysAgoDate = Date.valueOf(LocalDate.now().minus(2, ChronoUnit.DAYS).toString());
+        userRepository.deleteAllUnverifiedAccounts(twoDaysAgoDate);
+    }
+
 }

@@ -50,15 +50,11 @@ public class UserEntity {
         userEntity.setEmail(email);
         userEntity.setPassword(hashedPassword);
         userEntity.setRole(role);
-        userEntity.setStatsEntity(StatsEntity.initStatsEntity());
         userEntity.setActivated(false);
         userEntity.setActivationCode(activationCode);
         userEntity.setRegistrationDate(new Date(new java.util.Date().getTime()));
-        userEntity.setProfileEntity(ProfileEntity.initProfileEntity());
-        userEntity.setAudioEntityList(new ArrayList<>());
         return userEntity;
     }
-
     public List<AudioEntity> getAudioEntityList() {
         return audioEntityList;
     }

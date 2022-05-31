@@ -63,14 +63,14 @@ public class StatsService {
             return;
         }
 
-        long daysBetween = ChronoUnit.DAYS.between(LocalDate.parse(currentSessionDate.toString()),
-                LocalDate.parse(lastSessionsDate.toString()));
+        long daysBetween = Math.abs(ChronoUnit.DAYS.between(LocalDate.parse(currentSessionDate.toString()),
+                LocalDate.parse(lastSessionsDate.toString())));
 
-        if (Math.abs(daysBetween) > 1) {
+        if (daysBetween > 1) {
             statsEntity.setCurrentStreak(1);
             return;
         }
-        if (Math.abs(daysBetween) == 1) {
+        if (daysBetween == 1) {
             statsEntity.setCurrentStreak(statsEntity.getCurrentStreak() + 1);
         }
 
