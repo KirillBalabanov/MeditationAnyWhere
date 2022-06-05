@@ -1,7 +1,6 @@
 package com.kirillbalabanov.meditationanywhere.service;
 
 import com.kirillbalabanov.meditationanywhere.exception.audio.AudioNotFoundException;
-import com.kirillbalabanov.meditationanywhere.exception.file.FolderNotExistsException;
 import com.kirillbalabanov.meditationanywhere.model.AudioModel;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -90,7 +89,6 @@ public class FileService {
 
     public AudioModel[] getServerAudioDefaultArray() {
         File defaultAudioFolder = new File(serverFolderPath + serverDefaultAudioPackRelativePath + "/");
-        if(!defaultAudioFolder.exists()) throw new FolderNotExistsException("Folder doesn't exist");
         File[] audio = defaultAudioFolder.listFiles();
         if(audio == null || audio.length == 0) throw new AudioNotFoundException("No audio on server");
 
@@ -105,7 +103,6 @@ public class FileService {
 
     public AudioModel getServerToggleAudio() {
         File folder = new File(serverFolderPath + serverToggleAudioRelativePath);
-        if(!folder.exists()) throw new FolderNotExistsException("Folder doesn't exist");
         File[] files = folder.listFiles();
         if(files == null || files.length == 0) throw new AudioNotFoundException("No audio on server");
         String title = files[0].getName();

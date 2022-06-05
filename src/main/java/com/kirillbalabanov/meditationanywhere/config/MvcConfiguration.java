@@ -45,7 +45,7 @@ public class MvcConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/spa").setViewName("forward:/index.html");
+        registry.addViewController("/spa").setStatusCode(HttpStatus.OK).setViewName("forward:/index.html");
     }
 
     @Bean
