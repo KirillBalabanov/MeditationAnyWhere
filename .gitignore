@@ -33,3 +33,6 @@ build/
 /src/main/resources/static/
 /src/main/resources/secrets.properties
 /src/main/frontend/build/
+
+
+/docker/

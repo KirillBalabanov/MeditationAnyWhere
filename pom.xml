@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.kirillbalabanov</groupId>
 	<artifactId>meditationanywhere</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0-RELEASE</version>
 	<name>meditationanywhere</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
@@ -88,6 +88,9 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
+		<finalName>
+			meditationanywhere
+		</finalName>
 	</build>
 
 </project>
