@@ -49,40 +49,46 @@ const Header: FC = React.memo(() => {
                     <Link to={"/"} className={classes.logo}>
                         <img src={logo} alt="logo" className={classes.logoImg}/>
                     </Link>
-                    {
-                        authState.auth
-                            ?
-                            <div className={classes.header__box} style={{display: isLoadingAvatar ? "none" : "flex"}}>
-                                {
-                                    <div className={classes.header__user} onClick={() => {
-                                        setShowMenu(prev => !prev);
-                                    }}>
-                                        <img src={userState.avatar === null || userState.avatar.url === null ? defaultAvatar : userState.avatar.url} alt="avatar" className={classes.header__userAvatar}/>
-                                        <img src={polygon} alt="polygon"/>
-                                    </div>
-                                }
-                                <ul className={showMenu ? classes.user__menu + " " + classes.active : classes.user__menu}>
-                                    <img src={polygonOnRectangle} alt="polygon" className={classes.user__menuPolygon}/>
-                                    <li className={classes.user__menuItem}>
-                                        {userState.username}
-                                    </li>
-                                    <Link to={"/profile/" + userState.username} className={classes.user__menuItem} onClick={() => setShowMenu(false)}>
-                                        Go to profile
-                                    </Link>
-                                    <Link to={"/settings/profile"} className={classes.user__menuItem} onClick={() => setShowMenu(false)}>
-                                        Settings
-                                    </Link>
-                                    <li className={classes.user__menuItem} onClick={() => {
-                                        logout();
-                                        redirectTo("/start");
-                                    }}>
-                                        Log out
-                                    </li>
-                                </ul>
-                            </div>
-                            :
-                            <Link to={"/login"} className={classes.headerLink}>log in</Link>
-                    }
+                    <div className={classes.menuOuter}>
+                        {
+                            authState.auth
+                                ?
+                                <div className={classes.header__box} style={{display: isLoadingAvatar ? "none" : "flex"}}>
+                                    {
+                                        <div className={classes.header__user} onClick={() => {
+                                            setShowMenu(prev => !prev);
+                                        }}>
+                                            <img src={userState.avatar === null || userState.avatar.url === null ? defaultAvatar : userState.avatar.url} alt="avatar" className={classes.header__userAvatar}/>
+                                            <img src={polygon} alt="polygon"/>
+                                        </div>
+                                    }
+                                    <ul className={showMenu ? classes.user__menu + " " + classes.active : classes.user__menu}>
+                                        <img src={polygonOnRectangle} alt="polygon" className={classes.user__menuPolygon}/>
+                                        <li className={classes.user__menuItem}>
+                                            {userState.username}
+                                        </li>
+                                        <Link to={"/profile/" + userState.username} className={classes.user__menuItem} onClick={() => setShowMenu(false)}>
+                                            Go to profile
+                                        </Link>
+                                        <Link to={"/about"} className={classes.user__menuItem} onClick={() => setShowMenu(false)}>
+                                            About project
+                                        </Link>
+                                        <Link to={"/settings/profile"} className={classes.user__menuItem} onClick={() => setShowMenu(false)}>
+                                            Settings
+                                        </Link>
+                                        <li className={classes.user__menuItem} onClick={() => {
+                                            logout();
+                                            redirectTo("/start");
+                                        }}>
+                                            Log out
+                                        </li>
+                                    </ul>
+                                </div>
+                                :
+                                <Link to={"/login"} className={classes.headerLink}>log in</Link>
+
+                        }
+                    </div>
                 </div>
             </div>
         </header>

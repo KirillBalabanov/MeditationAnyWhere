@@ -31,6 +31,14 @@
     border-radius: 50%;
     object-fit: cover;
 }
+
+
+.menuOuter {
+    display: flex;
+    justify-content: space-between;
+    align-content: center;
+}
+
 .user__menu {
     overflow: hidden;
     cursor: default;

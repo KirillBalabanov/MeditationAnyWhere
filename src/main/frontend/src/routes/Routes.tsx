@@ -9,6 +9,7 @@ import ProfilePage from "./pages/ProfilePage";
 import SettingsPage from "./pages/SettingsPage";
 import {Navigate} from "react-router-dom";
 import ChangeEmailPage from "./pages/ChangeEmailPage";
+import AboutPage from "./pages/AboutPage";
 
 export interface RouteI {
     path: string,
@@ -22,6 +23,7 @@ export const appRoutes: RouteI[] = [
     {path: "/verification/:activationCode", component: <VerificationPage></VerificationPage>},
     {path: "/change/email/:code", component: <ChangeEmailPage></ChangeEmailPage>},
     {path: "/profile/:username", component: <ProfilePage></ProfilePage>},
+    {path: "/about", component: <AboutPage></AboutPage>},
     {path: "/", component: <MainPage></MainPage>},
 
     // private routes

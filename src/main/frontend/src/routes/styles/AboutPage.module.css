@@ -1,0 +1,59 @@
+.content {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    margin-top: 50px;
+    flex-wrap: wrap;
+}
+
+.block {
+    width: 100%;
+    margin: 0 0 40px 0;
+}
+.blockText {
+    font-size: 18px;
+}
+.blockTitle {
+    font-size: 22px;
+    font-weight: bold;
+    margin: 0 0 20px 0;
+}
+.line {
+    display: flex;
+    width: 100%;
+}
+.blockLink {
+    font-size: 16px;
+    margin: 7px 0;
+    text-decoration: underline;
+}
+.coffee {
+    margin-top: 20px;
+}
+
+@media screen and (max-width: 800px){
+    .blockText {
+        font-size: 16px;
+    }
+    .blockTitle {
+        font-size: 20px;
+    }
+    .blockLink {
+        font-size: 14px;
+        margin: 7px 0;
+    }
+
+}
+@media screen and (max-width: 600px){
+    .blockText {
+        font-size: 14px;
+    }
+    .blockTitle {
+        font-size: 18px;
+    }
+    .blockLink {
+        font-size: 12px;
+        margin: 7px 0;
+    }
+
+}
